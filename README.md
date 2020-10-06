@@ -8,14 +8,8 @@
 
 A small Python library for mapping a modell catalog to rdf
 
-The library contains helper classes for the following dcat classes:
- - [Catalog](https://www.w3.org/TR/vocab-dcat-2/#Class:Catalog)
- - [Dataset](https://www.w3.org/TR/vocab-dcat-2/#Class:Dataset)
- - [Distribution](https://www.w3.org/TR/vocab-dcat-2/#Class:Distribution)
- - [Data Service](https://www.w3.org/TR/vocab-dcat-2/#Class:Data_Service)
-
- Other relevant classes are also supported, such as:
- - Contact [vcard:Kind](https://www.w3.org/TR/2014/NOTE-vcard-rdf-20140522/#d4e1819)
+The library contains helper classes for the following modelldcat-ap-no classes:
+ - [InformationModel](https://informasjonsforvaltning.github.io/modelldcat-ap-no/#klasse-informasjonsmodell)
 
  The library will map to [the Norwegian Application Profile](https://informasjonsforvaltning.github.io/modelldcat-ap-no/).
 
