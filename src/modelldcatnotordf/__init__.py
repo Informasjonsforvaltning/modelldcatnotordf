@@ -6,11 +6,9 @@ Modules:
 try:
     from importlib.metadata import version, PackageNotFoundError  # type: ignore
 except ImportError:  # pragma: no cover
-    from importlib_metadata import version, PackageNotFoundError  # type: ignore
+    import importlib_metadata
 
 try:
     __version__ = version(__name__)
 except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
-
-from .informationmodel import InformationModel
