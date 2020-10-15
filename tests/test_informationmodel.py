@@ -4,7 +4,7 @@ import pytest
 from rdflib import Graph
 from rdflib.compare import isomorphic, graph_diff
 
-from src.modelldcatnotordf.informationmodel import InformationModel
+from modelldcatnotordf.informationmodel import InformationModel
 
 """
 A test class for testing the _abstract_ class Resource.
@@ -18,8 +18,6 @@ def test_instantiate_InformationModel() -> None:
         _ = InformationModel()
     except Exception:
         pytest.fail("Unexpected Exception ..")
-
-
 
 
 def test_to_graph_should_return_title() -> None:
