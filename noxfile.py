@@ -8,7 +8,7 @@ from nox.sessions import Session
 package = "modelldcatnotordf"
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 nox.options.stop_on_first_error = True
-nox.options.sessions = "lint", "mypy", "pytype", "tests"
+nox.options.sessions = "black", "lint", "mypy", "pytype", "tests"
 
 
 def install_with_constraints(session: Session, *args: str, **kwargs: Any) -> None:
@@ -31,7 +31,7 @@ def tests(session: Session) -> None:
     args = session.posargs or ["--cov"]
     session.run("poetry", "install", "--no-dev", external=True)
     install_with_constraints(session, "coverage[toml]", "pytest", "pytest-cov")
-    session.run("pytest", *args)
+    session.run("pytest", "-rA", *args)
 
 
 @nox.session(python="3.8")
