@@ -26,27 +26,21 @@ class InformationModel(Resource):
         "_type",
     )
 
-    _title: DCAT.title
-    _type: DCAT.Resource
+    _title: dict
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
         # self._type = MODELLDCATNO.InformationModel
-        self._type = DCAT.Resource
         super().__init__()
+        self._type = DCAT.Resource
 
     @property
-    def type(self) -> DCAT.Resource:
-        """Get/set for title."""
-        return self._type
-
-    @property
-    def title(self) -> DCAT.Resource:
+    def title(self) -> dict:
         """Get/set for title."""
         return self._title
 
     @title.setter
-    def title(self, value: DCAT.Resource) -> None:
+    def title(self, value: dict) -> None:
         self._title = value
 
     def to_rdf(
