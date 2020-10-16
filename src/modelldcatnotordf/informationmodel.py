@@ -5,7 +5,8 @@ according to the modelldcat-ap-no specification._
 
 Refer to sub-class for typical usage examples.
 """
-from typing import List, Optional
+from typing import Optional
+
 from datacatalogtordf import Resource
 from rdflib import Graph, Namespace, RDF, URIRef
 
@@ -15,6 +16,7 @@ ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 XSD = Namespace("http://www.w3.org/2001/XMLSchema#")
 PROV = Namespace("http://www.w3.org/ns/prov#")
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
+
 
 class InformationModel(Resource):
     """A class representing a modelldatno:InformationModel."""
@@ -29,7 +31,7 @@ class InformationModel(Resource):
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
-        #self._type = MODELLDCATNO.InformationModel
+        # self._type = MODELLDCATNO.InformationModel
         self._type = DCAT.Resource
         super().__init__()
 
@@ -43,10 +45,12 @@ class InformationModel(Resource):
         """Get/set for title."""
         return self._title
 
+    @title.setter
+    def title(self, value: DCAT.Resource) -> None:
+        self._title = value
+
     def to_rdf(
-        self: Resource,
-        format: str = "turtle",
-        encoding: Optional[str] = "utf-8",
+        self: Resource, format: str = "turtle", encoding: Optional[str] = "utf-8",
     ) -> str:
         """Maps the catalog to rdf.
 
@@ -58,28 +62,17 @@ class InformationModel(Resource):
         Args:
             format (str): a valid format.
             encoding (str): the encoding to serialize into
-            include_datasets (bool): includes the dataset graphs in the catalog
-            include_services (bool): includes the services in the catalog
 
         Returns:
             a rdf serialization as a string according to format.
         """
-        return self._to_graph().serialize(
-            format=format, encoding=encoding
-        )
+        return self._to_graph().serialize(format=format, encoding=encoding)
 
     # -
 
-    def _to_graph(
-        self: Resource
-    ) -> Graph:
+    def _to_graph(self: Resource) -> Graph:
         super(InformationModel, self)._to_graph()
 
         self._g.add((URIRef(self.identifier), RDF.type, self._type))
 
-
         return self._g
-
-    @title.setter
-    def title(self, value):
-        self._title = value
