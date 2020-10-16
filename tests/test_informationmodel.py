@@ -2,7 +2,7 @@
 
 import pytest
 from rdflib import Graph
-from rdflib.compare import isomorphic, graph_diff
+from rdflib.compare import graph_diff, isomorphic
 
 from modelldcatnotordf.informationmodel import InformationModel
 
@@ -12,7 +12,7 @@ Using Dataset class in order to instantiate Resource.
 """
 
 
-def test_instantiate_InformationModel() -> None:
+def test_instantiate_informationmodel() -> None:
     """It returns a TypeErro exception."""
     try:
         _ = InformationModel()
@@ -45,6 +45,7 @@ def test_to_graph_should_return_title() -> None:
         _dump_diff(g1, g2)
         pass
     assert _isomorphic
+
 
 # ---------------------------------------------------------------------- #
 # Utils for displaying debug information
