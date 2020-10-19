@@ -21,10 +21,7 @@ MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 class InformationModel(Resource):
     """A class representing a modelldatno:InformationModel."""
 
-    __slots__ = (
-        "_title",
-        "_type",
-    )
+    __slots__ = ("_title", "_type", "_description")
 
     _title: dict
 
@@ -42,6 +39,15 @@ class InformationModel(Resource):
     @title.setter
     def title(self, value: dict) -> None:
         self._title = value
+
+    @property
+    def description(self) -> dict:
+        """Get/set for description."""
+        return self._description
+
+    @description.setter
+    def description(self, value: dict) -> None:
+        self._description = value
 
     def to_rdf(
         self: Resource, format: str = "turtle", encoding: Optional[str] = "utf-8",
