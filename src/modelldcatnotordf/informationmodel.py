@@ -5,7 +5,7 @@ according to the modelldcat-ap-no specification._
 
 Refer to sub-class for typical usage examples.
 """
-from typing import Optional
+from typing import List, Optional
 
 from datacatalogtordf import Resource
 from rdflib import Graph, Namespace, RDF, URIRef
@@ -21,7 +21,7 @@ MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 class InformationModel(Resource):
     """A class representing a modelldatno:InformationModel."""
 
-    __slots__ = ("_title", "_type", "_description")
+    __slots__ = ("_title", "_type", "_description", "_theme")
 
     _title: dict
 
@@ -48,6 +48,15 @@ class InformationModel(Resource):
     @description.setter
     def description(self, value: dict) -> None:
         self._description = value
+
+    @property
+    def theme(self) -> List[str]:
+        """Get/set for theme."""
+        return self._theme
+
+    @theme.setter
+    def theme(self, value: List[str]) -> None:
+        self._theme = value
 
     def to_rdf(
         self: Resource, format: str = "turtle", encoding: Optional[str] = "utf-8",
