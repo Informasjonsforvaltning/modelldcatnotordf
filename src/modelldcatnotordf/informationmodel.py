@@ -7,8 +7,8 @@ Refer to sub-class for typical usage examples.
 """
 from typing import List, Optional
 
-from datacatalogtordf import Resource
-from rdflib import Graph, Namespace, RDF, URIRef
+from datacatalogtordf import Resource, URI
+from rdflib import Graph, Literal, Namespace, RDF, URIRef
 
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
@@ -16,14 +16,16 @@ ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 XSD = Namespace("http://www.w3.org/2001/XMLSchema#")
 PROV = Namespace("http://www.w3.org/ns/prov#")
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
+FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
 
 class InformationModel(Resource):
     """A class representing a modelldatno:InformationModel."""
 
-    __slots__ = ("_title", "_type", "_description", "_theme")
+    __slots__ = ("_title", "_type", "_description", "_theme", "_publisher")
 
     _title: dict
+    _publisher: URI
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -58,6 +60,15 @@ class InformationModel(Resource):
     def theme(self, value: List[str]) -> None:
         self._theme = value
 
+    @property
+    def publisher(self: Resource) -> str:
+        """Get/set for publisher."""
+        return self._publisher
+
+    @publisher.setter
+    def publisher(self: Resource, publisher: str) -> None:
+        self._publisher = URI(publisher)
+
     def to_rdf(
         self: Resource, format: str = "turtle", encoding: Optional[str] = "utf-8",
     ) -> str:
@@ -83,5 +94,25 @@ class InformationModel(Resource):
         super(InformationModel, self)._to_graph()
 
         self._g.add((URIRef(self.identifier), RDF.type, self._type))
+        self._publisher_to_graph()
+
+        self._title_to_graph()
 
         return self._g
+
+    def _publisher_to_graph(self: Resource) -> None:
+        if getattr(self, "publisher", None):
+            self._g.add(
+                (URIRef(self.identifier), DCT.publisher, URIRef(self.publisher))
+            )
+
+    def _title_to_graph(self: Resource) -> None:
+        if getattr(self, "title", None):
+            for key in self.title:
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCT.title,
+                        Literal(self.title[key], lang=key),
+                    )
+                )
