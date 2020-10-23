@@ -29,7 +29,6 @@ class InformationModel(Resource):
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
-        # self._type = MODELLDCATNO.InformationModel
         super().__init__()
         self._type = DCAT.Resource
 
