@@ -7,8 +7,11 @@ Refer to sub-class for typical usage examples.
 """
 from typing import List, Optional
 
-from datacatalogtordf import Resource, URI
+from datacatalogtordf import Resource
 from rdflib import Graph, Literal, Namespace, RDF, URIRef
+
+from modelldcatnotordf.agent import Agent
+
 
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
@@ -25,7 +28,7 @@ class InformationModel(Resource):
     __slots__ = ("_title", "_type", "_description", "_theme", "_publisher")
 
     _title: dict
-    _publisher: URI
+    _publisher: Agent
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -60,13 +63,13 @@ class InformationModel(Resource):
         self._theme = value
 
     @property
-    def publisher(self: Resource) -> str:
+    def publisher(self: Resource) -> Agent:
         """Get/set for publisher."""
         return self._publisher
 
     @publisher.setter
-    def publisher(self: Resource, publisher: str) -> None:
-        self._publisher = URI(publisher)
+    def publisher(self: Resource, publisher: Agent) -> None:
+        self._publisher = publisher
 
     def to_rdf(
         self: Resource, format: str = "turtle", encoding: Optional[str] = "utf-8",
@@ -93,17 +96,10 @@ class InformationModel(Resource):
         super(InformationModel, self)._to_graph()
 
         self._g.add((URIRef(self.identifier), RDF.type, self._type))
-        self._publisher_to_graph()
 
         self._title_to_graph()
 
         return self._g
-
-    def _publisher_to_graph(self: Resource) -> None:
-        if getattr(self, "publisher", None):
-            self._g.add(
-                (URIRef(self.identifier), DCT.publisher, URIRef(self.publisher))
-            )
 
     def _title_to_graph(self: Resource) -> None:
         if getattr(self, "title", None):
