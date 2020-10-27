@@ -4,6 +4,7 @@ import pytest
 from rdflib import Graph
 from rdflib.compare import graph_diff, isomorphic
 
+from modelldcatnotordf.agent import Agent
 from modelldcatnotordf.informationmodel import InformationModel
 
 """
@@ -107,19 +108,24 @@ def test_to_graph_should_return_publisher() -> None:
     """It returns a publisher graph isomorphic to spec."""
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
-    informationmodel.publisher = "http://example.com/publisher/1"
+
+    agent = Agent()
+    agent._identifier = "http://example.com/publisher/1"
+    agent._name = "Etnavn"
+
+    informationmodel.publisher = agent
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 
-    <http://example.com/informationmodels/1> a dcat:Resource ;
-        dct:publisher   <http://example.com/publisher/1> ;
-        .
+    <http://example.com/publisher/1> a foaf:Agent .
+    <http://example.com/publisher/1> foaf:name "Etnavn"  .
     """
-    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g1 = Graph().parse(data=informationmodel.publisher.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
     _isomorphic = isomorphic(g1, g2)
