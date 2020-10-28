@@ -8,8 +8,8 @@ from modelldcatnotordf.agent import Agent
 from modelldcatnotordf.informationmodel import InformationModel
 
 """
-A test class for testing the _abstract_ class Resource.
-Using Dataset class in order to instantiate Resource.
+A test class for testing the class InformationModel.
+
 """
 
 
