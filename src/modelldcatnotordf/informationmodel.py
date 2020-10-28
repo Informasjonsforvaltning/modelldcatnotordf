@@ -8,7 +8,7 @@ Refer to sub-class for typical usage examples.
 from typing import List, Optional
 
 from datacatalogtordf import Resource
-from rdflib import Graph, Literal, Namespace, RDF, URIRef
+from rdflib import Graph, Namespace, RDF, URIRef
 
 from modelldcatnotordf.agent import Agent
 
@@ -97,17 +97,4 @@ class InformationModel(Resource):
 
         self._g.add((URIRef(self.identifier), RDF.type, self._type))
 
-        self._title_to_graph()
-
         return self._g
-
-    def _title_to_graph(self: Resource) -> None:
-        if getattr(self, "title", None):
-            for key in self.title:
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCT.title,
-                        Literal(self.title[key], lang=key),
-                    )
-                )
