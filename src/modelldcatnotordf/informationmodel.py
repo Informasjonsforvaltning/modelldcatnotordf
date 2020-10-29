@@ -97,4 +97,16 @@ class InformationModel(Resource):
 
         self._g.add((URIRef(self.identifier), RDF.type, self._type))
 
+        self._publisher_to_graph()
+
         return self._g
+
+    def _publisher_to_graph(self: Resource) -> None:
+        if getattr(self, "publisher", None):
+            self._g.add(
+                (
+                    URIRef(self.identifier),
+                    DCT.publisher,
+                    URIRef(self.publisher._identifier),
+                )
+            )
