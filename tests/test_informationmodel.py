@@ -110,8 +110,7 @@ def test_to_graph_should_return_publisher() -> None:
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
     agent = Agent()
-    agent._identifier = "http://example.com/publisher/1"
-    agent._name = "Etnavn"
+    agent._identifier = "https://example.com/organizations/1"
 
     informationmodel.publisher = agent
 
@@ -122,10 +121,11 @@ def test_to_graph_should_return_publisher() -> None:
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 
-    <http://example.com/publisher/1> a foaf:Agent .
-    <http://example.com/publisher/1> foaf:name "Etnavn"  .
+    <http://example.com/informationmodels/1>  a dcat:Resource ;
+    dct:publisher <https://example.com/organizations/1> ;
+    .
     """
-    g1 = Graph().parse(data=informationmodel.publisher.to_rdf(), format="turtle")
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
     _isomorphic = isomorphic(g1, g2)
