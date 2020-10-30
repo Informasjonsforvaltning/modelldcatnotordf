@@ -11,16 +11,18 @@ from datacatalogtordf import URI
 from rdflib import BNode, Graph, Literal, Namespace, RDF, URIRef
 
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+DCT = Namespace("http://purl.org/dc/terms/")
 
 
 class Agent(BNode):
     """A class representing a foaf:Agent."""
 
-    __slots__ = ("_g", "_identifier", "_name", "_type")
+    __slots__ = ("_g", "_identifier", "_name", "_type", "_orgnr")
 
     _g: Graph
     _identifier: URI
     _name: str
+    _orgnr: str
 
     def __init__(self) -> None:
         """Inits Agent object with default values."""
@@ -44,6 +46,15 @@ class Agent(BNode):
     def name(self, value: str) -> None:
         self._name = value
 
+    @property
+    def orgnr(self) -> str:
+        """Get/set for orgnr."""
+        return self._orgnr
+
+    @orgnr.setter
+    def orgnr(self, value: str) -> None:
+        self._orgnr = value
+
     def to_rdf(
         self: BNode, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -64,9 +75,14 @@ class Agent(BNode):
 
         self._g.add((URIRef(self._identifier), RDF.type, URIRef(self._type)))
         self._name_to_graph()
+        self._orgnr_to_graph()
 
         return self._g
 
     def _name_to_graph(self: BNode) -> None:
         if getattr(self, "name", None):
             self._g.add((URIRef(self.identifier), FOAF.name, Literal(self._name)))
+
+    def _orgnr_to_graph(self: BNode) -> None:
+        if getattr(self, "orgnr", None):
+            self._g.add((URIRef(self.identifier), DCT.identifier, Literal(self._orgnr)))
