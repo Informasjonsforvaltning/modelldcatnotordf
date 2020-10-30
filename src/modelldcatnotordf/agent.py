@@ -12,17 +12,19 @@ from rdflib import BNode, Graph, Literal, Namespace, RDF, URIRef
 
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 DCT = Namespace("http://purl.org/dc/terms/")
+OWL = Namespace("http://www.w3.org/2002/07/owl#")
 
 
 class Agent(BNode):
     """A class representing a foaf:Agent."""
 
-    __slots__ = ("_g", "_identifier", "_name", "_type", "_orgnr")
+    __slots__ = ("_g", "_identifier", "_name", "_type", "_orgnr", "_sameas")
 
     _g: Graph
     _identifier: URI
     _name: str
     _orgnr: str
+    _sameas: URI
 
     def __init__(self) -> None:
         """Inits Agent object with default values."""
@@ -55,6 +57,15 @@ class Agent(BNode):
     def orgnr(self, value: str) -> None:
         self._orgnr = value
 
+    @property
+    def sameas(self) -> str:
+        """Get/set for sameas."""
+        return self._sameas
+
+    @sameas.setter
+    def sameas(self, value: str) -> None:
+        self._sameas = value
+
     def to_rdf(
         self: BNode, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -76,6 +87,7 @@ class Agent(BNode):
         self._g.add((URIRef(self._identifier), RDF.type, URIRef(self._type)))
         self._name_to_graph()
         self._orgnr_to_graph()
+        self._sameas_to_graph()
 
         return self._g
 
@@ -86,3 +98,7 @@ class Agent(BNode):
     def _orgnr_to_graph(self: BNode) -> None:
         if getattr(self, "orgnr", None):
             self._g.add((URIRef(self.identifier), DCT.identifier, Literal(self._orgnr)))
+
+    def _sameas_to_graph(self: BNode) -> None:
+        if getattr(self, "sameas", None):
+            self._g.add((URIRef(self.identifier), OWL.sameAs, (URIRef(self._sameas))))
