@@ -110,7 +110,7 @@ def test_to_graph_should_return_publisher() -> None:
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
     agent = Agent()
-    agent._identifier = "https://example.com/organizations/1"
+    agent.identifier = "https://example.com/organizations/1"
 
     informationmodel.publisher = agent
 

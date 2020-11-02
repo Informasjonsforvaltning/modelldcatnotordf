@@ -84,7 +84,7 @@ class Agent(BNode):
         self._g = Graph()
         self._g.bind("foaf", FOAF)
 
-        self._g.add((URIRef(self._identifier), RDF.type, URIRef(self._type)))
+        self._g.add((URIRef(self.identifier), RDF.type, URIRef(self._type)))
         self._name_to_graph()
         self._orgnr_to_graph()
         self._sameas_to_graph()
