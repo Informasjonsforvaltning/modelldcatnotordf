@@ -107,6 +107,10 @@ class InformationModel(Resource):
                 (
                     URIRef(self.identifier),
                     DCT.publisher,
-                    URIRef(self.publisher._identifier),
+                    URIRef(self.publisher.identifier),
                 )
             )
+
+            # self._g.add(
+            #     (URIRef(self.identifier), DCT.publisher, URIRef(self._publisher))
+            # )
