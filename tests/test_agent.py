@@ -20,7 +20,7 @@ def test_instantiate_agent() -> None:
         pytest.fail("Unexpected Exception ..")
 
 
-def test_to_graph_should_return_name_() -> None:
+def test_to_graph_should_return_name() -> None:
     """It returns a agent graph isomorphic to spec."""
     """It returns an name graph isomorphic to spec."""
     agent = Agent()
