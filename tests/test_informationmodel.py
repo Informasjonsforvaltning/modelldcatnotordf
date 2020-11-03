@@ -124,10 +124,10 @@ def test_to_graph_should_return_publisher() -> None:
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 
-    <http://example.com/informationmodels/1> a <http://www.w3.org/ns/dcat#Resource> .
-      <http://example.com/informationmodels/1> dct:publisher
-        <https://example.com/organizations/1> ;
-        dct:title "CRD IV - Likviditet NSFR - konsolidert (KRT-1075)"@nb .
+    <http://example.com/informationmodels/1>
+    a    dcat:Resource ;
+    dct:publisher    <https://example.com/organizations/1> ;
+    dct:title    "CRD IV - Likviditet NSFR - konsolidert (KRT-1075)"@nb .
 
     <https://example.com/organizations/1> a <http://xmlns.com/foaf/0.1/Agent> ;
         dct:identifier "123456789" .
