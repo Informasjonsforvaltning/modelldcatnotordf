@@ -74,7 +74,7 @@ class InformationModel(Resource):
     def to_rdf(
         self: Resource, format: str = "turtle", encoding: Optional[str] = "utf-8",
     ) -> str:
-        """Maps the catalog to rdf.
+        """Maps the information model to rdf.
 
         Available formats:
          - turtle (default)
