@@ -15,7 +15,7 @@ DCT = Namespace("http://purl.org/dc/terms/")
 OWL = Namespace("http://www.w3.org/2002/07/owl#")
 
 
-class Agent(BNode):
+class Agent:
     """A class representing a foaf:Agent."""
 
     __slots__ = ("_g", "_identifier", "_name", "_type", "_orgnr", "_sameas")
