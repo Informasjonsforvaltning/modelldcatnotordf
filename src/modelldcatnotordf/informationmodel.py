@@ -110,11 +110,11 @@ class InformationModel(Resource):
 
         self._g.add((URIRef(self.identifier), RDF.type, self._type))
 
-        self._add_publisher_to_graph()
+        self._publisher_to_graph()
 
         return self._g
 
-    def _add_publisher_to_graph(self: Resource) -> None:
+    def _publisher_to_graph(self: Resource) -> None:
         if getattr(self, "publisher", None):
             self._g.add(
                 (
