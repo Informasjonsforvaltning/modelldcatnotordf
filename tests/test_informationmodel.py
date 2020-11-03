@@ -130,7 +130,7 @@ def test_to_graph_should_return_publisher() -> None:
         dct:title "CRD IV - Likviditet NSFR - konsolidert (KRT-1075)"@nb .
 
     <https://example.com/organizations/1> a <http://xmlns.com/foaf/0.1/Agent> ;
-    dct:identifier "123456789" .
+        dct:identifier "123456789" .
 
     """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
