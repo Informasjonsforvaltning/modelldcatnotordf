@@ -78,9 +78,14 @@ class Agent(BNode):
         Returns:
             a rdf serialization as a string according to format.
         """
-        return self._to_graph().serialize(format=format, encoding=encoding)
+        return self.to_graph().serialize(format=format, encoding=encoding)
 
-    def _to_graph(self: BNode) -> Graph:
+    def to_graph(self: BNode) -> Graph:
+        """Returns the agent as graph.
+
+        Returns:
+            the agent graph
+        """
         self._g = Graph()
         self._g.bind("foaf", FOAF)
 

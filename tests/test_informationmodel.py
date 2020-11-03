@@ -105,14 +105,17 @@ def test_to_graph_should_return_theme() -> None:
 
 
 def test_to_graph_should_return_publisher() -> None:
-    """It returns a publisher graph isomorphic to spec."""
+    """It returns a information model graph isomorphic to spec."""
+    """It returns an agent graph isomorphic to spec."""
+
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
     agent = Agent()
+    agent.orgnr = "123456789"
     agent.identifier = "https://example.com/organizations/1"
-
     informationmodel.publisher = agent
+    informationmodel.title = {"nb": "CRD IV - Likviditet NSFR - konsolidert (KRT-1075)"}
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -121,9 +124,14 @@ def test_to_graph_should_return_publisher() -> None:
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 
-    <http://example.com/informationmodels/1>  a dcat:Resource ;
-    dct:publisher <https://example.com/organizations/1> ;
-    .
+    <http://example.com/informationmodels/1> a <http://www.w3.org/ns/dcat#Resource> .
+      <http://example.com/informationmodels/1> dct:publisher
+        <https://example.com/organizations/1> ;
+        dct:title "CRD IV - Likviditet NSFR - konsolidert (KRT-1075)"@nb .
+
+    <https://example.com/organizations/1> a <http://xmlns.com/foaf/0.1/Agent> ;
+    dct:identifier "123456789" .
+
     """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")

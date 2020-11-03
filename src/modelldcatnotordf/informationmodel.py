@@ -90,9 +90,22 @@ class InformationModel(Resource):
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
+    def unionof(self: Resource, graph: Graph) -> Graph:
+        """Creates a graph union of itself and argument graph.
+
+        Args:
+            graph (Graph): a rdf-lib graph
+
+        Returns:
+            a graph union of itself and argument graph in rdf-lib-format
+        """
+        union = self._g + graph
+        return union
+
     # -
 
     def _to_graph(self: Resource) -> Graph:
+
         super(InformationModel, self)._to_graph()
 
         self._g.add((URIRef(self.identifier), RDF.type, self._type))
@@ -110,7 +123,4 @@ class InformationModel(Resource):
                     URIRef(self.publisher.identifier),
                 )
             )
-
-            # self._g.add(
-            #     (URIRef(self.identifier), DCT.publisher, URIRef(self._publisher))
-            # )
+            self._g = self.unionof(self.publisher.to_graph())
