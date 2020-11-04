@@ -1,4 +1,4 @@
-"""Test cases for the informationmodel module."""
+"""Test cases for the model element module."""
 
 import pytest
 from rdflib import Graph
@@ -7,7 +7,7 @@ from rdflib.compare import graph_diff, isomorphic
 from modelldcatnotordf.modelelement import ModelElement
 
 """
-A test class for testing the class InformationModel.
+A test class for testing the class ModelElement.
 
 """
 
