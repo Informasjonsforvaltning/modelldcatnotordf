@@ -12,7 +12,7 @@ A test class for testing the class Property.
 """
 
 
-def test_instantiate_modelelement() -> None:
+def test_instantiate_property() -> None:
     """It returns a TypeErro exception."""
     try:
         _ = Property()
