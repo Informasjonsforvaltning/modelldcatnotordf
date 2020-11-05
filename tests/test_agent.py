@@ -1,10 +1,10 @@
 """Test cases for the foaf:agent module."""
 
+from datacatalogtordf import Agent
 import pytest
 from rdflib import Graph
 from rdflib.compare import graph_diff, isomorphic
 
-from modelldcatnotordf.agent import Agent
 
 """
 A test class for testing the _abstract_ class Resource.
@@ -51,7 +51,7 @@ def test_to_graph_should_return_name() -> None:
     """It returns an name graph isomorphic to spec."""
     agent = Agent()
     agent.identifier = "http://example.com/agents/1"
-    agent.name = "Etnavn"
+    agent.name = {"nb": "Et navn"}
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -61,7 +61,7 @@ def test_to_graph_should_return_name() -> None:
     @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 
     <http://example.com/agents/1> a foaf:Agent ;
-            foaf:name   "Etnavn" ;
+            foaf:name   "Et navn"@nb ;
 
     .
     """
@@ -80,7 +80,7 @@ def test_to_graph_should_return_orgnr_() -> None:
     """It returns an orgnr graph isomorphic to spec."""
     agent = Agent()
     agent.identifier = "http://example.com/agents/1"
-    agent.orgnr = "123456789"
+    agent.organization_id = "123456789"
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .

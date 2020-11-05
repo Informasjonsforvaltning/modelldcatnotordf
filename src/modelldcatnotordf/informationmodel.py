@@ -7,10 +7,8 @@ Refer to sub-class for typical usage examples.
 """
 from typing import List, Optional
 
-from datacatalogtordf import Resource
+from datacatalogtordf import Agent, Resource
 from rdflib import Graph, Namespace, RDF, URIRef
-
-from modelldcatnotordf.agent import Agent
 
 
 DCT = Namespace("http://purl.org/dc/terms/")
@@ -128,4 +126,4 @@ class InformationModel(Resource):
                     URIRef(self.publisher.identifier),
                 )
             )
-            self._g = self.unionof(self.publisher.to_graph())
+            self._g = self.unionof(self.publisher._to_graph())

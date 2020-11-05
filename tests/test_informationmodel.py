@@ -1,10 +1,10 @@
 """Test cases for the informationmodel module."""
 
+from datacatalogtordf import Agent
 import pytest
 from rdflib import Graph, Namespace
 from rdflib.compare import graph_diff, isomorphic
 
-from modelldcatnotordf.agent import Agent
 from modelldcatnotordf.informationmodel import InformationModel
 
 """
@@ -124,7 +124,7 @@ def test_to_graph_should_return_publisher() -> None:
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
     agent = Agent()
-    agent.orgnr = "123456789"
+    agent.organization_id = "123456789"
     agent.identifier = "https://example.com/organizations/1"
     informationmodel.publisher = agent
     informationmodel.title = {"nb": "CRD IV - Likviditet NSFR - konsolidert (KRT-1075)"}
