@@ -5,10 +5,12 @@ for use in the modelldcat-ap-no specification._
 
 Refer to sub-class for typical usage examples.
 """
-from typing import Optional
+from typing import List, Optional
 
 from datacatalogtordf import URI
 from rdflib import Graph, Namespace, RDF, URIRef
+
+from modelldcatnotordf.modelelement import ModelElement
 
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 DCT = Namespace("http://purl.org/dc/terms/")
@@ -18,14 +20,21 @@ DCAT = Namespace("http://www.w3.org/ns/dcat#")
 class Property:
     """A class representing a modelldcatno:Property."""
 
-    __slots__ = ("_type", "_g", "_title", "_identifier")
+    __slots__ = ("_type", "_g", "_title", "_identifier", "_has_type")
 
     _g: Graph
     _identifier: URI
+    _has_type: List[ModelElement]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
         self._type = MODELLDCATNO.Property
+        self._has_type = []
+
+    @property
+    def has_type(self) -> List[ModelElement]:
+        """Get/set for has_type."""
+        return self._has_type
 
     @property
     def identifier(self) -> str:
