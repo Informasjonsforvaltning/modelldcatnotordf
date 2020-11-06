@@ -156,6 +156,33 @@ def test_to_graph_should_return_publisher() -> None:
     assert _isomorphic
 
 
+def test_to_graph_should_return_subject() -> None:
+    """It returns a subject graph isomorphic to spec."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+    informationmodel.subject = "http://example.com/subjects/1"
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+    <http://example.com/informationmodels/1> a dcat:Resource ;
+        skos:Concept <http://example.com/subjects/1> ;
+    .
+    """
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+        pass
+    assert _isomorphic
+
+
 # ---------------------------------------------------------------------- #
 # Utils for displaying debug information
 
