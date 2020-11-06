@@ -7,7 +7,7 @@ Refer to sub-class for typical usage examples.
 """
 from typing import List, Optional
 
-from datacatalogtordf import Agent, Resource
+from datacatalogtordf import Agent, Resource, URI
 from rdflib import Graph, Namespace, RDF, URIRef
 
 
@@ -18,15 +18,17 @@ XSD = Namespace("http://www.w3.org/2001/XMLSchema#")
 PROV = Namespace("http://www.w3.org/ns/prov#")
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
 
 
 class InformationModel(Resource):
     """A class representing a modelldatno:InformationModel."""
 
-    __slots__ = ("_title", "_type", "_description", "_theme", "_publisher")
+    __slots__ = ("_title", "_type", "_description", "_theme", "_publisher", "_subject")
 
     _title: dict
     _publisher: Agent
+    _subject: URI
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -74,6 +76,15 @@ class InformationModel(Resource):
     def publisher(self: Resource, publisher: Agent) -> None:
         self._publisher = publisher
 
+    @property
+    def subject(self: Resource) -> URI:
+        """Get/set for publisher."""
+        return self._subject
+
+    @subject.setter
+    def subject(self: Resource, subject: URI) -> None:
+        self._subject = subject
+
     def to_rdf(
         self: Resource, format: str = "turtle", encoding: Optional[str] = "utf-8",
     ) -> str:
@@ -114,6 +125,7 @@ class InformationModel(Resource):
         self._g.add((URIRef(self.identifier), RDF.type, self._type))
 
         self._publisher_to_graph()
+        self._subject_to_graph()
 
         return self._g
 
@@ -127,3 +139,7 @@ class InformationModel(Resource):
                 )
             )
             self._g = self.unionof(self.publisher._to_graph())
+
+    def _subject_to_graph(self: Resource) -> None:
+        if getattr(self, "subject", None):
+            self._g.add((URIRef(self.identifier), SKOS.Concept, URIRef(self._subject)))
