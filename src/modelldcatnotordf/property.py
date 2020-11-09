@@ -8,7 +8,7 @@ Refer to sub-class for typical usage examples.
 from typing import List, Optional
 
 from datacatalogtordf import URI
-from rdflib import Graph, Namespace, RDF, URIRef
+from rdflib import BNode, Graph, Namespace, RDF, URIRef
 
 from modelldcatnotordf.modelelement import ModelElement
 
@@ -30,6 +30,8 @@ class Property:
         """Inits an object with default values."""
         self._type = MODELLDCATNO.Property
         self._has_type = []
+        self._g = Graph()
+        self._g.bind("modelldcatno", MODELLDCATNO)
 
     @property
     def has_type(self) -> List[ModelElement]:
@@ -63,9 +65,11 @@ class Property:
         Returns:
             the property graph
         """
-        self._g = Graph()
-        self._g.bind("modelldcatno", MODELLDCATNO)
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
 
-        self._g.add((URIRef(self.identifier), RDF.type, URIRef(self._type)))
+        self._g.add((_self, RDF.type, URIRef(self._type)))
 
         return self._g
