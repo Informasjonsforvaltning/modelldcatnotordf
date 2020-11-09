@@ -28,12 +28,13 @@ class InformationModel(Resource):
 
     _title: dict
     _publisher: Agent
-    _subject: URI
+    _subject: List[str]
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
         super().__init__()
         self._type = MODELLDCATNO.InformationModel
+        self._subject = []
 
     @property
     def type(self) -> str:
@@ -80,10 +81,6 @@ class InformationModel(Resource):
     def subject(self: Resource) -> URI:
         """Get/set for publisher."""
         return self._subject
-
-    @subject.setter
-    def subject(self: Resource, subject: URI) -> None:
-        self._subject = subject
 
     def to_rdf(
         self: Resource, format: str = "turtle", encoding: Optional[str] = "utf-8",
@@ -142,4 +139,5 @@ class InformationModel(Resource):
 
     def _subject_to_graph(self: Resource) -> None:
         if getattr(self, "subject", None):
-            self._g.add((URIRef(self.identifier), SKOS.Concept, URIRef(self._subject)))
+            for subject in self._subject:
+                self._g.add((URIRef(self.identifier), SKOS.Concept, URIRef(subject)))

@@ -160,7 +160,8 @@ def test_to_graph_should_return_subject() -> None:
     """It returns a subject graph isomorphic to spec."""
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
-    informationmodel.subject = "http://example.com/subjects/1"
+    informationmodel.subject.append("http://example.com/subjects/1")
+    informationmodel.subject.append("http://example.com/subjects/2")
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -168,9 +169,11 @@ def test_to_graph_should_return_subject() -> None:
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://example.com/informationmodels/1> a dcat:Resource ;
+    <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         skos:Concept <http://example.com/subjects/1> ;
+        skos:Concept <http://example.com/subjects/2> ;
     .
     """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
