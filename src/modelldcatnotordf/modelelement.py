@@ -8,7 +8,7 @@ Refer to sub-class for typical usage examples.
 from typing import Optional
 
 from datacatalogtordf import URI
-from rdflib import Graph, Literal, Namespace, RDF, URIRef
+from rdflib import BNode, Graph, Literal, Namespace, RDF, URIRef
 
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 DCT = Namespace("http://purl.org/dc/terms/")
@@ -27,6 +27,8 @@ class ModelElement:
     def __init__(self) -> None:
         """Inits an object with default values."""
         self._type = MODELLDCATNO.ModelElement
+        self._g = Graph()
+        self._g.bind("modelldcatno", MODELLDCATNO)
 
     @property
     def identifier(self) -> str:
@@ -64,21 +66,24 @@ class ModelElement:
         Returns:
             the modelelement graph
         """
-        self._g = Graph()
-        self._g.bind("modelldcatno", MODELLDCATNO)
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
 
-        self._g.add((URIRef(self.identifier), RDF.type, URIRef(self._type)))
+        self._g.add((_self, RDF.type, URIRef(self._type)))
+
         self._title_to_graph()
 
         return self._g
 
     def _title_to_graph(self) -> None:
         if getattr(self, "title", None):
+
+            if getattr(self, "identifier", None):
+                _self = URIRef(self.identifier)
+            else:
+                _self = BNode()
+
             for key in self.title:
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCT.title,
-                        Literal(self.title[key], lang=key),
-                    )
-                )
+                self._g.add((_self, DCT.title, Literal(self.title[key], lang=key),))
