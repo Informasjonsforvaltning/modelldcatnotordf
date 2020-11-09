@@ -104,8 +104,6 @@ def test_to_graph_should_return_orgnr_() -> None:
     assert _isomorphic
 
 
-
-
 # ---------------------------------------------------------------------- #
 # Utils for displaying debug information
 
