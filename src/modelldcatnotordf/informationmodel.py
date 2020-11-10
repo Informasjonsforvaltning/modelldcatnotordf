@@ -90,7 +90,7 @@ class InformationModel(Resource):
 
     @property
     def subject(self: Resource) -> URI:
-        """Get/set for sybject."""
+        """Get/set for subject."""
         return self._subject
 
     @property
