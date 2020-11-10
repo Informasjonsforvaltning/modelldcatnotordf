@@ -10,6 +10,7 @@ from typing import List, Optional
 from datacatalogtordf import Agent, Resource, URI
 from rdflib import Graph, Namespace, RDF, URIRef
 
+from modelldcatnotordf.modelelement import ModelElement
 
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
@@ -24,17 +25,27 @@ SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
 class InformationModel(Resource):
     """A class representing a modelldatno:InformationModel."""
 
-    __slots__ = ("_title", "_type", "_description", "_theme", "_publisher", "_subject")
+    __slots__ = (
+        "_title",
+        "_type",
+        "_description",
+        "_theme",
+        "_publisher",
+        "_subject",
+        "_modelelements",
+    )
 
     _title: dict
     _publisher: Agent
     _subject: List[str]
+    _modelelements: List[ModelElement]
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
         super().__init__()
         self._type = MODELLDCATNO.InformationModel
         self._subject = []
+        self._modelelements = []
 
     @property
     def type(self) -> str:
@@ -79,8 +90,13 @@ class InformationModel(Resource):
 
     @property
     def subject(self: Resource) -> URI:
-        """Get/set for publisher."""
+        """Get/set for sybject."""
         return self._subject
+
+    @property
+    def modelelements(self: Resource) -> List[ModelElement]:
+        """Get/set for modelelements."""
+        return self._modelelements
 
     def to_rdf(
         self: Resource, format: str = "turtle", encoding: Optional[str] = "utf-8",
@@ -123,6 +139,7 @@ class InformationModel(Resource):
 
         self._publisher_to_graph()
         self._subject_to_graph()
+        self._modelelements_to_graph()
 
         return self._g
 
@@ -141,3 +158,14 @@ class InformationModel(Resource):
         if getattr(self, "subject", None):
             for subject in self._subject:
                 self._g.add((URIRef(self.identifier), SKOS.Concept, URIRef(subject)))
+
+    def _modelelements_to_graph(self: Resource) -> None:
+        if getattr(self, "modelelements", None):
+            for modelelement in self._modelelements:
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        MODELLDCATNO.containsModelelement,
+                        URIRef(modelelement.identifier),
+                    )
+                )
