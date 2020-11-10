@@ -72,4 +72,17 @@ class Property:
 
         self._g.add((_self, RDF.type, URIRef(self._type)))
 
+        self._has_type_to_graph()
+
         return self._g
+
+    def _has_type_to_graph(self) -> None:
+        if getattr(self, "has_type", None):
+            for has_type in self._has_type:
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        MODELLDCATNO.hasType,
+                        URIRef(has_type.identifier),
+                    )
+                )
