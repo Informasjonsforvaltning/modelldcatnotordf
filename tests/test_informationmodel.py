@@ -6,6 +6,7 @@ from rdflib import Graph, Namespace
 from rdflib.compare import graph_diff, isomorphic
 
 from modelldcatnotordf.informationmodel import InformationModel
+from modelldcatnotordf.modelelement import ModelElement
 
 """
 A test class for testing the class InformationModel.
@@ -174,6 +175,37 @@ def test_to_graph_should_return_subject() -> None:
     <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         skos:Concept <http://example.com/subjects/1> ;
         skos:Concept <http://example.com/subjects/2> ;
+    .
+    """
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+        pass
+    assert _isomorphic
+
+
+def test_to_graph_should_return_contains_model_element() -> None:
+    """It returns a subject graph isomorphic to spec."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+    modelelement = ModelElement()
+    modelelement.identifier = "http://example.com/modelelements/1"
+    informationmodel.modelelements.append(modelelement)
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+    <http://example.com/informationmodels/1> a dcat:Resource ;
+        modelldcatno:containsModelelement <http://example.com/modelelements/1> ;
+
     .
     """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
