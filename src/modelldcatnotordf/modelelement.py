@@ -15,7 +15,7 @@ DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 
 
-class ModelElement:
+class ModelElement(BNode):
     """A class representing a modelldcatno:ModelElement."""
 
     __slots__ = ("_type", "_g", "_title", "_identifier")
