@@ -32,7 +32,7 @@ def test_to_graph_should_return_blank_node() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [] a modelldcatno:Property .
+        [a modelldcatno:Property ] .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
