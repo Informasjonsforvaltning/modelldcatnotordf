@@ -78,11 +78,16 @@ class Property(BNode):
 
     def _has_type_to_graph(self) -> None:
         if getattr(self, "has_type", None):
+
+            if getattr(self, "identifier", None):
+                _self = URIRef(self.identifier)
+            else:
+                _self = BNode()
+
             for has_type in self._has_type:
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        MODELLDCATNO.hasType,
-                        URIRef(has_type.identifier),
-                    )
-                )
+                if getattr(has_type, "identifier", None):
+                    _has_type = URIRef(has_type.identifier)
+                else:
+                    _has_type = BNode()
+
+                self._g.add((_self, MODELLDCATNO.hasType, _has_type))
