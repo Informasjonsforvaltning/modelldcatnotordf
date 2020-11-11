@@ -8,7 +8,7 @@ Refer to sub-class for typical usage examples.
 from typing import List, Optional
 
 from datacatalogtordf import Agent, Resource, URI
-from rdflib import BNode, Graph, Namespace, RDF, URIRef
+from rdflib import Graph, Namespace, RDF, URIRef
 
 from modelldcatnotordf.modelelement import ModelElement
 
@@ -166,14 +166,19 @@ class InformationModel(Resource):
             for modelelement in self._modelelements:
 
                 if getattr(modelelement, "identifier", None):
-                    _modelelement = URIRef(modelelement.identifier)
-                else:
-                    _modelelement = BNode()
-
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        MODELLDCATNO.containsModelelement,
-                        _modelelement,
+                    self._g.add(
+                        (
+                            URIRef(self.identifier),
+                            MODELLDCATNO.containsModelelement,
+                            URIRef(modelelement.identifier),
+                        )
                     )
-                )
+
+                else:
+                    self._g.add(
+                        (
+                            URIRef(self.identifier),
+                            MODELLDCATNO.containsModelelement,
+                            modelelement,
+                        )
+                    )
