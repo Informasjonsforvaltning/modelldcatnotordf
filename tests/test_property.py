@@ -21,7 +21,56 @@ def test_instantiate_property() -> None:
         pytest.fail("Unexpected Exception ..")
 
 
-def test_to_graph_should_return_has_type() -> None:
+def test_to_graph_should_return_blank_node() -> None:
+    """It returns a property graph as blank node isomorphic to spec."""
+    property = Property()
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        [] a modelldcatno:Property .
+
+        """
+    g1 = Graph().parse(data=property.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+        pass
+    assert _isomorphic
+
+
+def test_to_graph_should_return_identifier() -> None:
+    """It returns an identifier graph isomorphic to spec."""
+    property = Property()
+    property.identifier = "http://example.com/properties/1"
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        <http://example.com/properties/1> a modelldcatno:Property .
+
+        """
+    g1 = Graph().parse(data=property.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+        pass
+    assert _isomorphic
+
+
+def test_to_graph_should_return_has_type_both_identifiers() -> None:
     """It returns a has_type graph isomorphic to spec."""
     property = Property()
     property.identifier = "http://example.com/properties/1"
@@ -52,12 +101,13 @@ def test_to_graph_should_return_has_type() -> None:
     assert _isomorphic
 
 
-def test_to_graph_should_return_title_and_identifier() -> None:
-    """It returns a title graph isomorphic to spec."""
-    """It returns an identifier graph isomorphic to spec."""
-
+def test_to_graph_should_return_has_type_blank_node_property_identifier() -> None:
+    """It returns a has_type graph isomorphic to spec."""
     property = Property()
     property.identifier = "http://example.com/properties/1"
+
+    modelelement = ModelElement()
+    property.has_type.append(modelelement)
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -66,7 +116,8 @@ def test_to_graph_should_return_title_and_identifier() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/properties/1> a modelldcatno:Property .
+        <http://example.com/properties/1> a modelldcatno:Property ;
+        modelldcatno:hasType [ ] .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -79,9 +130,41 @@ def test_to_graph_should_return_title_and_identifier() -> None:
     assert _isomorphic
 
 
-def test_to_graph_should_return_blank_node() -> None:
-    """It returns a property graph as blank node isomorphic to spec."""
+def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() -> None:
+    """It returns a has_type graph isomorphic to spec."""
     property = Property()
+
+    modelelement = ModelElement()
+    modelelement.identifier = "http://example.com/modelelements/1"
+    property.has_type.append(modelelement)
+
+    src = """
+          @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        [] a modelldcatno:Property .
+        [] modelldcatno:hasType <http://example.com/modelelements/1>  .
+
+        """
+    g1 = Graph().parse(data=property.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+        pass
+    assert _isomorphic
+
+
+def test_to_graph_should_return_has_type_blank_nodes() -> None:
+    """It returns a has_type graph isomorphic to spec."""
+    property = Property()
+
+    modelelement = ModelElement()
+    property.has_type.append(modelelement)
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -91,6 +174,7 @@ def test_to_graph_should_return_blank_node() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [] a modelldcatno:Property .
+        [] modelldcatno:hasType [ ] .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
