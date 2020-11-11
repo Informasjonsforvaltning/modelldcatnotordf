@@ -217,6 +217,7 @@ def test_to_graph_should_return_contains_model_element() -> None:
         pass
     assert _isomorphic
 
+
 def test_to_graph_should_return_modelelements_blank_node_model_identifier() -> None:
     """It returns a model element graph isomorphic to spec."""
     informationmodel = InformationModel()
