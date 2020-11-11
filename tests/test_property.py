@@ -32,7 +32,7 @@ def test_to_graph_should_return_blank_node() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [a modelldcatno:Property ] .
+        [ a modelldcatno:Property ] .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -117,8 +117,7 @@ def test_to_graph_should_return_has_type_blank_node_property_identifier() -> Non
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/properties/1> a modelldcatno:Property ;
-        modelldcatno:hasType [ ] .
-
+            modelldcatno:hasType [ ] .
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
@@ -139,14 +138,15 @@ def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() ->
     property.has_type.append(modelelement)
 
     src = """
-          @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix dct: <http://purl.org/dc/terms/> .
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [] a modelldcatno:Property .
-        [] modelldcatno:hasType <http://example.com/modelelements/1>  .
+        [ a modelldcatno:Property ;
+            modelldcatno:hasType <http://example.com/modelelements/1>
+        ] .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -173,9 +173,9 @@ def test_to_graph_should_return_has_type_blank_nodes() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [] a modelldcatno:Property .
-        [] modelldcatno:hasType [ ] .
-
+        [ a modelldcatno:Property ;
+            modelldcatno:hasType []
+        ] .
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
