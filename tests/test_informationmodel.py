@@ -194,6 +194,7 @@ def test_to_graph_should_return_contains_model_element() -> None:
     modelelement = ModelElement()
     modelelement.identifier = "http://example.com/modelelements/1"
     informationmodel.modelelements.append(modelelement)
+    modelelement.title = {"nb": "Tittel 1", "en": "Title 1"}
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -204,8 +205,10 @@ def test_to_graph_should_return_contains_model_element() -> None:
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
     <http://example.com/informationmodels/1> a dcat:Resource ;
-        modelldcatno:containsModelelement <http://example.com/modelelements/1> ;
+        modelldcatno:containsModelelement <http://example.com/modelelements/1> .
 
+    <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+        dct:title   "Title 1"@en, "Tittel 1"@nb
     .
     """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -218,7 +221,7 @@ def test_to_graph_should_return_contains_model_element() -> None:
     assert _isomorphic
 
 
-def test_to_graph_should_return_modelelements_blank_node_model_identifier() -> None:
+def test_to_graph_should_return_modelelements_blank_node() -> None:
     """It returns a model element graph isomorphic to spec."""
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
@@ -234,7 +237,7 @@ def test_to_graph_should_return_modelelements_blank_node_model_identifier() -> N
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/informationmodels/1> a dcat:Resource ;
-        modelldcatno:containsModelelement [ ] .
+        modelldcatno:containsModelelement [ a modelldcatno:ModelElement ] .
 
         """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -265,7 +268,8 @@ def test_to_graph_should_return_modelelements_blank_node_with_properties() -> No
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/informationmodels/1> a dcat:Resource ;
-        modelldcatno:containsModelelement [  dct:title   "Title 1"@en, "Tittel 1"@nb ] .
+        modelldcatno:containsModelelement [ a modelldcatno:Modelelement ;
+            dct:title   "Title 1"@en, "Tittel 1"@nb ] .
 
         """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")

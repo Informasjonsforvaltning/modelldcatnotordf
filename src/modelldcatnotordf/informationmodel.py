@@ -173,6 +173,7 @@ class InformationModel(Resource):
                             URIRef(modelelement.identifier),
                         )
                     )
+                    self._g = self.unionof(modelelement._to_graph())
 
                 else:
                     self._g.add(
@@ -182,3 +183,4 @@ class InformationModel(Resource):
                             modelelement,
                         )
                     )
+                    self._g = self.unionof(modelelement._to_graph())

@@ -73,17 +73,8 @@ class ModelElement(BNode):
 
         self._g.add((_self, RDF.type, URIRef(self._type)))
 
-        self._title_to_graph()
-
-        return self._g
-
-    def _title_to_graph(self) -> None:
         if getattr(self, "title", None):
-
-            if getattr(self, "identifier", None):
-                _self = URIRef(self.identifier)
-            else:
-                _self = BNode()
-
             for key in self.title:
                 self._g.add((_self, DCT.title, Literal(self.title[key], lang=key),))
+
+        return self._g
