@@ -1,7 +1,7 @@
 """Test cases for the informationmodel module."""
 
 import pytest
-from rdflib import Graph
+from rdflib import Graph, Namespace
 from rdflib.compare import graph_diff, isomorphic
 
 from modelldcatnotordf.agent import Agent
@@ -23,8 +23,9 @@ def test_instantiate_informationmodel() -> None:
 
 def test_type_informationmodel() -> None:
     """It returns a the correct RDF-type."""
+    modelldcatno = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
     informationmodel = InformationModel()
-    _assertequals("MODELLDCATNO.InformationModel", informationmodel.type)
+    assert modelldcatno.InformationModel == informationmodel.type
 
 
 def test_to_graph_should_return_title_and_identifier() -> None:
@@ -172,12 +173,4 @@ def _dump_diff(g1: Graph, g2: Graph) -> None:
 def _dump_turtle(g: Graph) -> None:
     for _l in g.serialize(format="turtle").splitlines():
         if _l:
-
             print(_l.decode())
-
-
-def _assertequals(var1: str, var2: str) -> bool:
-    if var1 == var2:
-        return True
-    else:
-        return False
