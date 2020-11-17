@@ -21,6 +21,12 @@ def test_instantiate_informationmodel() -> None:
         pytest.fail("Unexpected Exception ..")
 
 
+def test_type_informationmodel() -> None:
+    """It returns a the correct RDF-type."""
+    informationmodel = InformationModel()
+    _assertequals("MODELLDCATNO.InformationModel", informationmodel.type)
+
+
 def test_to_graph_should_return_title_and_identifier() -> None:
     """It returns a title graph isomorphic to spec."""
     """It returns an identifier graph isomorphic to spec."""
@@ -166,4 +172,12 @@ def _dump_diff(g1: Graph, g2: Graph) -> None:
 def _dump_turtle(g: Graph) -> None:
     for _l in g.serialize(format="turtle").splitlines():
         if _l:
+
             print(_l.decode())
+
+
+def _assertequals(var1: str, var2: str) -> bool:
+    if var1 == var2:
+        return True
+    else:
+        return False

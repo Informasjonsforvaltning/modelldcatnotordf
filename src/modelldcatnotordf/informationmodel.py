@@ -36,6 +36,11 @@ class InformationModel(Resource):
         self._type = MODELLDCATNO.InformationModel
 
     @property
+    def type(self) -> str:
+        """Get for type."""
+        return self._type
+
+    @property
     def title(self) -> dict:
         """Get/set for title."""
         return self._title
