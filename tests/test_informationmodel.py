@@ -268,7 +268,7 @@ def test_to_graph_should_return_modelelements_blank_node_with_properties() -> No
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/informationmodels/1> a dcat:Resource ;
-        modelldcatno:containsModelelement [ a modelldcatno:Modelelement ;
+        modelldcatno:containsModelelement [ a modelldcatno:ModelElement ;
             dct:title   "Title 1"@en, "Tittel 1"@nb ] .
 
         """

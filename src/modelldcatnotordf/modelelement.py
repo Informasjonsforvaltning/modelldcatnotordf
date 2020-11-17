@@ -15,7 +15,7 @@ DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 
 
-class ModelElement(BNode):
+class ModelElement:
     """A class representing a modelldcatno:ModelElement."""
 
     __slots__ = ("_type", "_g", "_title", "_identifier")
@@ -29,6 +29,8 @@ class ModelElement(BNode):
         self._type = MODELLDCATNO.ModelElement
         self._g = Graph()
         self._g.bind("modelldcatno", MODELLDCATNO)
+        self._g.bind("dct", DCT)
+        self._g.bind("dcat", DCAT)
 
     @property
     def identifier(self) -> str:
@@ -71,7 +73,7 @@ class ModelElement(BNode):
         else:
             _self = BNode()
 
-        self._g.add((_self, RDF.type, URIRef(self._type)))
+        self._g.add((_self, RDF.type, MODELLDCATNO.ModelElement))
 
         if getattr(self, "title", None):
             for key in self.title:

@@ -8,7 +8,7 @@ Refer to sub-class for typical usage examples.
 from typing import List, Optional
 
 from datacatalogtordf import Agent, Resource, URI
-from rdflib import Graph, Namespace, RDF, URIRef
+from rdflib import BNode, Graph, Namespace, RDF, URIRef
 
 from modelldcatnotordf.modelelement import ModelElement
 
@@ -117,18 +117,6 @@ class InformationModel(Resource):
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
-    def unionof(self: Resource, graph: Graph) -> Graph:
-        """Creates a graph union of itself and argument graph.
-
-        Args:
-            graph (Graph): a rdf-lib graph
-
-        Returns:
-            a graph union of itself and argument graph in rdf-lib-format
-        """
-        union = self._g + graph
-        return union
-
     # -
 
     def _to_graph(self: Resource) -> Graph:
@@ -143,17 +131,6 @@ class InformationModel(Resource):
 
         return self._g
 
-    def _publisher_to_graph(self: Resource) -> None:
-        if getattr(self, "publisher", None):
-            self._g.add(
-                (
-                    URIRef(self.identifier),
-                    DCT.publisher,
-                    URIRef(self.publisher.identifier),
-                )
-            )
-            self._g = self.unionof(self.publisher._to_graph())
-
     def _subject_to_graph(self: Resource) -> None:
         if getattr(self, "subject", None):
             for subject in self._subject:
@@ -166,21 +143,17 @@ class InformationModel(Resource):
             for modelelement in self._modelelements:
 
                 if getattr(modelelement, "identifier", None):
-                    self._g.add(
-                        (
-                            URIRef(self.identifier),
-                            MODELLDCATNO.containsModelelement,
-                            URIRef(modelelement.identifier),
-                        )
-                    )
-                    self._g = self.unionof(modelelement._to_graph())
-
+                    _modelelement = URIRef(modelelement.identifier)
                 else:
-                    self._g.add(
-                        (
-                            URIRef(self.identifier),
-                            MODELLDCATNO.containsModelelement,
-                            modelelement,
-                        )
+                    _modelelement = BNode()
+
+                for _s, p, o in modelelement._to_graph().triples((None, None, None)):
+                    self._g.add((_modelelement, p, o))
+
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        MODELLDCATNO.containsModelelement,
+                        _modelelement,
                     )
-                    self._g = self.unionof(modelelement._to_graph())
+                )
