@@ -87,7 +87,9 @@ def test_to_graph_should_return_has_type_both_identifiers() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/properties/1> a modelldcatno:Property ;
-        modelldcatno:hasType <http://example.com/modelelements/1> ;
+        modelldcatno:hasType <http://example.com/modelelements/1> .
+
+        <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
 
         .
         """
@@ -117,7 +119,8 @@ def test_to_graph_should_return_has_type_blank_node_property_identifier() -> Non
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/properties/1> a modelldcatno:Property ;
-            modelldcatno:hasType [ ] .
+            modelldcatno:hasType [ a modelldcatno:ModelElement ] .
+
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
@@ -148,6 +151,8 @@ def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() ->
             modelldcatno:hasType <http://example.com/modelelements/1>
         ] .
 
+        <http://example.com/modelelements/1> a modelldcatno:ModelElement .
+
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
@@ -174,7 +179,7 @@ def test_to_graph_should_return_has_type_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [ a modelldcatno:Property ;
-            modelldcatno:hasType []
+            modelldcatno:hasType [ a modelldcatno:ModelElement ]
         ] .
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")

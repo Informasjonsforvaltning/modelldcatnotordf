@@ -61,8 +61,9 @@ def test_to_graph_should_return_title_and_no_identifier() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [] a modelldcatno:ModelElement .
-              [] dct:title   "Title 1"@en, "Tittel 1"@nb ;
+        [ a modelldcatno:ModelElement ;
+            dct:title   "Title 1"@en, "Tittel 1"@nb ;
+        ]
         .
         """
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")

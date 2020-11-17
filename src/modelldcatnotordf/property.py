@@ -5,7 +5,7 @@ for use in the modelldcat-ap-no specification._
 
 Refer to sub-class for typical usage examples.
 """
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from datacatalogtordf import URI
 from rdflib import BNode, Graph, Namespace, RDF, URIRef
@@ -17,7 +17,7 @@ DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 
 
-class Property(BNode):
+class Property:
     """A class representing a modelldcatno:Property."""
 
     __slots__ = ("_type", "_g", "_title", "_identifier", "_has_type")
@@ -70,24 +70,23 @@ class Property(BNode):
         else:
             _self = BNode()
 
-        self._g.add((_self, RDF.type, URIRef(self._type)))
+        self._g.add((_self, RDF.type, MODELLDCATNO.Property))
 
-        self._has_type_to_graph()
+        self._has_type_to_graph(_self)
 
         return self._g
 
-    def _has_type_to_graph(self) -> None:
+    def _has_type_to_graph(self, _self: Any) -> None:
         if getattr(self, "has_type", None):
 
-            if getattr(self, "identifier", None):
-                _self = URIRef(self.identifier)
-            else:
-                _self = BNode()
-
             for has_type in self._has_type:
+
                 if getattr(has_type, "identifier", None):
                     _has_type = URIRef(has_type.identifier)
                 else:
                     _has_type = BNode()
 
-                self._g.add((_self, MODELLDCATNO.hasType, _has_type))
+                for _s, p, o in has_type._to_graph().triples((None, None, None)):
+                    self._g.add((_has_type, p, o))
+
+                self._g.add((_self, MODELLDCATNO.hasType, _has_type,))

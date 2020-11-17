@@ -1,6 +1,6 @@
 """Test cases for the foaf:agent module."""
 
-from datacatalogtordf import Agent
+from datacatalogtordf import Agent, Catalog, Dataset
 import pytest
 from rdflib import Graph
 from rdflib.compare import graph_diff, isomorphic
@@ -95,6 +95,68 @@ def test_to_graph_should_return_orgnr_() -> None:
     .
     """
     g1 = Graph().parse(data=agent.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+        pass
+    assert _isomorphic
+
+
+def test_to_graph_should_return_publisher_as_bnode() -> None:
+    """It returns a name graph isomorphic to spec."""
+    dataset = Dataset()
+    dataset.identifier = "http://example.com/datasets/1"
+    agent = Agent()
+    agent.name = {"en": "James Bond", "nb": "Djeims Bånd"}
+    dataset.publisher = agent
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+    <http://example.com/datasets/1> a dcat:Dataset;
+    dct:publisher   [a foaf:Agent ;
+                       foaf:name "James Bond"@en, "Djeims Bånd"@nb ;
+                    ] ;
+    .
+    """
+    g1 = Graph().parse(data=dataset.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+        pass
+    assert _isomorphic
+
+
+def test_to_graph_should_return_publisher_as_bnode_with_catalog() -> None:
+    """It returns a name graph isomorphic to spec."""
+    catalog = Catalog()
+    catalog.identifier = "http://example.com/catalogs/1"
+    agent = Agent()
+    agent.name = {"en": "James Bond", "nb": "Djeims Bånd"}
+    catalog.publisher = agent
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+    <http://example.com/catalogs/1> a dcat:Catalog;
+    dct:publisher   [a foaf:Agent ;
+                       foaf:name "James Bond"@en, "Djeims Bånd"@nb ;
+                    ] ;
+    .
+    """
+    g1 = Graph().parse(data=catalog.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
     _isomorphic = isomorphic(g1, g2)
