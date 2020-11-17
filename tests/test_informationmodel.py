@@ -33,8 +33,9 @@ def test_to_graph_should_return_title_and_identifier() -> None:
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://example.com/informationmodels/1> a dcat:Resource ;
+    <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
             dct:title   "Title 1"@en, "Tittel 1"@nb ;
     .
     """
@@ -60,8 +61,10 @@ def test_to_graph_should_return_description() -> None:
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://example.com/informationmodels/1> a dcat:Resource ;
+
+    <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
             dct:description   "Description"@en, "Beskrivelse"@nb ;
     .
     """
@@ -88,8 +91,10 @@ def test_to_graph_should_return_theme() -> None:
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://example.com/informationmodels/1> a dcat:Resource ;
+
+    <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
                dcat:theme   <http://example.com/themes/1> ,
                      <http://example.com/themes/2> ;
         .
@@ -123,9 +128,10 @@ def test_to_graph_should_return_publisher() -> None:
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
     <http://example.com/informationmodels/1>
-    a    dcat:Resource ;
+    a    modelldcatno:InformationModel ;
     dct:publisher    <https://example.com/organizations/1> ;
     dct:title    "CRD IV - Likviditet NSFR - konsolidert (KRT-1075)"@nb .
 

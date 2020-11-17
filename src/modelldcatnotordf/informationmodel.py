@@ -33,7 +33,7 @@ class InformationModel(Resource):
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
         super().__init__()
-        self._type = DCAT.Resource
+        self._type = MODELLDCATNO.InformationModel
 
     @property
     def title(self) -> dict:
