@@ -5,7 +5,7 @@ from rdflib import Graph
 from rdflib.compare import graph_diff, isomorphic
 
 from modelldcatnotordf.modelelement import ModelElement
-from modelldcatnotordf.property import Property
+from modelldcatnotordf.modelproperty import ModelProperty
 
 """
 A test class for testing the class Property.
@@ -16,14 +16,14 @@ A test class for testing the class Property.
 def test_instantiate_property() -> None:
     """It returns a TypeErro exception."""
     try:
-        _ = Property()
+        _ = ModelProperty()
     except Exception:
         pytest.fail("Unexpected Exception ..")
 
 
 def test_to_graph_should_return_blank_node() -> None:
     """It returns a property graph as blank node isomorphic to spec."""
-    property = Property()
+    property = ModelProperty()
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -47,7 +47,7 @@ def test_to_graph_should_return_blank_node() -> None:
 
 def test_to_graph_should_return_identifier() -> None:
     """It returns an identifier graph isomorphic to spec."""
-    property = Property()
+    property = ModelProperty()
     property.identifier = "http://example.com/properties/1"
 
     src = """
@@ -72,7 +72,7 @@ def test_to_graph_should_return_identifier() -> None:
 
 def test_to_graph_should_return_has_type_both_identifiers() -> None:
     """It returns a has_type graph isomorphic to spec."""
-    property = Property()
+    property = ModelProperty()
     property.identifier = "http://example.com/properties/1"
 
     modelelement = ModelElement()
@@ -105,7 +105,7 @@ def test_to_graph_should_return_has_type_both_identifiers() -> None:
 
 def test_to_graph_should_return_has_type_blank_node_property_identifier() -> None:
     """It returns a has_type graph isomorphic to spec."""
-    property = Property()
+    property = ModelProperty()
     property.identifier = "http://example.com/properties/1"
 
     modelelement = ModelElement()
@@ -134,7 +134,7 @@ def test_to_graph_should_return_has_type_blank_node_property_identifier() -> Non
 
 def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() -> None:
     """It returns a has_type graph isomorphic to spec."""
-    property = Property()
+    property = ModelProperty()
 
     modelelement = ModelElement()
     modelelement.identifier = "http://example.com/modelelements/1"
@@ -166,7 +166,7 @@ def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() ->
 
 def test_to_graph_should_return_has_type_blank_nodes() -> None:
     """It returns a has_type graph isomorphic to spec."""
-    property = Property()
+    property = ModelProperty()
 
     modelelement = ModelElement()
     property.has_type.append(modelelement)

@@ -10,7 +10,7 @@ from typing import List, Optional
 from datacatalogtordf import Agent, Resource, URI
 from rdflib import BNode, Graph, Namespace, RDF, URIRef
 
-from modelldcatnotordf.modelelement import ModelElement
+from .modelelement import ModelElement  # pytype: disable=pyi-error
 
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
