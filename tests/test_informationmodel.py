@@ -204,7 +204,7 @@ def test_to_graph_should_return_contains_model_element() -> None:
     @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://example.com/informationmodels/1> a dcat:Resource ;
+    <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         modelldcatno:containsModelelement <http://example.com/modelelements/1> .
 
     <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
@@ -236,7 +236,7 @@ def test_to_graph_should_return_modelelements_blank_node() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/informationmodels/1> a dcat:Resource ;
+        <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         modelldcatno:containsModelelement [ a modelldcatno:ModelElement ] .
 
         """
@@ -267,7 +267,7 @@ def test_to_graph_should_return_modelelements_blank_node_with_properties() -> No
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/informationmodels/1> a dcat:Resource ;
+        <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         modelldcatno:containsModelelement [ a modelldcatno:ModelElement ;
             dct:title   "Title 1"@en, "Tittel 1"@nb ] .
 
