@@ -109,7 +109,7 @@ def test_to_graph_should_return_publisher_as_bnode() -> None:
     dataset = Dataset()
     dataset.identifier = "http://example.com/datasets/1"
     agent = Agent()
-    agent.name = {"en": "James Bond", "nb": "Djeims Bånd"}
+    agent.name = {"en": "James Bond", "nb": "Djeims Bånd", "nn": "Jonas Bonde"}
     dataset.publisher = agent
 
     src = """
@@ -121,7 +121,7 @@ def test_to_graph_should_return_publisher_as_bnode() -> None:
 
     <http://example.com/datasets/1> a dcat:Dataset;
     dct:publisher   [a foaf:Agent ;
-                       foaf:name "James Bond"@en, "Djeims Bånd"@nb ;
+                       foaf:name "James Bond"@en, "Djeims Bånd"@nb, "Jonas Bonde"@nn ;
                     ] ;
     .
     """
