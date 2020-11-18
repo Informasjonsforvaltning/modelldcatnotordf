@@ -237,7 +237,7 @@ def test_to_graph_should_return_modelelements_blank_node() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
-        modelldcatno:containsModelelement [ a modelldcatno:ModelElement ] .
+            modelldcatno:containsModelelement [ a modelldcatno:ModelElement ] .
 
         """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -268,7 +268,7 @@ def test_to_graph_should_return_modelelements_blank_node_with_properties() -> No
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
-        modelldcatno:containsModelelement [ a modelldcatno:ModelElement ;
+            modelldcatno:containsModelelement [ a modelldcatno:ModelElement ;
             dct:title   "Title 1"@en, "Tittel 1"@nb ] .
 
         """
