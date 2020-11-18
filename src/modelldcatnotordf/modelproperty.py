@@ -10,14 +10,14 @@ from typing import Any, List, Optional
 from datacatalogtordf import URI
 from rdflib import BNode, Graph, Namespace, RDF, URIRef
 
-from modelldcatnotordf.modelelement import ModelElement
+from .modelelement import ModelElement  # pytype: disable=pyi-error
 
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 
 
-class Property:
+class ModelProperty:
     """A class representing a modelldcatno:Property."""
 
     __slots__ = ("_type", "_g", "_title", "_identifier", "_has_type")
