@@ -4,8 +4,8 @@ import pytest
 from rdflib import Graph
 from rdflib.compare import graph_diff, isomorphic
 
-from modelldcatnotordf.modelelement import ModelElement
-from modelldcatnotordf.modelproperty import ModelProperty
+from modelldcatnotordf.modelldcatno import ModelElement
+from modelldcatnotordf.modelldcatno import ModelProperty
 
 """
 A test class for testing the class Property.
