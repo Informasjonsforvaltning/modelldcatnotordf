@@ -4,7 +4,7 @@ import pytest
 from rdflib import Graph
 from rdflib.compare import graph_diff, isomorphic
 
-from modelldcatnotordf.modelelement import ModelElement
+from modelldcatnotordf.modelldcatno import ModelElement
 
 """
 A test class for testing the class ModelElement.

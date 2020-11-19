@@ -5,8 +5,8 @@ import pytest
 from rdflib import Graph, Namespace
 from rdflib.compare import graph_diff, isomorphic
 
-from modelldcatnotordf.informationmodel import InformationModel
-from modelldcatnotordf.modelelement import ModelElement
+from modelldcatnotordf.modelldcatno import InformationModel
+from modelldcatnotordf.modelldcatno import ModelElement
 
 """
 A test class for testing the class InformationModel.
