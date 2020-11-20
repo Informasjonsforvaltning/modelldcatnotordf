@@ -89,7 +89,7 @@ class InformationModel(Resource):
         self._publisher = publisher
 
     @property
-    def subject(self: Resource) -> URI:
+    def subject(self: Resource) -> List[str]:
         """Get/set for subject."""
         return self._subject
 
