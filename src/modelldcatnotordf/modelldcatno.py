@@ -169,6 +169,7 @@ class ModelElement:
         "_identifier",
         "_has_property",
         "_dct_identifier",
+        "_subject",
     )
 
     _g: Graph
@@ -176,6 +177,7 @@ class ModelElement:
     _identifier: URI
     _dct_identifier: str
     _has_property: List[ModelProperty]
+    _subject: str
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -212,6 +214,15 @@ class ModelElement:
     def title(self, title: dict) -> None:
         self._title = title
 
+    @property
+    def subject(self) -> str:
+        """Get/set for subject."""
+        return self._subject
+
+    @subject.setter
+    def subject(self, subject: str) -> None:
+        self._subject = subject
+
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the modelelement to rdf.
 
@@ -243,6 +254,9 @@ class ModelElement:
 
         if getattr(self, "dct_identifier", None):
             self._g.add((_self, DCT.identifier, Literal(self._dct_identifier)))
+
+        if getattr(self, "subject", None):
+            self._g.add((_self, SKOS.Concept, URIRef(self.subject)))
 
         return self._g
 
