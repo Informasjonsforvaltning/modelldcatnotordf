@@ -76,8 +76,8 @@ def test_to_graph_should_return_title_and_no_identifier() -> None:
     assert _isomorphic
 
 
-def test_to_graph_should_return_organizationid_as_graph() -> None:
-    """It returns a organization_id graph isomorphic to spec."""
+def test_to_graph_should_return_dct_identifier_as_graph() -> None:
+    """It returns a dct_identifier graph isomorphic to spec."""
     modelelement = ModelElement()
     modelelement.identifier = "http://example.com/modelelements/1"
     modelelement.dct_identifier = "123456789"
