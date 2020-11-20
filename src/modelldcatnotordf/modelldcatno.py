@@ -162,12 +162,19 @@ class InformationModel(Resource):
 class ModelElement:
     """A class representing a modelldcatno:ModelElement."""
 
-    __slots__ = ("_type", "_g", "_title", "_identifier", "_has_property")
+    __slots__ = (
+        "_type",
+        "_g",
+        "_title",
+        "_identifier",
+        "_has_property",
+        "_dct_identifier",
+    )
 
     _g: Graph
     _title: dict
     _identifier: URI
-
+    _dct_identifier: str
     _has_property: List[ModelProperty]
 
     def __init__(self) -> None:
@@ -186,6 +193,15 @@ class ModelElement:
     @identifier.setter
     def identifier(self, identifier: str) -> None:
         self._identifier = URI(identifier)
+
+    @property
+    def dct_identifier(self) -> str:
+        """Get/set for dct_identifier."""
+        return self._dct_identifier
+
+    @dct_identifier.setter
+    def dct_identifier(self, dct_identifier: str) -> None:
+        self._dct_identifier = dct_identifier
 
     @property
     def title(self) -> dict:
@@ -224,6 +240,9 @@ class ModelElement:
         if getattr(self, "title", None):
             for key in self.title:
                 self._g.add((_self, DCT.title, Literal(self.title[key], lang=key),))
+
+        if getattr(self, "dct_identifier", None):
+            self._g.add((_self, DCT.identifier, Literal(self._dct_identifier)))
 
         return self._g
 
