@@ -287,12 +287,21 @@ class ModelElement:
 class ModelProperty:
     """A class representing a modelldcatno:Property."""
 
-    __slots__ = ("_type", "_g", "_title", "_identifier", "_has_type", "_min_occurs")
+    __slots__ = (
+        "_type",
+        "_g",
+        "_title",
+        "_identifier",
+        "_has_type",
+        "_min_occurs",
+        "_max_occurs",
+    )
 
     _g: Graph
     _identifier: URI
     _has_type: List[ModelElement]
     _min_occurs: int
+    _max_occurs: int
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -324,6 +333,15 @@ class ModelProperty:
     def min_occurs(self, min_occurs: int) -> None:
         self._min_occurs = min_occurs
 
+    @property
+    def max_occurs(self) -> int:
+        """Get/set for max_occurs."""
+        return self._max_occurs
+
+    @max_occurs.setter
+    def max_occurs(self, max_occurs: int) -> None:
+        self._max_occurs = max_occurs
+
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the property to rdf.
 
@@ -353,6 +371,9 @@ class ModelProperty:
 
         if getattr(self, "min_occurs", None):
             self._g.add((_self, XSD.minOccurs, Literal(self.min_occurs)))
+
+        if getattr(self, "max_occurs", None):
+            self._g.add((_self, XSD.maxOccurs, Literal(self.max_occurs)))
 
         return self._g
 
