@@ -295,6 +295,7 @@ class ModelProperty:
         "_has_type",
         "_min_occurs",
         "_max_occurs",
+        "_title",
     )
 
     _g: Graph
@@ -302,6 +303,7 @@ class ModelProperty:
     _has_type: List[ModelElement]
     _min_occurs: int
     _max_occurs: int
+    _title: dict
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -309,6 +311,16 @@ class ModelProperty:
         self._has_type = []
         self._g = Graph()
         self._g.bind("modelldcatno", MODELLDCATNO)
+        self._g.bind("dct", DCT)
+
+    @property
+    def title(self) -> dict:
+        """Title attribute."""
+        return self._title
+
+    @title.setter
+    def title(self, title: dict) -> None:
+        self._title = title
 
     @property
     def has_type(self) -> List[ModelElement]:
@@ -374,6 +386,10 @@ class ModelProperty:
 
         if getattr(self, "max_occurs", None):
             self._g.add((_self, XSD.maxOccurs, Literal(self.max_occurs)))
+
+        if getattr(self, "title", None):
+            for key in self.title:
+                self._g.add((_self, DCT.title, Literal(self.title[key], lang=key),))
 
         return self._g
 
