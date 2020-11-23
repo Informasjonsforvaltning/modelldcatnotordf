@@ -186,6 +186,7 @@ class ModelElement:
         self._g.bind("modelldcatno", MODELLDCATNO)
         self._g.bind("dct", DCT)
         self._g.bind("dcat", DCAT)
+        self._g.bind("skos", SKOS)
         self._has_property = []
 
     @property
@@ -296,6 +297,7 @@ class ModelProperty:
         "_min_occurs",
         "_max_occurs",
         "_title",
+        "_subject",
     )
 
     _g: Graph
@@ -304,6 +306,7 @@ class ModelProperty:
     _min_occurs: int
     _max_occurs: int
     _title: dict
+    _subject: str
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -312,6 +315,16 @@ class ModelProperty:
         self._g = Graph()
         self._g.bind("modelldcatno", MODELLDCATNO)
         self._g.bind("dct", DCT)
+        self._g.bind("skos", SKOS)
+
+    @property
+    def subject(self) -> str:
+        """Get/set for subject."""
+        return self._subject
+
+    @subject.setter
+    def subject(self, subject: str) -> None:
+        self._subject = subject
 
     @property
     def title(self) -> dict:
@@ -390,6 +403,9 @@ class ModelProperty:
         if getattr(self, "title", None):
             for key in self.title:
                 self._g.add((_self, DCT.title, Literal(self.title[key], lang=key),))
+
+        if getattr(self, "subject", None):
+            self._g.add((_self, SKOS.Concept, URIRef(self.subject)))
 
         return self._g
 
