@@ -206,8 +206,8 @@ def test_to_graph_should_return_min_occurs() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-        <http://example.com/properties/1> a modelldcatno:Property .
-        <http://example.com/properties/1> xsd:minOccurs 1 .
+        <http://example.com/properties/1> a modelldcatno:Property ;
+            xsd:minOccurs 1 .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -234,8 +234,8 @@ def test_to_graph_should_return_max_occurs() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-        <http://example.com/properties/1> a modelldcatno:Property .
-        <http://example.com/properties/1> xsd:maxOccurs 1 .
+        <http://example.com/properties/1> a modelldcatno:Property ;
+            xsd:maxOccurs 1 .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
