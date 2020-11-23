@@ -176,7 +176,7 @@ class ModelElement:
     _title: dict
     _identifier: URI
     _dct_identifier: str
-    _has_property: List[ModelProperty]
+    _has_property: List[Any]
     _subject: str
 
     def __init__(self) -> None:
@@ -186,6 +186,7 @@ class ModelElement:
         self._g.bind("modelldcatno", MODELLDCATNO)
         self._g.bind("dct", DCT)
         self._g.bind("dcat", DCAT)
+        self._has_property = []
 
     @property
     def identifier(self) -> str:
@@ -223,6 +224,11 @@ class ModelElement:
     def subject(self, subject: str) -> None:
         self._subject = subject
 
+    @property
+    def has_property(self) -> List[Any]:
+        """Get/set for has_type."""
+        return self._has_property
+
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the modelelement to rdf.
 
@@ -258,7 +264,24 @@ class ModelElement:
         if getattr(self, "subject", None):
             self._g.add((_self, SKOS.Concept, URIRef(self.subject)))
 
+        if getattr(self, "has_property", None):
+            self._has_property_to_graph(_self)
+
         return self._g
+
+    def _has_property_to_graph(self, _self: Any) -> None:
+        if getattr(self, "has_property", None):
+            for has_property in self._has_property:
+
+                if getattr(has_property, "identifier", None):
+                    _has_property = URIRef(has_property.identifier)
+                else:
+                    _has_property = BNode()
+
+                for _s, p, o in has_property._to_graph().triples((None, None, None)):
+                    self._g.add((_has_property, p, o))
+
+                self._g.add((_self, MODELLDCATNO.hasProperty, _has_property,))
 
 
 class ModelProperty:
