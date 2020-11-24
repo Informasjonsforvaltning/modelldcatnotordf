@@ -91,26 +91,28 @@ class InformationModel(Resource):
         self._theme = value
 
     @property
-    def publisher(self: Resource) -> Agent:
+    def publisher(self: InformationModel) -> Agent:
         """Get/set for publisher."""
         return self._publisher
 
     @publisher.setter
-    def publisher(self: Resource, publisher: Agent) -> None:
+    def publisher(self: InformationModel, publisher: Agent) -> None:
         self._publisher = publisher
 
     @property
-    def subject(self: Resource) -> List[str]:
+    def subject(self: InformationModel) -> List[str]:
         """Get/set for subject."""
         return self._subject
 
     @property
-    def modelelements(self: Resource) -> List[ModelElement]:
+    def modelelements(self: InformationModel) -> List[ModelElement]:
         """Get/set for modelelements."""
         return self._modelelements
 
     def to_rdf(
-        self: Resource, format: str = "turtle", encoding: Optional[str] = "utf-8",
+        self: InformationModel,
+        format: str = "turtle",
+        encoding: Optional[str] = "utf-8",
     ) -> str:
         """Maps the information model to rdf.
 
@@ -130,7 +132,7 @@ class InformationModel(Resource):
 
     # -
 
-    def _to_graph(self: Resource) -> Graph:
+    def _to_graph(self: InformationModel) -> Graph:
 
         super(InformationModel, self)._to_graph()
 
@@ -151,12 +153,12 @@ class InformationModel(Resource):
 
         return self._g
 
-    def _subject_to_graph(self: Resource) -> None:
+    def _subject_to_graph(self: InformationModel) -> None:
         if getattr(self, "subject", None):
             for subject in self._subject:
                 self._g.add((URIRef(self.identifier), SKOS.Concept, URIRef(subject)))
 
-    def _modelelements_to_graph(self: Resource) -> None:
+    def _modelelements_to_graph(self: InformationModel) -> None:
 
         if getattr(self, "modelelements", None):
 
