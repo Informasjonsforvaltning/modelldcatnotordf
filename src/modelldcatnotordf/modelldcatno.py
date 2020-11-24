@@ -33,12 +33,14 @@ class InformationModel(Resource):
         "_publisher",
         "_subject",
         "_modelelements",
+        "_informationmodelidentifier",
     )
 
     _title: dict
     _publisher: Agent
     _subject: List[str]
     _modelelements: List[ModelElement]
+    _informationmodelidentifier: str
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -46,6 +48,15 @@ class InformationModel(Resource):
         self._type = MODELLDCATNO.InformationModel
         self._subject = []
         self._modelelements = []
+
+    @property
+    def informationmodelidentifier(self) -> str:
+        """Get/set for informationmodelidentifier."""
+        return self._informationmodelidentifier
+
+    @informationmodelidentifier.setter
+    def informationmodelidentifier(self, informationmodelidentifier: str) -> None:
+        self._informationmodelidentifier = informationmodelidentifier
 
     @property
     def type(self) -> str:
@@ -128,6 +139,15 @@ class InformationModel(Resource):
         self._publisher_to_graph()
         self._subject_to_graph()
         self._modelelements_to_graph()
+
+        if getattr(self, "informationmodelidentifier", None):
+            self._g.add(
+                (
+                    URIRef(self.identifier),
+                    MODELLDCATNO.informationModelIdentifier,
+                    Literal(self._informationmodelidentifier),
+                )
+            )
 
         return self._g
 
