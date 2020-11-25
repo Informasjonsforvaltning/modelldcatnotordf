@@ -204,11 +204,6 @@ class ModelElement:
     def __init__(self) -> None:
         """Inits an object with default values."""
         self._type = MODELLDCATNO.ModelElement
-        self._g = Graph()
-        self._g.bind("modelldcatno", MODELLDCATNO)
-        self._g.bind("dct", DCT)
-        self._g.bind("dcat", DCAT)
-        self._g.bind("skos", SKOS)
         self._has_property = []
 
     @property
@@ -270,6 +265,13 @@ class ModelElement:
         Returns:
             the modelelement graph
         """
+        # Set up graph and namespaces:
+        self._g = Graph()
+        self._g.bind("modelldcatno", MODELLDCATNO)
+        self._g.bind("dct", DCT)
+        self._g.bind("dcat", DCAT)
+        self._g.bind("skos", SKOS)
+
         if getattr(self, "identifier", None):
             _self = URIRef(self.identifier)
         else:
@@ -334,10 +336,6 @@ class ModelProperty:
         """Inits an object with default values."""
         self._type = MODELLDCATNO.Property
         self._has_type = []
-        self._g = Graph()
-        self._g.bind("modelldcatno", MODELLDCATNO)
-        self._g.bind("dct", DCT)
-        self._g.bind("skos", SKOS)
 
     @property
     def subject(self) -> str:
@@ -407,6 +405,12 @@ class ModelProperty:
         Returns:
             the property graph
         """
+        # Set up graph and namespaces:
+        self._g = Graph()
+        self._g.bind("modelldcatno", MODELLDCATNO)
+        self._g.bind("dct", DCT)
+        self._g.bind("skos", SKOS)
+
         if getattr(self, "identifier", None):
             _self = URIRef(self.identifier)
         else:
