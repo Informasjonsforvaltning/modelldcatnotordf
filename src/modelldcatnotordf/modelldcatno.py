@@ -156,7 +156,7 @@ class InformationModel(Resource):
     def _subject_to_graph(self: InformationModel) -> None:
         if getattr(self, "subject", None):
             for subject in self._subject:
-                self._g.add((URIRef(self.identifier), DCT.Subject, URIRef(subject)))
+                self._g.add((URIRef(self.identifier), DCT.subject, URIRef(subject)))
 
     def _modelelements_to_graph(self: InformationModel) -> None:
 
@@ -285,7 +285,7 @@ class ModelElement:
             self._g.add((_self, DCT.identifier, Literal(self._dct_identifier)))
 
         if getattr(self, "subject", None):
-            self._g.add((_self, DCT.Subject, URIRef(self.subject)))
+            self._g.add((_self, DCT.subject, URIRef(self.subject)))
 
         if getattr(self, "has_property", None):
             self._has_property_to_graph(_self)
@@ -427,7 +427,7 @@ class ModelProperty:
                 self._g.add((_self, DCT.title, Literal(self.title[key], lang=key),))
 
         if getattr(self, "subject", None):
-            self._g.add((_self, DCT.Subject, URIRef(self.subject)))
+            self._g.add((_self, DCT.subject, URIRef(self.subject)))
 
         return self._g
 

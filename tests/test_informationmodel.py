@@ -172,8 +172,8 @@ def test_to_graph_should_return_subject() -> None:
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
     <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
-        dct:Subject <http://example.com/subjects/1> ;
-        dct:Subject <http://example.com/subjects/2> ;
+        dct:subject <http://example.com/subjects/1> ;
+        dct:subject <http://example.com/subjects/2> ;
     .
     """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")

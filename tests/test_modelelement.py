@@ -119,7 +119,7 @@ def test_to_graph_should_return_subject() -> None:
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
     <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
-        dct:Subject <http://example.com/subjects/1> ;
+        dct:subject <http://example.com/subjects/1> ;
 
     .
     """
