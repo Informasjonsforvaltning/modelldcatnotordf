@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import Any, List, Optional
 
+from concepttordf import Concept
 from datacatalogtordf import Agent, Resource, URI
 from rdflib import BNode, Graph, Literal, Namespace, RDF, URIRef
 
@@ -38,7 +39,7 @@ class InformationModel(Resource):
 
     _title: dict
     _publisher: Agent
-    _subject: List[str]
+    _subject: List[Concept]
     _modelelements: List[ModelElement]
     _informationmodelidentifier: str
 
@@ -100,7 +101,7 @@ class InformationModel(Resource):
         self._publisher = publisher
 
     @property
-    def subject(self: InformationModel) -> List[str]:
+    def subject(self: InformationModel) -> List[Concept]:
         """Get/set for subject."""
         return self._subject
 
@@ -155,8 +156,15 @@ class InformationModel(Resource):
 
     def _subject_to_graph(self: InformationModel) -> None:
         if getattr(self, "subject", None):
+
             for subject in self._subject:
-                self._g.add((URIRef(self.identifier), DCT.subject, URIRef(subject)))
+
+                _subject = URIRef(subject.identifier)
+
+                for _s, p, o in subject._to_graph().triples((None, None, None)):
+                    self._g.add((_subject, p, o))
+
+                self._g.add((URIRef(self.identifier), DCT.subject, _subject,))
 
     def _modelelements_to_graph(self: InformationModel) -> None:
 
@@ -199,7 +207,7 @@ class ModelElement:
     _identifier: URI
     _dct_identifier: str
     _has_property: List[Any]
-    _subject: str
+    _subject: Concept
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -234,12 +242,12 @@ class ModelElement:
         self._title = title
 
     @property
-    def subject(self) -> str:
+    def subject(self) -> Concept:
         """Get/set for subject."""
         return self._subject
 
     @subject.setter
-    def subject(self, subject: str) -> None:
+    def subject(self, subject: Concept) -> None:
         self._subject = subject
 
     @property
@@ -287,7 +295,13 @@ class ModelElement:
             self._g.add((_self, DCT.identifier, Literal(self._dct_identifier)))
 
         if getattr(self, "subject", None):
-            self._g.add((_self, DCT.subject, URIRef(self.subject)))
+
+            _subject = URIRef(self.subject.identifier)
+
+            for _s, p, o in self.subject._to_graph().triples((None, None, None)):
+                self._g.add((_subject, p, o))
+
+            self._g.add((_self, DCT.subject, _subject))
 
         if getattr(self, "has_property", None):
             self._has_property_to_graph(_self)
@@ -330,7 +344,7 @@ class ModelProperty:
     _min_occurs: int
     _max_occurs: int
     _title: dict
-    _subject: str
+    _subject: Concept
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -338,12 +352,12 @@ class ModelProperty:
         self._has_type = []
 
     @property
-    def subject(self) -> str:
+    def subject(self) -> Concept:
         """Get/set for subject."""
         return self._subject
 
     @subject.setter
-    def subject(self, subject: str) -> None:
+    def subject(self, subject: Concept) -> None:
         self._subject = subject
 
     @property
@@ -431,7 +445,13 @@ class ModelProperty:
                 self._g.add((_self, DCT.title, Literal(self.title[key], lang=key),))
 
         if getattr(self, "subject", None):
-            self._g.add((_self, DCT.subject, URIRef(self.subject)))
+
+            _subject = URIRef(self.subject.identifier)
+
+            for _s, p, o in self.subject._to_graph().triples((None, None, None)):
+                self._g.add((_subject, p, o))
+
+            self._g.add((_self, DCT.subject, _subject))
 
         return self._g
 
