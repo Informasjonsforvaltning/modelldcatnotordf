@@ -1,5 +1,5 @@
 """Test cases for the informationmodel module."""
-
+from concepttordf import Concept
 from datacatalogtordf import Agent
 import pytest
 from rdflib import Graph, Namespace
@@ -158,24 +158,39 @@ def test_to_graph_should_return_publisher() -> None:
 
 
 def test_to_graph_should_return_subject() -> None:
-    """It returns a subject graph isomorphic to spec."""
+    """It returns a information model graph isomorphic to spec."""
+    """It returns an subject graph isomorphic to spec."""
+
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
-    informationmodel.subject.append("http://example.com/subjects/1")
-    informationmodel.subject.append("http://example.com/subjects/2")
+
+    subject1 = Concept()
+    subject1.identifier = "https://example.com/subjects/1"
+    informationmodel.subject.append(subject1)
+
+    subject2 = Concept()
+    subject2.identifier = "https://example.com/subjects/2"
+    informationmodel.subject.append(subject2)
 
     src = """
-    @prefix dct: <http://purl.org/dc/terms/> .
-    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    @prefix dcat: <http://www.w3.org/ns/dcat#> .
-    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-    <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
-        dct:subject <http://example.com/subjects/1> ;
-        dct:subject <http://example.com/subjects/2> ;
-    .
-    """
+        <http://example.com/informationmodels/1>
+            a modelldcatno:InformationModel ;
+            dct:subject <https://example.com/subjects/1> ;
+            dct:subject <https://example.com/subjects/2> ;
+        .
+        <https://example.com/subjects/1> a skos:Concept .
+        <https://example.com/subjects/2> a skos:Concept .
+
+        """
+
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 

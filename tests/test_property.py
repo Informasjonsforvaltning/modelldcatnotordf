@@ -1,5 +1,6 @@
 """Test cases for the property module."""
 
+from concepttordf import Concept
 import pytest
 from rdflib import Graph
 from rdflib.compare import graph_diff, isomorphic
@@ -281,7 +282,9 @@ def test_to_graph_should_return_subject() -> None:
     """It returns a subject graph isomorphic to spec."""
     modelproperty = ModelProperty()
     modelproperty.identifier = "http://example.com/properties/1"
-    modelproperty.subject = "http://example.com/subjects/1"
+    subject = Concept()
+    subject.identifier = "https://example.com/subjects/1"
+    modelproperty.subject = subject
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -289,11 +292,13 @@ def test_to_graph_should_return_subject() -> None:
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
     <http://example.com/properties/1> a modelldcatno:Property ;
-        dct:subject <http://example.com/subjects/1> ;
-
+        dct:subject <https://example.com/subjects/1> ;
     .
+     <https://example.com/subjects/1> a skos:Concept .
+
     """
     g1 = Graph().parse(data=modelproperty.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")

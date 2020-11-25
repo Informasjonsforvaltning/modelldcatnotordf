@@ -1,5 +1,6 @@
 """Test cases for the model element module."""
 
+from concepttordf import Concept
 import pytest
 from rdflib import Graph
 from rdflib.compare import graph_diff, isomorphic
@@ -109,7 +110,9 @@ def test_to_graph_should_return_subject() -> None:
     """It returns a subject graph isomorphic to spec."""
     modelelement = ModelElement()
     modelelement.identifier = "http://example.com/modelelements/1"
-    modelelement.subject = "http://example.com/subjects/1"
+    subject = Concept()
+    subject.identifier = "https://example.com/subjects/1"
+    modelelement.subject = subject
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -117,11 +120,13 @@ def test_to_graph_should_return_subject() -> None:
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
     <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
-        dct:subject <http://example.com/subjects/1> ;
-
+        dct:subject <https://example.com/subjects/1> ;
     .
+     <https://example.com/subjects/1> a skos:Concept .
+
     """
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
