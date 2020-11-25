@@ -116,11 +116,10 @@ def test_to_graph_should_return_subject() -> None:
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
-    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
     <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
-        skos:Concept <http://example.com/subjects/1> ;
+        dct:Subject <http://example.com/subjects/1> ;
 
     .
     """
