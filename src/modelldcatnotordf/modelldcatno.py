@@ -13,6 +13,8 @@ from concepttordf import Concept
 from datacatalogtordf import Agent, Resource, URI
 from rdflib import BNode, Graph, Literal, Namespace, RDF, URIRef
 
+from modelldcatnotordf.licensedocument import LicenseDocument
+
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
@@ -35,6 +37,7 @@ class InformationModel(Resource):
         "_subject",
         "_modelelements",
         "_informationmodelidentifier",
+        "_licensedocument",
     )
 
     _title: dict
@@ -42,6 +45,7 @@ class InformationModel(Resource):
     _subject: List[Concept]
     _modelelements: List[ModelElement]
     _informationmodelidentifier: str
+    _licensedocument: LicenseDocument
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -63,6 +67,15 @@ class InformationModel(Resource):
     def type(self) -> str:
         """Get for type."""
         return self._type
+
+    @property
+    def licensedocument(self) -> LicenseDocument:
+        """Get/set for license."""
+        return self._licensedocument
+
+    @licensedocument.setter
+    def licensedocument(self, licensedocument: LicenseDocument) -> None:
+        self._licensedocument = licensedocument
 
     @property
     def title(self) -> dict:
@@ -142,6 +155,7 @@ class InformationModel(Resource):
         self._publisher_to_graph()
         self._subject_to_graph()
         self._modelelements_to_graph()
+        self._licensedocument_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -187,6 +201,23 @@ class InformationModel(Resource):
                         _modelelement,
                     )
                 )
+
+    def _licensedocument_to_graph(self: InformationModel) -> None:
+
+        if getattr(self, "licensedocument", None):
+
+            if getattr(self.licensedocument, "identifier", None):
+                _licensedocument = URIRef(self.licensedocument.identifier)
+
+            else:
+                _licensedocument = BNode()
+
+            for _s, p, o in self.licensedocument._to_graph().triples(
+                (None, None, None)
+            ):
+                self._g.add((_licensedocument, p, o))
+
+            self._g.add((URIRef(self.identifier), DCT.license, _licensedocument))
 
 
 class ModelElement:

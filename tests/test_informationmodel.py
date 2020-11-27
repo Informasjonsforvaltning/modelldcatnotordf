@@ -5,6 +5,7 @@ import pytest
 from rdflib import Graph, Namespace
 from rdflib.compare import graph_diff, isomorphic
 
+from modelldcatnotordf.licensedocument import LicenseDocument
 from modelldcatnotordf.modelldcatno import InformationModel
 from modelldcatnotordf.modelldcatno import ModelElement
 
@@ -321,6 +322,119 @@ def test_to_graph_should_return_informationmodelidentifier() -> None:
     if not _isomorphic:
         _dump_diff(g1, g2)
     pass
+    assert _isomorphic
+
+
+def test_to_graph_should_return_licensedocument() -> None:
+    """It returns a license document graph isomorphic to spec."""
+    licensedocument = LicenseDocument()
+    licensedocument.identifier = "http://example.com/licensedocuments/1"
+
+    informationmodel = InformationModel()
+    informationmodel.identifier = "https://example.com/informationmodels/1"
+
+    informationmodel.licensedocument = licensedocument
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+        <https://example.com/informationmodels/1> a modelldcatno:InformationModel ;
+            dct:license <http://example.com/licensedocuments/1> .
+
+        <http://example.com/licensedocuments/1> a dct:LicenseDocument .
+
+        """
+
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+        pass
+    assert _isomorphic
+
+
+def test_to_graph_should_return_license_document_bnode() -> None:
+    """It returns a license document graph isomorphic to spec."""
+    licensedocument = LicenseDocument()
+
+    informationmodel = InformationModel()
+    informationmodel.identifier = "https://example.com/informationmodels/1"
+    informationmodel.licensedocument = licensedocument
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+        <https://example.com/informationmodels/1> a modelldcatno:InformationModel ;
+            dct:license
+                [   a dct:LicenseDocument  ]
+        .
+        """
+
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+        pass
+    assert _isomorphic
+
+
+def test_to_graph_should_return_license_document_bnode_with_types() -> None:
+    """It returns an information model graph isomorphic to spec."""
+    """It returns a license document graph isomorphic to spec."""
+    """It returns a type graph isomorphic to spec."""
+
+    licensedocument = LicenseDocument()
+
+    informationmodel = InformationModel()
+    informationmodel.identifier = "https://example.com/informationmodels/1"
+    informationmodel.licensedocument = licensedocument
+
+    type1 = Concept()
+    type1.identifier = "https://example.com/types/1"
+
+    licensedocument.type.append(type1)
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+        <https://example.com/informationmodels/1> a modelldcatno:InformationModel ;
+            dct:license
+                [   a dct:LicenseDocument ;
+                        a skos:Concept ;
+                            dct:type  <https://example.com/types/1> ;
+                ]
+        .
+        """
+
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+        pass
     assert _isomorphic
 
 
