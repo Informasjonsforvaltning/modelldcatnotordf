@@ -298,8 +298,11 @@ class ModelElement:
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
-    def _to_graph(self) -> Graph:
+    def _to_graph(self, type: str = MODELLDCATNO.ModelElement) -> Graph:
         """Returns the modelelement as graph.
+
+         Args:
+            type: type for identifying class. Default: MODELLDCATNO.ModelElement
 
         Returns:
             the modelelement graph
@@ -316,7 +319,7 @@ class ModelElement:
         else:
             _self = BNode()
 
-        self._g.add((_self, RDF.type, MODELLDCATNO.ModelElement))
+        self._g.add((_self, RDF.type, type))
 
         if getattr(self, "title", None):
             for key in self.title:
@@ -444,8 +447,14 @@ class ModelProperty:
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
-    def _to_graph(self) -> Graph:
+    def _to_graph(
+        self, type: str = MODELLDCATNO.Property, selfobject: Any = None
+    ) -> Graph:
         """Returns the property as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Property
+            selfobject: an bnode or URI passed from an subclass Default: None
 
         Returns:
             the property graph
@@ -456,12 +465,16 @@ class ModelProperty:
         self._g.bind("dct", DCT)
         self._g.bind("skos", SKOS)
 
-        if getattr(self, "identifier", None):
+        if selfobject:
+            _self = selfobject
+
+        elif getattr(self, "identifier", None):
             _self = URIRef(self.identifier)
+
         else:
             _self = BNode()
 
-        self._g.add((_self, RDF.type, MODELLDCATNO.Property))
+        self._g.add((_self, RDF.type, type))
 
         self._has_type_to_graph(_self)
 
@@ -500,3 +513,121 @@ class ModelProperty:
                     self._g.add((_has_type, p, o))
 
                 self._g.add((_self, MODELLDCATNO.hasType, _has_type,))
+
+
+class Role(ModelProperty):
+    """A class representing a modelldcatno:Role."""
+
+    __slots__ = (
+        "_identifier",
+        "_has_object_type",
+    )
+
+    _identifier: URI
+    _has_object_type: ObjectType
+    _g: Graph
+
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
+
+    @property
+    def has_object_type(self: Role) -> ObjectType:
+        """Get/set for has_object_type."""
+        return self._has_object_type
+
+    @has_object_type.setter
+    def has_object_type(self: Role, has_object_type: Any) -> None:
+        self._has_object_type = has_object_type
+
+    def to_rdf(
+        self: Role, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the role to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Role, type: str = MODELLDCATNO.Role, selfobject: Any = None
+    ) -> Graph:
+        """Returns the role as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Role
+            selfobject: an bnode or URI passed from an subclass Default: None
+
+        Returns:
+            the role graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(Role, self)._to_graph(MODELLDCATNO.Role, _self)
+
+        self._has_object_type_to_graph(_self)
+
+        return self._g
+
+    def _has_object_type_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "has_object_type", None):
+
+            if getattr(self._has_object_type, "identifier", None):
+                _has_object_type = URIRef(self._has_object_type.identifier)
+            else:
+                _has_object_type = BNode()
+
+            for _s, p, o in self._has_object_type._to_graph().triples(
+                (None, None, None)
+            ):
+                self._g.add((_has_object_type, p, o))
+
+            self._g.add((_self, MODELLDCATNO.hasObjectType, _has_object_type))
+
+
+class ObjectType(ModelElement):
+    """A class representing a modelldcatno:ObjectType."""
+
+    _identifier: URI
+    _dct_identifier: str
+    _g: Graph
+
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
+
+    def to_rdf(
+        self: ObjectType, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the object type to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(self: ObjectType, type: str = MODELLDCATNO.ObjectType) -> Graph:
+        """Returns the object type as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.ObjectType
+
+        Returns:
+            the object type graph
+        """
+        super(ObjectType, self)._to_graph(MODELLDCATNO.ObjectType)
+
+        return self._g
