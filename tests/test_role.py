@@ -88,7 +88,7 @@ def test_to_graph_should_return_has_object_type_both_identifiers() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/roles/1> a modelldcatno:Role ;
-        modelldcatno:hasObjectType <http://example.com/objecttypes/1> .
+            modelldcatno:hasObjectType <http://example.com/objecttypes/1> .
 
         <http://example.com/objecttypes/1> a modelldcatno:ObjectType ;
 

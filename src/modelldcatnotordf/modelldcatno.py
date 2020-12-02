@@ -454,7 +454,7 @@ class ModelProperty:
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Property
-            selfobject: an bnode or URI passed from an subclass Default: None
+            selfobject: a bnode or URI passed from an subclass Default: None
 
         Returns:
             the property graph
@@ -561,7 +561,7 @@ class Role(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Role
-            selfobject: an bnode or URI passed from an subclass Default: None
+            selfobject: a bnode or URI passed from an subclass Default: None
 
         Returns:
             the role graph
