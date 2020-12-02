@@ -658,6 +658,7 @@ class SimpleType(ModelElement):
         "_length",
         "_total_digits",
         "_max_inclusive",
+        "_min_inclusive",
     )
 
     _identifier: URI
@@ -669,6 +670,7 @@ class SimpleType(ModelElement):
     _length: int
     _total_digits: int
     _max_inclusive: float
+    _min_inclusive: float
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -728,6 +730,15 @@ class SimpleType(ModelElement):
     def max_inclusive(self, max_inclusive: float) -> None:
         self._max_inclusive = max_inclusive
 
+    @property
+    def min_inclusive(self) -> float:
+        """Get for min_inclusive."""
+        return self._min_inclusive
+
+    @min_inclusive.setter
+    def min_inclusive(self, min_inclusive: float) -> None:
+        self._min_inclusive = min_inclusive
+
     def to_rdf(
         self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -778,5 +789,8 @@ class SimpleType(ModelElement):
 
         if getattr(self, "max_inclusive", None):
             self._g.add((_self, XSD.maxInclusive, Literal(self.max_inclusive)))
+
+        if getattr(self, "min_inclusive", None):
+            self._g.add((_self, XSD.minInclusive, Literal(self.min_inclusive)))
 
         return self._g
