@@ -31,12 +31,12 @@ class LicenseDocument:
 
     @property
     def type(self: LicenseDocument) -> List[Concept]:
-        """Get/set for type."""
+        """Get for type."""
         return self._type
 
     @property
     def identifier(self) -> str:
-        """Get/set for identifier."""
+        """Get for identifier."""
         return self._identifier
 
     @identifier.setter

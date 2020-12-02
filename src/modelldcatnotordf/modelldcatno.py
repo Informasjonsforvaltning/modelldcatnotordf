@@ -56,7 +56,7 @@ class InformationModel(Resource):
 
     @property
     def informationmodelidentifier(self) -> str:
-        """Get/set for informationmodelidentifier."""
+        """Get for informationmodelidentifier."""
         return self._informationmodelidentifier
 
     @informationmodelidentifier.setter
@@ -70,7 +70,7 @@ class InformationModel(Resource):
 
     @property
     def licensedocument(self) -> LicenseDocument:
-        """Get/set for license."""
+        """Get for license."""
         return self._licensedocument
 
     @licensedocument.setter
@@ -79,7 +79,7 @@ class InformationModel(Resource):
 
     @property
     def title(self) -> dict:
-        """Get/set for title."""
+        """Get for title."""
         return self._title
 
     @title.setter
@@ -88,7 +88,7 @@ class InformationModel(Resource):
 
     @property
     def description(self) -> dict:
-        """Get/set for description."""
+        """Get for description."""
         return self._description
 
     @description.setter
@@ -97,7 +97,7 @@ class InformationModel(Resource):
 
     @property
     def theme(self) -> List[str]:
-        """Get/set for theme."""
+        """Get for theme."""
         return self._theme
 
     @theme.setter
@@ -106,7 +106,7 @@ class InformationModel(Resource):
 
     @property
     def publisher(self: InformationModel) -> Agent:
-        """Get/set for publisher."""
+        """Get for publisher."""
         return self._publisher
 
     @publisher.setter
@@ -115,12 +115,12 @@ class InformationModel(Resource):
 
     @property
     def subject(self: InformationModel) -> List[Concept]:
-        """Get/set for subject."""
+        """Get for subject."""
         return self._subject
 
     @property
     def modelelements(self: InformationModel) -> List[ModelElement]:
-        """Get/set for modelelements."""
+        """Get for modelelements."""
         return self._modelelements
 
     def to_rdf(
@@ -247,7 +247,7 @@ class ModelElement:
 
     @property
     def identifier(self) -> str:
-        """Get/set for identifier."""
+        """Get for identifier."""
         return self._identifier
 
     @identifier.setter
@@ -256,7 +256,7 @@ class ModelElement:
 
     @property
     def dct_identifier(self) -> str:
-        """Get/set for dct_identifier."""
+        """Get for dct_identifier."""
         return self._dct_identifier
 
     @dct_identifier.setter
@@ -274,7 +274,7 @@ class ModelElement:
 
     @property
     def subject(self) -> Concept:
-        """Get/set for subject."""
+        """Get for subject."""
         return self._subject
 
     @subject.setter
@@ -283,7 +283,7 @@ class ModelElement:
 
     @property
     def has_property(self) -> List[Any]:
-        """Get/set for has_type."""
+        """Get for has_type."""
         return self._has_property
 
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
@@ -387,7 +387,7 @@ class ModelProperty:
 
     @property
     def subject(self) -> Concept:
-        """Get/set for subject."""
+        """Get for subject."""
         return self._subject
 
     @subject.setter
@@ -405,12 +405,12 @@ class ModelProperty:
 
     @property
     def has_type(self) -> List[ModelElement]:
-        """Get/set for has_type."""
+        """Get for has_type."""
         return self._has_type
 
     @property
     def identifier(self) -> str:
-        """Get/set for identifier."""
+        """Get for identifier."""
         return self._identifier
 
     @identifier.setter
@@ -419,7 +419,7 @@ class ModelProperty:
 
     @property
     def min_occurs(self) -> int:
-        """Get/set for min_occurs."""
+        """Get for min_occurs."""
         return self._min_occurs
 
     @min_occurs.setter
@@ -428,7 +428,7 @@ class ModelProperty:
 
     @property
     def max_occurs(self) -> int:
-        """Get/set for max_occurs."""
+        """Get for max_occurs."""
         return self._max_occurs
 
     @max_occurs.setter
@@ -533,7 +533,7 @@ class Role(ModelProperty):
 
     @property
     def has_object_type(self: Role) -> ObjectType:
-        """Get/set for has_object_type."""
+        """Get for has_object_type."""
         return self._has_object_type
 
     @has_object_type.setter
