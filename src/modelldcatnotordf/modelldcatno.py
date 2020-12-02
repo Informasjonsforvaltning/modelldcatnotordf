@@ -651,12 +651,16 @@ class ObjectType(ModelElement):
 class SimpleType(ModelElement):
     """A class representing a modelldcatno:SimpleType."""
 
-    __slots__ = ("_min_length",)
+    __slots__ = (
+        "_min_length",
+        "_max_length",
+    )
 
     _identifier: URI
     _dct_identifier: str
     _g: Graph
     _min_length: int
+    _max_length: int
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -670,6 +674,15 @@ class SimpleType(ModelElement):
     @min_length.setter
     def min_length(self, min_length: int) -> None:
         self._min_length = min_length
+
+    @property
+    def max_length(self) -> int:
+        """Get for max_length."""
+        return self._max_length
+
+    @max_length.setter
+    def max_length(self, max_length: int) -> None:
+        self._max_length = max_length
 
     def to_rdf(
         self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -706,5 +719,8 @@ class SimpleType(ModelElement):
 
         if getattr(self, "min_length", None):
             self._g.add((_self, XSD.minLength, Literal(self.min_length)))
+
+        if getattr(self, "max_length", None):
+            self._g.add((_self, XSD.maxLength, Literal(self.max_length)))
 
         return self._g
