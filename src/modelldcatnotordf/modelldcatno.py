@@ -631,3 +631,42 @@ class ObjectType(ModelElement):
         super(ObjectType, self)._to_graph(MODELLDCATNO.ObjectType)
 
         return self._g
+
+
+class SimpleType(ModelElement):
+    """A class representing a modelldcatno:SimpleType."""
+
+    _identifier: URI
+    _dct_identifier: str
+    _g: Graph
+
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
+
+    def to_rdf(
+        self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the object type to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(self: SimpleType, type: str = MODELLDCATNO.SimpleType) -> Graph:
+        """Returns the object type as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.SimpleType
+
+        Returns:
+            the object type graph
+        """
+        super(SimpleType, self)._to_graph(MODELLDCATNO.SimpleType)
+
+        return self._g
