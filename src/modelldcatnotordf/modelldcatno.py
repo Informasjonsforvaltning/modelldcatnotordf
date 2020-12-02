@@ -657,6 +657,7 @@ class SimpleType(ModelElement):
         "_fraction_digits",
         "_length",
         "_total_digits",
+        "_max_inclusive",
     )
 
     _identifier: URI
@@ -667,6 +668,7 @@ class SimpleType(ModelElement):
     _fraction_digits: int
     _length: int
     _total_digits: int
+    _max_inclusive: float
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -717,6 +719,15 @@ class SimpleType(ModelElement):
     def total_digits(self, total_digits: int) -> None:
         self._total_digits = total_digits
 
+    @property
+    def max_inclusive(self) -> float:
+        """Get for max_inclusive."""
+        return self._max_inclusive
+
+    @max_inclusive.setter
+    def max_inclusive(self, max_inclusive: float) -> None:
+        self._max_inclusive = max_inclusive
+
     def to_rdf(
         self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -764,5 +775,8 @@ class SimpleType(ModelElement):
 
         if getattr(self, "total_digits", None):
             self._g.add((_self, XSD.totalDigits, Literal(self.total_digits)))
+
+        if getattr(self, "max_inclusive", None):
+            self._g.add((_self, XSD.maxInclusive, Literal(self.max_inclusive)))
 
         return self._g
