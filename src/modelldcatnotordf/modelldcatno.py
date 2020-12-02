@@ -655,6 +655,7 @@ class SimpleType(ModelElement):
         "_min_length",
         "_max_length",
         "_fraction_digits",
+        "_length",
     )
 
     _identifier: URI
@@ -663,6 +664,7 @@ class SimpleType(ModelElement):
     _min_length: int
     _max_length: int
     _fraction_digits: int
+    _length: int
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -694,6 +696,15 @@ class SimpleType(ModelElement):
     @fraction_digits.setter
     def fraction_digits(self, fraction_digits: int) -> None:
         self._fraction_digits = fraction_digits
+
+    @property
+    def length(self) -> int:
+        """Get for length."""
+        return self._length
+
+    @length.setter
+    def length(self, length: int) -> None:
+        self._length = length
 
     def to_rdf(
         self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -736,5 +747,8 @@ class SimpleType(ModelElement):
 
         if getattr(self, "fraction_digits", None):
             self._g.add((_self, XSD.fractionDigits, Literal(self.fraction_digits)))
+
+        if getattr(self, "length", None):
+            self._g.add((_self, XSD.length, Literal(self.length)))
 
         return self._g
