@@ -705,6 +705,6 @@ class SimpleType(ModelElement):
         super(SimpleType, self)._to_graph(MODELLDCATNO.SimpleType, _self)
 
         if getattr(self, "min_length", None):
-            self._g.add((_self, XSD.length, Literal(self.min_length)))
+            self._g.add((_self, XSD.minLength, Literal(self.min_length)))
 
         return self._g
