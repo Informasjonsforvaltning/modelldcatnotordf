@@ -152,7 +152,7 @@ def test_to_graph_should_return_min_length() -> None:
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
         <http://example.com/simpletypes/1> a modelldcatno:SimpleType ;
-            xsd:length 1 .
+            xsd:minLength 1 .
 
         """
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
