@@ -298,11 +298,14 @@ class ModelElement:
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
-    def _to_graph(self, type: str = MODELLDCATNO.ModelElement) -> Graph:
+    def _to_graph(
+        self, type: str = MODELLDCATNO.ModelElement, selfobject: Any = None
+    ) -> Graph:
         """Returns the modelelement as graph.
 
          Args:
             type: type for identifying class. Default: MODELLDCATNO.ModelElement
+            selfobject: a bnode or URI passed from an subclass Default: None
 
         Returns:
             the modelelement graph
@@ -313,12 +316,16 @@ class ModelElement:
         self._g.bind("dct", DCT)
         self._g.bind("dcat", DCAT)
         self._g.bind("skos", SKOS)
+        self._g.bind("xsd", XSD)
 
-        if getattr(self, "identifier", None):
+        if selfobject:
+            _self = selfobject
+
+        elif getattr(self, "identifier", None):
             _self = URIRef(self.identifier)
+
         else:
             _self = BNode()
-
         self._g.add((_self, RDF.type, type))
 
         if getattr(self, "title", None):
@@ -619,16 +626,24 @@ class ObjectType(ModelElement):
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
-    def _to_graph(self: ObjectType, type: str = MODELLDCATNO.ObjectType) -> Graph:
+    def _to_graph(
+        self: ObjectType, type: str = MODELLDCATNO.ObjectType, selfobject: Any = None
+    ) -> Graph:
         """Returns the object type as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.ObjectType
+            selfobject: a bnode or URI passed from an subclass Default: None
 
         Returns:
             the object type graph
         """
-        super(ObjectType, self)._to_graph(MODELLDCATNO.ObjectType)
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(ObjectType, self)._to_graph(MODELLDCATNO.ObjectType, _self)
 
         return self._g
 
@@ -636,13 +651,25 @@ class ObjectType(ModelElement):
 class SimpleType(ModelElement):
     """A class representing a modelldcatno:SimpleType."""
 
+    __slots__ = ("_min_length",)
+
     _identifier: URI
     _dct_identifier: str
     _g: Graph
+    _min_length: int
 
     def __init__(self) -> None:
         """Inits an object with default values."""
         super().__init__()
+
+    @property
+    def min_length(self) -> int:
+        """Get for min_length."""
+        return self._min_length
+
+    @min_length.setter
+    def min_length(self, min_length: int) -> None:
+        self._min_length = min_length
 
     def to_rdf(
         self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -658,15 +685,26 @@ class SimpleType(ModelElement):
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
-    def _to_graph(self: SimpleType, type: str = MODELLDCATNO.SimpleType) -> Graph:
+    def _to_graph(
+        self: SimpleType, type: str = MODELLDCATNO.SimpleType, selfobject: Any = None
+    ) -> Graph:
         """Returns the object type as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.SimpleType
+            selfobject: a bnode or URI passed from an subclass Default: None
 
         Returns:
             the object type graph
         """
-        super(SimpleType, self)._to_graph(MODELLDCATNO.SimpleType)
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(SimpleType, self)._to_graph(MODELLDCATNO.SimpleType, _self)
+
+        if getattr(self, "min_length", None):
+            self._g.add((_self, XSD.length, Literal(self.min_length)))
 
         return self._g
