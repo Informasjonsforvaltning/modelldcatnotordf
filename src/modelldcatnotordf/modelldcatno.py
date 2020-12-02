@@ -659,6 +659,7 @@ class SimpleType(ModelElement):
         "_total_digits",
         "_max_inclusive",
         "_min_inclusive",
+        "_type_definition_reference",
     )
 
     _identifier: URI
@@ -671,6 +672,7 @@ class SimpleType(ModelElement):
     _total_digits: int
     _max_inclusive: float
     _min_inclusive: float
+    _type_definition_reference: URI
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -739,6 +741,15 @@ class SimpleType(ModelElement):
     def min_inclusive(self, min_inclusive: float) -> None:
         self._min_inclusive = min_inclusive
 
+    @property
+    def type_definition_reference(self) -> str:
+        """Get for type_definition_reference."""
+        return self._type_definition_reference
+
+    @type_definition_reference.setter
+    def type_definition_reference(self, type_definition_reference: str) -> None:
+        self._type_definition_reference = URI(type_definition_reference)
+
     def to_rdf(
         self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -792,5 +803,8 @@ class SimpleType(ModelElement):
 
         if getattr(self, "min_inclusive", None):
             self._g.add((_self, XSD.minInclusive, Literal(self.min_inclusive)))
+
+        if getattr(self, "type_definition_reference", None):
+            self._g.add((_self, XSD.anyURI, URIRef(self.type_definition_reference)),)
 
         return self._g
