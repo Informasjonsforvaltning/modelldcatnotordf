@@ -654,6 +654,7 @@ class SimpleType(ModelElement):
     __slots__ = (
         "_min_length",
         "_max_length",
+        "_fraction_digits",
     )
 
     _identifier: URI
@@ -661,6 +662,7 @@ class SimpleType(ModelElement):
     _g: Graph
     _min_length: int
     _max_length: int
+    _fraction_digits: int
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -683,6 +685,15 @@ class SimpleType(ModelElement):
     @max_length.setter
     def max_length(self, max_length: int) -> None:
         self._max_length = max_length
+
+    @property
+    def fraction_digits(self) -> int:
+        """Get for fraction_digits."""
+        return self._fraction_digits
+
+    @fraction_digits.setter
+    def fraction_digits(self, fraction_digits: int) -> None:
+        self._fraction_digits = fraction_digits
 
     def to_rdf(
         self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -722,5 +733,8 @@ class SimpleType(ModelElement):
 
         if getattr(self, "max_length", None):
             self._g.add((_self, XSD.maxLength, Literal(self.max_length)))
+
+        if getattr(self, "fraction_digits", None):
+            self._g.add((_self, XSD.fractionDigits, Literal(self.fraction_digits)))
 
         return self._g
