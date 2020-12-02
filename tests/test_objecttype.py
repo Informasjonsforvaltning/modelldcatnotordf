@@ -1,4 +1,4 @@
-"""Test cases for the model object type module."""
+"""Test cases for the object type module."""
 
 from concepttordf import Concept
 import pytest
