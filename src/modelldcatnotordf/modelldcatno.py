@@ -305,7 +305,7 @@ class ModelElement:
 
          Args:
             type: type for identifying class. Default: MODELLDCATNO.ModelElement
-            selfobject: a bnode or URI passed from an subclass Default: None
+            selfobject: a bnode or URI passed from a subclass Default: None
 
         Returns:
             the modelelement graph
@@ -461,7 +461,7 @@ class ModelProperty:
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Property
-            selfobject: a bnode or URI passed from an subclass Default: None
+            selfobject: a bnode or URI passed from a subclass Default: None
 
         Returns:
             the property graph
@@ -568,7 +568,7 @@ class Role(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Role
-            selfobject: a bnode or URI passed from an subclass Default: None
+            selfobject: a bnode or URI passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -633,7 +633,7 @@ class ObjectType(ModelElement):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.ObjectType
-            selfobject: a bnode or URI passed from an subclass Default: None
+            selfobject: a bnode or URI passed from a subclass Default: None
 
         Returns:
             the object type graph
@@ -782,7 +782,7 @@ class SimpleType(ModelElement):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.SimpleType
-            selfobject: a bnode or URI passed from an subclass Default: None
+            selfobject: a bnode or URI passed from a subclass Default: None
 
         Returns:
             the object type graph
