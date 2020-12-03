@@ -660,6 +660,7 @@ class SimpleType(ModelElement):
         "_max_inclusive",
         "_min_inclusive",
         "_type_definition_reference",
+        "_pattern",
     )
 
     _identifier: URI
@@ -673,6 +674,7 @@ class SimpleType(ModelElement):
     _max_inclusive: float
     _min_inclusive: float
     _type_definition_reference: URI
+    _pattern: str
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -750,6 +752,15 @@ class SimpleType(ModelElement):
     def type_definition_reference(self, type_definition_reference: str) -> None:
         self._type_definition_reference = URI(type_definition_reference)
 
+    @property
+    def pattern(self) -> str:
+        """Get for pattern."""
+        return self._pattern
+
+    @pattern.setter
+    def pattern(self, pattern: str) -> None:
+        self._pattern = pattern
+
     def to_rdf(
         self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -783,6 +794,12 @@ class SimpleType(ModelElement):
 
         super(SimpleType, self)._to_graph(MODELLDCATNO.SimpleType, _self)
 
+        self._add_properties(_self)
+
+        return self._g
+
+    def _add_properties(self, _self: Any) -> None:
+
         if getattr(self, "min_length", None):
             self._g.add((_self, XSD.minLength, Literal(self.min_length)))
 
@@ -807,4 +824,5 @@ class SimpleType(ModelElement):
         if getattr(self, "type_definition_reference", None):
             self._g.add((_self, XSD.anyURI, URIRef(self.type_definition_reference)),)
 
-        return self._g
+        if getattr(self, "pattern", None):
+            self._g.add((_self, XSD.pattern, Literal(self.pattern)))
