@@ -132,7 +132,7 @@ def test_to_graph_should_return_contains_blank_node_composition_identifier() -> 
     assert _isomorphic
 
 
-def test_to_graph_should_returncontains_blank_node_modelelement_identifier() -> None:
+def test_to_graph_should_return_contains_blank_node_modelelement_identifier() -> None:
     """It returns a contains graph isomorphic to spec."""
     composition = Composition()
 
@@ -164,7 +164,7 @@ def test_to_graph_should_returncontains_blank_node_modelelement_identifier() -> 
     assert _isomorphic
 
 
-def test_to_graph_should_returncontains_blank_nodes() -> None:
+def test_to_graph_should_return_contains_blank_nodes() -> None:
     """It returns a contains graph isomorphic to spec."""
     composition = Composition()
 
