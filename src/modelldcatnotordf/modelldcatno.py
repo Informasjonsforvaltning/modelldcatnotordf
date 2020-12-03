@@ -826,3 +826,73 @@ class SimpleType(ModelElement):
 
         if getattr(self, "pattern", None):
             self._g.add((_self, XSD.pattern, Literal(self.pattern)))
+
+
+class Composition(ModelProperty):
+    """A class representing a modelldcatno:Composition."""
+
+    __slots__ = "_contains"
+
+    _contains: ModelElement
+    _identifier: URI
+    _g: Graph
+
+    @property
+    def contains(self: Composition) -> ModelElement:
+        """Get for contains."""
+        return self._contains
+
+    @contains.setter
+    def contains(self: Composition, contains: ModelElement) -> None:
+        self._contains = contains
+
+    def to_rdf(
+        self: Composition, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the role to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Composition, type: str = MODELLDCATNO.Composition, selfobject: Any = None
+    ) -> Graph:
+        """Returns the role as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Composition
+            selfobject: a bnode or URI passed from a subclass Default: None
+
+        Returns:
+            the role graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(Composition, self)._to_graph(MODELLDCATNO.Composition, _self)
+
+        self._contains_to_graph(_self)
+
+        return self._g
+
+    def _contains_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "contains", None):
+
+            if getattr(self._contains, "identifier", None):
+                _contains = URIRef(self._contains.identifier)
+            else:
+                _contains = BNode()
+
+            for _s, p, o in self._contains._to_graph().triples((None, None, None)):
+                self._g.add((_contains, p, o))
+
+            self._g.add((_self, MODELLDCATNO.contains, _contains))
