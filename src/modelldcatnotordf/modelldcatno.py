@@ -896,3 +896,73 @@ class Composition(ModelProperty):
                 self._g.add((_contains, p, o))
 
             self._g.add((_self, MODELLDCATNO.contains, _contains))
+
+
+class Collection(ModelProperty):
+    """A class representing a modelldcatno:Collection."""
+
+    __slots__ = "_has_member"
+
+    _has_member: ModelElement
+    _identifier: URI
+    _g: Graph
+
+    @property
+    def has_member(self: Collection) -> ModelElement:
+        """Get for has_member."""
+        return self._has_member
+
+    @has_member.setter
+    def has_member(self: Collection, has_member: ModelElement) -> None:
+        self._has_member = has_member
+
+    def to_rdf(
+        self: Collection, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the role to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Collection, type: str = MODELLDCATNO.Collection, selfobject: Any = None
+    ) -> Graph:
+        """Returns the role as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Collection
+            selfobject: a bnode or URI passed from a subclass Default: None
+
+        Returns:
+            the role graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(Collection, self)._to_graph(MODELLDCATNO.Collection, _self)
+
+        self._has_member_to_graph(_self)
+
+        return self._g
+
+    def _has_member_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "has_member", None):
+
+            if getattr(self._has_member, "identifier", None):
+                _has_member = URIRef(self._has_member.identifier)
+            else:
+                _has_member = BNode()
+
+            for _s, p, o in self._has_member._to_graph().triples((None, None, None)):
+                self._g.add((_has_member, p, o))
+
+            self._g.add((_self, MODELLDCATNO.hasMember, _has_member))
