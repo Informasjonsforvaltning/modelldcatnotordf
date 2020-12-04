@@ -966,3 +966,75 @@ class Collection(ModelProperty):
                 self._g.add((_has_member, p, o))
 
             self._g.add((_self, MODELLDCATNO.hasMember, _has_member))
+
+
+class Choice(ModelProperty):
+    """A class representing a modelldcatno:Choice."""
+
+    __slots__ = "_has_some"
+
+    _has_some: List[ModelElement]
+    _identifier: URI
+    _g: Graph
+
+    @property
+    def has_some(self: Choice) -> List[ModelElement]:
+        """Get for has_some."""
+        return self._has_some
+
+    def __init__(self) -> None:
+        """Inits Choice object with default values."""
+        self._has_some = []
+
+    def to_rdf(
+        self: Choice, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the role to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Choice, type: str = MODELLDCATNO.Choice, selfobject: Any = None
+    ) -> Graph:
+        """Returns the role as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Choice
+            selfobject: a bnode or URI passed from a subclass Default: None
+
+        Returns:
+            the role graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(Choice, self)._to_graph(MODELLDCATNO.Choice, _self)
+
+        self._has_some_to_graph(_self)
+
+        return self._g
+
+    def _has_some_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "has_some", None):
+
+            for has_some in self._has_some:
+
+                if getattr(has_some, "identifier", None):
+                    _has_some = URIRef(has_some.identifier)
+                else:
+                    _has_some = BNode()
+
+                for _s, p, o in has_some._to_graph().triples((None, None, None)):
+                    self._g.add((_has_some, p, o))
+
+                self._g.add((_self, MODELLDCATNO.hasSome, _has_some))
