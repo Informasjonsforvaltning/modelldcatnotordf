@@ -87,7 +87,7 @@ def test_to_graph_should_return_contains_both_identifiers() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/compositions/1> a modelldcatno:Composition ;
-        modelldcatno:contains <http://example.com/modelelements/1> .
+            modelldcatno:contains <http://example.com/modelelements/1> .
 
         <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
 

@@ -87,7 +87,7 @@ def test_to_graph_should_return_has_member_both_identifiers() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/collections/1> a modelldcatno:Collection ;
-        modelldcatno:hasMember <http://example.com/modelelements/1> .
+            modelldcatno:hasMember <http://example.com/modelelements/1> .
 
         <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
 
