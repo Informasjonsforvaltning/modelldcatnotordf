@@ -5,8 +5,7 @@ import pytest
 from rdflib import Graph
 from rdflib.compare import isomorphic
 
-from modelldcatnotordf.modelldcatno import ObjectType
-from modelldcatnotordf.modelldcatno import Role
+from modelldcatnotordf.modelldcatno import ObjectType, Role
 from tests.testutils import _dump_diff
 
 """
