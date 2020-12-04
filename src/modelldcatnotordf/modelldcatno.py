@@ -1043,14 +1043,12 @@ class Choice(ModelProperty):
 class Attribute(ModelProperty):
     """A class representing a modelldcatno:Attribute."""
 
-    __slots__ = (
-        "_identifier",
-        "_contains_object_type",
-    )
+    __slots__ = ("_identifier", "_contains_object_type", "_has_simple_type")
 
     _identifier: URI
     _contains_object_type: ObjectType
     _g: Graph
+    _has_simple_type: SimpleType
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1062,8 +1060,17 @@ class Attribute(ModelProperty):
         return self._contains_object_type
 
     @contains_object_type.setter
-    def contains_object_type(self: Attribute, contains_object_type: Any) -> None:
+    def contains_object_type(self: Attribute, contains_object_type: ObjectType) -> None:
         self._contains_object_type = contains_object_type
+
+    @property
+    def has_simple_type(self: Attribute) -> SimpleType:
+        """Get for has_simple_type."""
+        return self._has_simple_type
+
+    @has_simple_type.setter
+    def has_simple_type(self: Attribute, has_simple_type: SimpleType) -> None:
+        self._has_simple_type = has_simple_type
 
     def to_rdf(
         self: Attribute, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -1099,6 +1106,7 @@ class Attribute(ModelProperty):
         super(Attribute, self)._to_graph(MODELLDCATNO.Attribute, _self)
 
         self._contains_object_type_to_graph(_self)
+        self._has_simple_type_to_graph(_self)
 
         return self._g
 
@@ -1117,3 +1125,19 @@ class Attribute(ModelProperty):
                 self._g.add((_contains_object_type, p, o))
 
             self._g.add((_self, MODELLDCATNO.containsObjectType, _contains_object_type))
+
+    def _has_simple_type_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "has_simple_type", None):
+
+            if getattr(self._has_simple_type, "identifier", None):
+                _has_simple_type = URIRef(self._has_simple_type.identifier)
+            else:
+                _has_simple_type = BNode()
+
+            for _s, p, o in self._has_simple_type._to_graph().triples(
+                (None, None, None)
+            ):
+                self._g.add((_has_simple_type, p, o))
+
+            self._g.add((_self, MODELLDCATNO.hasSimpleType, _has_simple_type))
