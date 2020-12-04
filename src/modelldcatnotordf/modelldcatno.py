@@ -1038,3 +1038,82 @@ class Choice(ModelProperty):
                     self._g.add((_has_some, p, o))
 
                 self._g.add((_self, MODELLDCATNO.hasSome, _has_some))
+
+
+class Attribute(ModelProperty):
+    """A class representing a modelldcatno:Attribute."""
+
+    __slots__ = (
+        "_identifier",
+        "_contains_object_type",
+    )
+
+    _identifier: URI
+    _contains_object_type: ObjectType
+    _g: Graph
+
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
+
+    @property
+    def contains_object_type(self: Attribute) -> ObjectType:
+        """Get for contains_object_type."""
+        return self._contains_object_type
+
+    @contains_object_type.setter
+    def contains_object_type(self: Attribute, contains_object_type: Any) -> None:
+        self._contains_object_type = contains_object_type
+
+    def to_rdf(
+        self: Attribute, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the role to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Attribute, type: str = MODELLDCATNO.Attribute, selfobject: Any = None
+    ) -> Graph:
+        """Returns the role as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Attribute
+            selfobject: a bnode or URI passed from a subclass Default: None
+
+        Returns:
+            the role graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(Attribute, self)._to_graph(MODELLDCATNO.Attribute, _self)
+
+        self._contains_object_type_to_graph(_self)
+
+        return self._g
+
+    def _contains_object_type_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "contains_object_type", None):
+
+            if getattr(self._contains_object_type, "identifier", None):
+                _contains_object_type = URIRef(self._contains_object_type.identifier)
+            else:
+                _contains_object_type = BNode()
+
+            for _s, p, o in self._contains_object_type._to_graph().triples(
+                (None, None, None)
+            ):
+                self._g.add((_contains_object_type, p, o))
+
+            self._g.add((_self, MODELLDCATNO.containsObjectType, _contains_object_type))
