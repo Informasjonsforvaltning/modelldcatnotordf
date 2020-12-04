@@ -79,7 +79,7 @@ def test_to_graph_should_return_has_object_type_both_identifiers() -> None:
 
     objecttype = ObjectType()
     objecttype.identifier = "http://example.com/objecttypes/1"
-    role._has_object_type = objecttype
+    role.has_object_type = objecttype
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
