@@ -1211,3 +1211,79 @@ class Attribute(ModelProperty):
                 self._g.add((_has_simple_type, p, o))
 
             self._g.add((_self, MODELLDCATNO.hasSimpleType, _has_simple_type))
+
+
+class Specialization(ModelProperty):
+    """A class representing a modelldcatno:Specialization."""
+
+    __slots__ = "_has_general_concept"
+
+    _has_general_concept: ModelElement
+    _identifier: URI
+    _g: Graph
+
+    @property
+    def has_general_concept(self: Specialization) -> ModelElement:
+        """Get for has_general_concept."""
+        return self._has_general_concept
+
+    @has_general_concept.setter
+    def has_general_concept(
+        self: Specialization, has_general_concept: ModelElement
+    ) -> None:
+        self._has_general_concept = has_general_concept
+
+    def to_rdf(
+        self: Specialization, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the role to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Specialization,
+        type: str = MODELLDCATNO.Specialization,
+        selfobject: Any = None,
+    ) -> Graph:
+        """Returns the role as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Association
+            selfobject: a bnode or URI passed from a subclass Default: None
+
+        Returns:
+            the role graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(Specialization, self)._to_graph(MODELLDCATNO.Specialization, _self)
+
+        self._has_general_concept_to_graph(_self)
+
+        return self._g
+
+    def _has_general_concept_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "has_general_concept", None):
+
+            if getattr(self._has_general_concept, "identifier", None):
+                has_general_concept = URIRef(self.has_general_concept.identifier)
+            else:
+                has_general_concept = BNode()
+
+            for _s, p, o in self._has_general_concept._to_graph().triples(
+                (None, None, None)
+            ):
+                self._g.add((has_general_concept, p, o))
+
+            self._g.add((_self, MODELLDCATNO.hasGeneralConcept, has_general_concept))
