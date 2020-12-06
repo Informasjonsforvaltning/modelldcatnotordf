@@ -1003,14 +1003,14 @@ class Association(ModelProperty):
     def _to_graph(
         self: Association, type: str = MODELLDCATNO.Association, selfobject: Any = None
     ) -> Graph:
-        """Returns the role as graph.
+        """Returns the association as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Association
             selfobject: a bnode or URI passed from a subclass Default: None
 
         Returns:
-            the role graph
+            the association graph
         """
         if getattr(self, "identifier", None):
             _self = URIRef(self.identifier)
@@ -1036,6 +1036,8 @@ class Association(ModelProperty):
                 self._g.add((_refers_to, p, o))
 
             self._g.add((_self, MODELLDCATNO.refersTo, _refers_to))
+
+        return self._g
 
 
 class Choice(ModelProperty):
@@ -1287,3 +1289,73 @@ class Specialization(ModelProperty):
                 self._g.add((has_general_concept, p, o))
 
             self._g.add((_self, MODELLDCATNO.hasGeneralConcept, has_general_concept))
+
+
+class Realization(ModelProperty):
+    """A class representing a modelldcatno:Realization."""
+
+    __slots__ = "_has_supplier"
+
+    _has_supplier: ModelElement
+    _identifier: URI
+    _g: Graph
+
+    @property
+    def has_supplier(self: Realization) -> ModelElement:
+        """Get for has_supplier."""
+        return self._has_supplier
+
+    @has_supplier.setter
+    def has_supplier(self: Realization, has_supplier: ModelElement) -> None:
+        self._has_supplier = has_supplier
+
+    def to_rdf(
+        self: Realization, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the realization to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Realization, type: str = MODELLDCATNO.Realization, selfobject: Any = None
+    ) -> Graph:
+        """Returns the realization as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Association
+            selfobject: a bnode or URI passed from a subclass Default: None
+
+        Returns:
+            the assocation graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(Realization, self)._to_graph(MODELLDCATNO.Realization, _self)
+
+        self._has_supplier_to_graph(_self)
+
+        return self._g
+
+    def _has_supplier_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "has_supplier", None):
+
+            if getattr(self._has_supplier, "identifier", None):
+                _has_supplier = URIRef(self._has_supplier.identifier)
+            else:
+                _has_supplier = BNode()
+
+            for _s, p, o in self._has_supplier._to_graph().triples((None, None, None)):
+                self._g.add((_has_supplier, p, o))
+
+            self._g.add((_self, MODELLDCATNO.hasSupplier, _has_supplier))
