@@ -968,6 +968,76 @@ class Collection(ModelProperty):
             self._g.add((_self, MODELLDCATNO.hasMember, _has_member))
 
 
+class Association(ModelProperty):
+    """A class representing a modelldcatno:Association."""
+
+    __slots__ = "_refers_to"
+
+    _refers_to: ModelElement
+    _identifier: URI
+    _g: Graph
+
+    @property
+    def refers_to(self: Association) -> ModelElement:
+        """Get for refers_to."""
+        return self._refers_to
+
+    @refers_to.setter
+    def refers_to(self: Association, refers_to: ModelElement) -> None:
+        self._refers_to = refers_to
+
+    def to_rdf(
+        self: Association, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the role to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Association, type: str = MODELLDCATNO.Association, selfobject: Any = None
+    ) -> Graph:
+        """Returns the role as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Association
+            selfobject: a bnode or URI passed from a subclass Default: None
+
+        Returns:
+            the role graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(Association, self)._to_graph(MODELLDCATNO.Association, _self)
+
+        self._refers_to_to_graph(_self)
+
+        return self._g
+
+    def _refers_to_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "refers_to", None):
+
+            if getattr(self._refers_to, "identifier", None):
+                _refers_to = URIRef(self._refers_to.identifier)
+            else:
+                _refers_to = BNode()
+
+            for _s, p, o in self._refers_to._to_graph().triples((None, None, None)):
+                self._g.add((_refers_to, p, o))
+
+            self._g.add((_self, MODELLDCATNO.refersTo, _refers_to))
+
+
 class Choice(ModelProperty):
     """A class representing a modelldcatno:Choice."""
 
