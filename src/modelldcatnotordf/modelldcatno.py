@@ -1359,3 +1359,75 @@ class Realization(ModelProperty):
                 self._g.add((_has_supplier, p, o))
 
             self._g.add((_self, MODELLDCATNO.hasSupplier, _has_supplier))
+
+
+class Abstraction(ModelProperty):
+    """A class representing a modelldcatno:Abstraction."""
+
+    __slots__ = "_is_abstraction_of"
+
+    _is_abstraction_of: ModelElement
+    _identifier: URI
+    _g: Graph
+
+    @property
+    def is_abstraction_of(self: Abstraction) -> ModelElement:
+        """Get for is_abstraction_of."""
+        return self._is_abstraction_of
+
+    @is_abstraction_of.setter
+    def is_abstraction_of(self: Abstraction, is_abstraction_of: ModelElement) -> None:
+        self._is_abstraction_of = is_abstraction_of
+
+    def to_rdf(
+        self: Abstraction, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the role to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Abstraction, type: str = MODELLDCATNO.Abstraction, selfobject: Any = None
+    ) -> Graph:
+        """Returns the role as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Abstraction
+            selfobject: a bnode or URI passed from a subclass Default: None
+
+        Returns:
+            the role graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(Abstraction, self)._to_graph(MODELLDCATNO.Abstraction, _self)
+
+        self._is_abstraction_of_to_graph(_self)
+
+        return self._g
+
+    def _is_abstraction_of_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "is_abstraction_of", None):
+
+            if getattr(self._is_abstraction_of, "identifier", None):
+                _is_abstraction_of = URIRef(self._is_abstraction_of.identifier)
+            else:
+                _is_abstraction_of = BNode()
+
+            for _s, p, o in self._is_abstraction_of._to_graph().triples(
+                (None, None, None)
+            ):
+                self._g.add((_is_abstraction_of, p, o))
+
+            self._g.add((_self, MODELLDCATNO.isAbstractionOf, _is_abstraction_of))
