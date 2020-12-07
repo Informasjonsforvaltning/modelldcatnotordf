@@ -237,7 +237,7 @@ class ModelElement:
     _title: dict
     _identifier: URI
     _dct_identifier: str
-    _has_property: List[Any]
+    _has_property: List[ModelProperty]
     _subject: Concept
 
     def __init__(self) -> None:
@@ -282,7 +282,7 @@ class ModelElement:
         self._subject = subject
 
     @property
-    def has_property(self) -> List[Any]:
+    def has_property(self) -> List[ModelProperty]:
         """Get for has_type."""
         return self._has_property
 
