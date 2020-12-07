@@ -1,4 +1,5 @@
 """Test cases for the model element module."""
+from typing import List
 
 from concepttordf import Concept
 import pytest
@@ -145,7 +146,10 @@ def test_to_graph_should_return_has_property_both_identifiers() -> None:
 
     modelproperty = ModelProperty()
     modelproperty.identifier = "http://example.com/properties/1"
-    modelelement.has_property.append(modelproperty)
+
+    has_properties: List[ModelProperty] = []
+    has_properties.append(modelproperty)
+    modelelement.has_property = has_properties
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .

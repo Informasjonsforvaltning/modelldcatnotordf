@@ -61,6 +61,7 @@ class InformationModel(Resource):
 
     @informationmodelidentifier.setter
     def informationmodelidentifier(self, informationmodelidentifier: str) -> None:
+        """Set for informationmodelidentifier."""
         self._informationmodelidentifier = informationmodelidentifier
 
     @property
@@ -75,6 +76,7 @@ class InformationModel(Resource):
 
     @licensedocument.setter
     def licensedocument(self, licensedocument: LicenseDocument) -> None:
+        """Set for license."""
         self._licensedocument = licensedocument
 
     @property
@@ -84,6 +86,7 @@ class InformationModel(Resource):
 
     @title.setter
     def title(self, value: dict) -> None:
+        """Set for title."""
         self._title = value
 
     @property
@@ -93,6 +96,7 @@ class InformationModel(Resource):
 
     @description.setter
     def description(self, value: dict) -> None:
+        """Set for description."""
         self._description = value
 
     @property
@@ -102,15 +106,17 @@ class InformationModel(Resource):
 
     @theme.setter
     def theme(self, value: List[str]) -> None:
+        """Set for theme."""
         self._theme = value
 
     @property
     def publisher(self: InformationModel) -> Agent:
-        """Get for publisher."""
+        """Get for theme."""
         return self._publisher
 
     @publisher.setter
     def publisher(self: InformationModel, publisher: Agent) -> None:
+        """Set for theme."""
         self._publisher = publisher
 
     @property
@@ -118,10 +124,22 @@ class InformationModel(Resource):
         """Get for subject."""
         return self._subject
 
+    @subject.setter
+    def subject(self: InformationModel, subject: List[Concept]) -> None:
+        """Set for subject."""
+        self._subject = subject
+
     @property
     def modelelements(self: InformationModel) -> List[ModelElement]:
         """Get for modelelements."""
         return self._modelelements
+
+    @modelelements.setter
+    def modelelements(
+        self: InformationModel, modelelements: List[ModelElement]
+    ) -> None:
+        """Set for modelelements."""
+        self._modelelements = modelelements
 
     def to_rdf(
         self: InformationModel,
@@ -252,6 +270,7 @@ class ModelElement:
 
     @identifier.setter
     def identifier(self, identifier: str) -> None:
+        """Set for identifier."""
         self._identifier = URI(identifier)
 
     @property
@@ -261,15 +280,17 @@ class ModelElement:
 
     @dct_identifier.setter
     def dct_identifier(self, dct_identifier: str) -> None:
+        """Set for dct_identifier."""
         self._dct_identifier = dct_identifier
 
     @property
     def title(self) -> dict:
-        """Title attribute."""
+        """Get for Title attribute."""
         return self._title
 
     @title.setter
     def title(self, title: dict) -> None:
+        """Set for Title attribute."""
         self._title = title
 
     @property
@@ -279,12 +300,18 @@ class ModelElement:
 
     @subject.setter
     def subject(self, subject: Concept) -> None:
+        """Set for subject."""
         self._subject = subject
 
     @property
     def has_property(self) -> List[ModelProperty]:
-        """Get for has_type."""
+        """Get for has_property."""
         return self._has_property
+
+    @has_property.setter
+    def has_property(self, has_property: List[ModelProperty]) -> None:
+        """Set for has_property."""
+        self._has_property = has_property
 
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the modelelement to rdf.
@@ -399,21 +426,28 @@ class ModelProperty:
 
     @subject.setter
     def subject(self, subject: Concept) -> None:
+        """Set for subject."""
         self._subject = subject
 
     @property
     def title(self) -> dict:
-        """Title attribute."""
+        """Get for title attribute."""
         return self._title
 
     @title.setter
     def title(self, title: dict) -> None:
+        """Set for title attribute."""
         self._title = title
 
     @property
     def has_type(self) -> List[ModelElement]:
         """Get for has_type."""
         return self._has_type
+
+    @has_type.setter
+    def has_type(self, has_type: List[ModelElement]) -> None:
+        """Set for has_type."""
+        self._has_type = has_type
 
     @property
     def identifier(self) -> str:
@@ -422,6 +456,7 @@ class ModelProperty:
 
     @identifier.setter
     def identifier(self, identifier: str) -> None:
+        """Set for identifier."""
         self._identifier = URI(identifier)
 
     @property
@@ -431,6 +466,7 @@ class ModelProperty:
 
     @min_occurs.setter
     def min_occurs(self, min_occurs: int) -> None:
+        """Set for min_occurs."""
         self._min_occurs = min_occurs
 
     @property
@@ -440,6 +476,7 @@ class ModelProperty:
 
     @max_occurs.setter
     def max_occurs(self, max_occurs: int) -> None:
+        """Set for max_occurs."""
         self._max_occurs = max_occurs
 
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
@@ -545,6 +582,7 @@ class Role(ModelProperty):
 
     @has_object_type.setter
     def has_object_type(self: Role, has_object_type: Any) -> None:
+        """Set for has_object_type."""
         self._has_object_type = has_object_type
 
     def to_rdf(
@@ -687,6 +725,7 @@ class SimpleType(ModelElement):
 
     @min_length.setter
     def min_length(self, min_length: int) -> None:
+        """Set for min_length."""
         self._min_length = min_length
 
     @property
@@ -696,6 +735,7 @@ class SimpleType(ModelElement):
 
     @max_length.setter
     def max_length(self, max_length: int) -> None:
+        """Set for max_length."""
         self._max_length = max_length
 
     @property
@@ -705,6 +745,7 @@ class SimpleType(ModelElement):
 
     @fraction_digits.setter
     def fraction_digits(self, fraction_digits: int) -> None:
+        """Set for fraction_digits."""
         self._fraction_digits = fraction_digits
 
     @property
@@ -714,6 +755,7 @@ class SimpleType(ModelElement):
 
     @length.setter
     def length(self, length: int) -> None:
+        """Set for length."""
         self._length = length
 
     @property
@@ -723,6 +765,7 @@ class SimpleType(ModelElement):
 
     @total_digits.setter
     def total_digits(self, total_digits: int) -> None:
+        """Set for total_digits."""
         self._total_digits = total_digits
 
     @property
@@ -732,6 +775,7 @@ class SimpleType(ModelElement):
 
     @max_inclusive.setter
     def max_inclusive(self, max_inclusive: float) -> None:
+        """Set for max_inclusive."""
         self._max_inclusive = max_inclusive
 
     @property
@@ -741,6 +785,7 @@ class SimpleType(ModelElement):
 
     @min_inclusive.setter
     def min_inclusive(self, min_inclusive: float) -> None:
+        """Set for min_inclusive."""
         self._min_inclusive = min_inclusive
 
     @property
@@ -750,6 +795,7 @@ class SimpleType(ModelElement):
 
     @type_definition_reference.setter
     def type_definition_reference(self, type_definition_reference: str) -> None:
+        """Set for type_definition_reference."""
         self._type_definition_reference = URI(type_definition_reference)
 
     @property
@@ -759,6 +805,7 @@ class SimpleType(ModelElement):
 
     @pattern.setter
     def pattern(self, pattern: str) -> None:
+        """Set for pattern."""
         self._pattern = pattern
 
     def to_rdf(
@@ -844,6 +891,7 @@ class Composition(ModelProperty):
 
     @contains.setter
     def contains(self: Composition, contains: ModelElement) -> None:
+        """Set for contains."""
         self._contains = contains
 
     def to_rdf(
@@ -914,6 +962,7 @@ class Collection(ModelProperty):
 
     @has_member.setter
     def has_member(self: Collection, has_member: ModelElement) -> None:
+        """Set for has_member."""
         self._has_member = has_member
 
     def to_rdf(
@@ -984,6 +1033,7 @@ class Association(ModelProperty):
 
     @refers_to.setter
     def refers_to(self: Association, refers_to: ModelElement) -> None:
+        """Set for refers_to."""
         self._refers_to = refers_to
 
     def to_rdf(
@@ -1054,8 +1104,14 @@ class Choice(ModelProperty):
         """Get for has_some."""
         return self._has_some
 
+    @has_some.setter
+    def has_some(self: Choice, has_some: List[ModelElement]) -> None:
+        """Set for has_some."""
+        self._has_some = has_some
+
     def __init__(self) -> None:
         """Inits Choice object with default values."""
+        super().__init__()
         self._has_some = []
 
     def to_rdf(
@@ -1133,6 +1189,7 @@ class Attribute(ModelProperty):
 
     @contains_object_type.setter
     def contains_object_type(self: Attribute, contains_object_type: ObjectType) -> None:
+        """Set for contains_object_type."""
         self._contains_object_type = contains_object_type
 
     @property
@@ -1142,6 +1199,7 @@ class Attribute(ModelProperty):
 
     @has_simple_type.setter
     def has_simple_type(self: Attribute, has_simple_type: SimpleType) -> None:
+        """Set for has_simple_type."""
         self._has_simple_type = has_simple_type
 
     def to_rdf(
@@ -1233,6 +1291,7 @@ class Specialization(ModelProperty):
     def has_general_concept(
         self: Specialization, has_general_concept: ModelElement
     ) -> None:
+        """Set for has_general_concept."""
         self._has_general_concept = has_general_concept
 
     def to_rdf(
@@ -1307,6 +1366,7 @@ class Realization(ModelProperty):
 
     @has_supplier.setter
     def has_supplier(self: Realization, has_supplier: ModelElement) -> None:
+        """Set for has_supplier."""
         self._has_supplier = has_supplier
 
     def to_rdf(
@@ -1377,6 +1437,7 @@ class Abstraction(ModelProperty):
 
     @is_abstraction_of.setter
     def is_abstraction_of(self: Abstraction, is_abstraction_of: ModelElement) -> None:
+        """Set for is_abstraction_of."""
         self._is_abstraction_of = is_abstraction_of
 
     def to_rdf(

@@ -1,4 +1,6 @@
 """Test cases for the informationmodel module."""
+from typing import List
+
 from concepttordf import Concept
 from datacatalogtordf import Agent
 import pytest
@@ -166,13 +168,17 @@ def test_to_graph_should_return_subject() -> None:
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
+    subjects: List[Concept] = []
+
     subject1 = Concept()
     subject1.identifier = "https://example.com/subjects/1"
-    informationmodel.subject.append(subject1)
+    subjects.append(subject1)
 
     subject2 = Concept()
     subject2.identifier = "https://example.com/subjects/2"
-    informationmodel.subject.append(subject2)
+    subjects.append(subject2)
+
+    informationmodel.subject = subjects
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -209,8 +215,11 @@ def test_to_graph_should_return_contains_model_element() -> None:
     informationmodel.identifier = "http://example.com/informationmodels/1"
     modelelement = ModelElement()
     modelelement.identifier = "http://example.com/modelelements/1"
-    informationmodel.modelelements.append(modelelement)
     modelelement.title = {"nb": "Tittel 1", "en": "Title 1"}
+
+    modelelements: List[ModelElement] = []
+    modelelements.append(modelelement)
+    informationmodel.modelelements = modelelements
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .

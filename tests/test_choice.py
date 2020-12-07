@@ -1,4 +1,5 @@
 """Test cases for the choice module."""
+from typing import List
 
 import pytest
 from rdflib import Graph
@@ -77,11 +78,14 @@ def test_to_graph_should_return_has_some_both_identifiers() -> None:
 
     modelelement1 = ModelElement()
     modelelement1.identifier = "http://example.com/modelelements/1"
-    choice.has_some.append(modelelement1)
 
     modelelement2 = ModelElement()
     modelelement2.identifier = "http://example.com/modelelements/2"
-    choice.has_some.append(modelelement2)
+
+    has_somes: List[ModelElement] = []
+    has_somes.append(modelelement1)
+    has_somes.append(modelelement2)
+    choice.has_some = has_somes
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
