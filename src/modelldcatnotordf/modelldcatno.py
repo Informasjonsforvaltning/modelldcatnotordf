@@ -196,7 +196,13 @@ class InformationModel(Resource):
                 for _s, p, o in subject._to_graph().triples((None, None, None)):
                     self._g.add((_subject, p, o))
 
-                self._g.add((URIRef(self.identifier), DCT.subject, _subject,))
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCT.subject,
+                        _subject,
+                    )
+                )
 
     def _modelelements_to_graph(self: InformationModel) -> None:
 
@@ -357,7 +363,13 @@ class ModelElement:
 
         if getattr(self, "title", None):
             for key in self.title:
-                self._g.add((_self, DCT.title, Literal(self.title[key], lang=key),))
+                self._g.add(
+                    (
+                        _self,
+                        DCT.title,
+                        Literal(self.title[key], lang=key),
+                    )
+                )
 
         if getattr(self, "dct_identifier", None):
             self._g.add((_self, DCT.identifier, Literal(self._dct_identifier)))
@@ -388,7 +400,13 @@ class ModelElement:
                 for _s, p, o in has_property._to_graph().triples((None, None, None)):
                     self._g.add((_has_property, p, o))
 
-                self._g.add((_self, MODELLDCATNO.hasProperty, _has_property,))
+                self._g.add(
+                    (
+                        _self,
+                        MODELLDCATNO.hasProperty,
+                        _has_property,
+                    )
+                )
 
 
 class ModelProperty:
@@ -530,7 +548,13 @@ class ModelProperty:
 
         if getattr(self, "title", None):
             for key in self.title:
-                self._g.add((_self, DCT.title, Literal(self.title[key], lang=key),))
+                self._g.add(
+                    (
+                        _self,
+                        DCT.title,
+                        Literal(self.title[key], lang=key),
+                    )
+                )
 
         if getattr(self, "subject", None):
 
@@ -556,7 +580,13 @@ class ModelProperty:
                 for _s, p, o in has_type._to_graph().triples((None, None, None)):
                     self._g.add((_has_type, p, o))
 
-                self._g.add((_self, MODELLDCATNO.hasType, _has_type,))
+                self._g.add(
+                    (
+                        _self,
+                        MODELLDCATNO.hasType,
+                        _has_type,
+                    )
+                )
 
 
 class Role(ModelProperty):
@@ -869,7 +899,9 @@ class SimpleType(ModelElement):
             self._g.add((_self, XSD.minInclusive, Literal(self.min_inclusive)))
 
         if getattr(self, "type_definition_reference", None):
-            self._g.add((_self, XSD.anyURI, URIRef(self.type_definition_reference)),)
+            self._g.add(
+                (_self, XSD.anyURI, URIRef(self.type_definition_reference)),
+            )
 
         if getattr(self, "pattern", None):
             self._g.add((_self, XSD.pattern, Literal(self.pattern)))
