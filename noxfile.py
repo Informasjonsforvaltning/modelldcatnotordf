@@ -3,7 +3,7 @@ import tempfile
 
 import nox
 from nox.sessions import Session
-import nox_poetry  # noqa: F401
+import nox_poetry
 
 package = "modelldcatnotordf"
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
