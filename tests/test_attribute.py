@@ -1,10 +1,9 @@
 """Test cases for the attribute module."""
-
 import pytest
 from rdflib import Graph
 from rdflib.compare import isomorphic
 
-from modelldcatnotordf.modelldcatno import Attribute, ObjectType, SimpleType
+from modelldcatnotordf.modelldcatno import Attribute, DataType, ObjectType, SimpleType
 from tests.testutils import _dump_diff
 
 """
@@ -311,4 +310,122 @@ def test_to_graph_should_return_has_simple_type_blank_nodes() -> None:
     if not _isomorphic:
         _dump_diff(g1, g2)
         pass
+    assert _isomorphic
+
+
+def test_to_graph_should_return_has_data_type_both_identifiers() -> None:
+    """It returns a has_data_type graph isomorphic to spec."""
+    attribute = Attribute()
+    attribute.identifier = "http://example.com/attributes/1"
+
+    datatype = DataType()
+    datatype.identifier = "http://example.com/datatypes/1"
+    attribute.has_data_type = datatype
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        <http://example.com/attributes/1> a modelldcatno:Attribute ;
+            modelldcatno:hasDataType <http://example.com/datatypes/1> .
+
+        <http://example.com/datatypes/1> a modelldcatno:DataType ;
+
+        .
+        """
+    g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+    assert _isomorphic
+
+
+def test_to_graph_should_return_has_data_type_bnode_attribute_id() -> None:
+    """It returns a has_data_type graph isomorphic to spec."""
+    attribute = Attribute()
+    attribute.identifier = "http://example.com/attributes/1"
+
+    datatype = DataType()
+    attribute.has_data_type = datatype
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        <http://example.com/attributes/1> a modelldcatno:Attribute ;
+            modelldcatno:hasDataType [ a modelldcatno:DataType ] .
+
+        """
+    g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+    assert _isomorphic
+
+
+def test_to_graph_should_return_has_data_type_blank_node_datatype() -> None:
+    """It returns a has_data_type graph isomorphic to spec."""
+    attribute = Attribute()
+
+    datatype = DataType()
+    datatype.identifier = "http://example.com/datatypes/1"
+    attribute.has_data_type = datatype
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        [ a modelldcatno:Attribute ;
+            modelldcatno:hasDataType <http://example.com/datatypes/1>
+        ] .
+
+        <http://example.com/datatypes/1> a modelldcatno:DataType .
+
+        """
+    g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+    assert _isomorphic
+
+
+def test_to_graph_should_return_has_data_type_blank_nodes() -> None:
+    """It returns a has_data_type graph isomorphic to spec."""
+    attribute = Attribute()
+
+    datatype = DataType()
+    attribute.has_data_type = datatype
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        [ a modelldcatno:Attribute ;
+            modelldcatno:hasDataType [ a modelldcatno:DataType ]
+        ] .
+        """
+    g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
     assert _isomorphic
