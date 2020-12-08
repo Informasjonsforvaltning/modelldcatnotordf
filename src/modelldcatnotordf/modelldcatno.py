@@ -111,12 +111,12 @@ class InformationModel(Resource):
 
     @property
     def publisher(self: InformationModel) -> Agent:
-        """Get for publisher."""
+        """Get for theme."""
         return self._publisher
 
     @publisher.setter
     def publisher(self: InformationModel, publisher: Agent) -> None:
-        """Set for publisher."""
+        """Set for theme."""
         self._publisher = publisher
 
     @property
