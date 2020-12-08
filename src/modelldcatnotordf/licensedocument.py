@@ -80,6 +80,12 @@ class LicenseDocument:
                 for _s, p, o in type._to_graph().triples((None, None, None)):
                     self._g.add((_type, p, o))
 
-                self._g.add((_self, DCT.type, _type,))
+                self._g.add(
+                    (
+                        _self,
+                        DCT.type,
+                        _type,
+                    )
+                )
 
         return self._g
