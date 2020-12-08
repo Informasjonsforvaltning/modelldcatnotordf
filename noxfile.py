@@ -3,12 +3,12 @@ import tempfile
 
 import nox
 from nox.sessions import Session
-import nox_poetry
+import nox_poetry  # noqa: F401
 
 package = "modelldcatnotordf"
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 nox.options.stop_on_first_error = True
-nox.options.sessions = "black", "lint", "mypy", "pytype", "tests"
+nox.options.sessions = "lint", "mypy", "pytype", "tests"
 
 
 @nox.session(python=["3.8", "3.7"])
