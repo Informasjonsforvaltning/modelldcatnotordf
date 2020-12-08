@@ -15,7 +15,7 @@ nox.options.sessions = "black", "lint", "mypy", "pytype", "tests"
 def tests(session: Session) -> None:
     """Run the test suite."""
     args = session.posargs or ["--cov"]
-    session.install(".")
+    nox_poetry.installroot(session, distribution_format=nox_poetry.WHEEL)
     session.install("coverage[toml]", "pytest", "pytest-cov")
     session.run("pytest", "-rA", *args)
 
