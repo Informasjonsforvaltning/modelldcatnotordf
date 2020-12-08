@@ -1203,12 +1203,18 @@ class Choice(ModelProperty):
 class Attribute(ModelProperty):
     """A class representing a modelldcatno:Attribute."""
 
-    __slots__ = ("_identifier", "_contains_object_type", "_has_simple_type")
+    __slots__ = (
+        "_identifier",
+        "_contains_object_type",
+        "_has_simple_type",
+        "_has_data_type",
+    )
 
     _identifier: URI
     _contains_object_type: ObjectType
     _g: Graph
     _has_simple_type: SimpleType
+    _has_data_type: DataType
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1233,6 +1239,16 @@ class Attribute(ModelProperty):
     def has_simple_type(self: Attribute, has_simple_type: SimpleType) -> None:
         """Set for has_simple_type."""
         self._has_simple_type = has_simple_type
+
+    @property
+    def has_data_type(self: Attribute) -> DataType:
+        """Get for has_data_type."""
+        return self._has_data_type
+
+    @has_data_type.setter
+    def has_data_type(self: Attribute, has_data_type: DataType) -> None:
+        """Set for has_data_type."""
+        self._has_data_type = has_data_type
 
     def to_rdf(
         self: Attribute, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -1269,6 +1285,7 @@ class Attribute(ModelProperty):
 
         self._contains_object_type_to_graph(_self)
         self._has_simple_type_to_graph(_self)
+        self._has_data_type_to_graph(_self)
 
         return self._g
 
@@ -1303,6 +1320,20 @@ class Attribute(ModelProperty):
                 self._g.add((_has_simple_type, p, o))
 
             self._g.add((_self, MODELLDCATNO.hasSimpleType, _has_simple_type))
+
+    def _has_data_type_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "has_data_type", None):
+
+            if getattr(self._has_data_type, "identifier", None):
+                _has_data_type = URIRef(self._has_data_type.identifier)
+            else:
+                _has_data_type = BNode()
+
+            for _s, p, o in self._has_data_type._to_graph().triples((None, None, None)):
+                self._g.add((_has_data_type, p, o))
+
+            self._g.add((_self, MODELLDCATNO.hasDataType, _has_data_type))
 
 
 class Specialization(ModelProperty):
