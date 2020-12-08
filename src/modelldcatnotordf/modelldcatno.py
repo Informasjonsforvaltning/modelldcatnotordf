@@ -1524,3 +1524,50 @@ class Abstraction(ModelProperty):
                 self._g.add((_is_abstraction_of, p, o))
 
             self._g.add((_self, MODELLDCATNO.isAbstractionOf, _is_abstraction_of))
+
+
+class DataType(ModelElement):
+    """A class representing a modelldcatno:DataType."""
+
+    _identifier: URI
+    _dct_identifier: str
+    _g: Graph
+
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
+
+    def to_rdf(
+        self: DataType, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the data type to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: DataType, type: str = MODELLDCATNO.DataType, selfobject: Any = None
+    ) -> Graph:
+        """Returns the data type as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.DataType
+            selfobject: a bnode or URI passed from a subclass Default: None
+
+        Returns:
+            the object type graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(DataType, self)._to_graph(MODELLDCATNO.DataType, _self)
+
+        return self._g
