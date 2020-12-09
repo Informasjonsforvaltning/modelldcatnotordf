@@ -3,9 +3,8 @@
 from datacatalogtordf import Agent, Catalog, Dataset
 import pytest
 from rdflib import Graph
-from rdflib.compare import isomorphic
 
-from tests.testutils import _dump_diff
+from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class Agent.
@@ -39,11 +38,7 @@ def test_to_graph_should_return_agent() -> None:
     g1 = Graph().parse(data=agent.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_name() -> None:
@@ -68,11 +63,7 @@ def test_to_graph_should_return_name() -> None:
     g1 = Graph().parse(data=agent.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_orgnr_() -> None:
@@ -97,11 +88,7 @@ def test_to_graph_should_return_orgnr_() -> None:
     g1 = Graph().parse(data=agent.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_publisher_as_bnode() -> None:
@@ -128,11 +115,7 @@ def test_to_graph_should_return_publisher_as_bnode() -> None:
     g1 = Graph().parse(data=dataset.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_publisher_as_bnode_with_catalog() -> None:
@@ -159,11 +142,7 @@ def test_to_graph_should_return_publisher_as_bnode_with_catalog() -> None:
     g1 = Graph().parse(data=catalog.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 # def test_to_graph_should_return_sameas() -> None:

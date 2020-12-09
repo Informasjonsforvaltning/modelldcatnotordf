@@ -2,10 +2,9 @@
 
 import pytest
 from rdflib import Graph
-from rdflib.compare import isomorphic
 
 from modelldcatnotordf.modelldcatno import Association, ModelElement
-from tests.testutils import _dump_diff
+from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class Association.
@@ -38,11 +37,7 @@ def test_to_graph_should_return_blank_node() -> None:
     g1 = Graph().parse(data=association.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_identifier() -> None:
@@ -63,11 +58,7 @@ def test_to_graph_should_return_identifier() -> None:
     g1 = Graph().parse(data=association.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_refers_to_both_identifiers() -> None:
@@ -96,11 +87,7 @@ def test_to_graph_should_return_refers_to_both_identifiers() -> None:
     g1 = Graph().parse(data=association.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_refers_to_blank_node_association_identifier() -> None:
@@ -125,11 +112,7 @@ def test_to_graph_should_return_refers_to_blank_node_association_identifier() ->
     g1 = Graph().parse(data=association.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_refers_to_blank_node_modelelement_identifier() -> None:
@@ -157,11 +140,7 @@ def test_to_graph_should_return_refers_to_blank_node_modelelement_identifier() -
     g1 = Graph().parse(data=association.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_refers_to_blank_nodes() -> None:
@@ -185,8 +164,4 @@ def test_to_graph_should_return_refers_to_blank_nodes() -> None:
     g1 = Graph().parse(data=association.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)

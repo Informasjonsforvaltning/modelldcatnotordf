@@ -3,10 +3,9 @@
 from concepttordf import Concept
 import pytest
 from rdflib import Graph
-from rdflib.compare import isomorphic
 
 from modelldcatnotordf.modelldcatno import SimpleType
-from tests.testutils import _dump_diff
+from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class SimpleType.
@@ -44,11 +43,7 @@ def test_to_graph_should_return_title_and_identifier() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_title_and_no_identifier() -> None:
@@ -71,11 +66,7 @@ def test_to_graph_should_return_title_and_no_identifier() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_dct_identifier_as_graph() -> None:
@@ -98,11 +89,7 @@ def test_to_graph_should_return_dct_identifier_as_graph() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_subject() -> None:
@@ -130,11 +117,7 @@ def test_to_graph_should_return_subject() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_min_length() -> None:
@@ -158,11 +141,7 @@ def test_to_graph_should_return_min_length() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_max_length() -> None:
@@ -186,11 +165,7 @@ def test_to_graph_should_return_max_length() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_fraction_digits() -> None:
@@ -214,11 +189,7 @@ def test_to_graph_should_return_fraction_digits() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_length() -> None:
@@ -242,11 +213,7 @@ def test_to_graph_should_return_length() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_total_digits() -> None:
@@ -270,11 +237,7 @@ def test_to_graph_should_return_total_digits() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_max_inclusive() -> None:
@@ -298,11 +261,7 @@ def test_to_graph_should_return_max_inclusive() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_min_inclusive() -> None:
@@ -326,11 +285,7 @@ def test_to_graph_should_return_min_inclusive() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_type_definition_referance() -> None:
@@ -354,11 +309,7 @@ def test_to_graph_should_return_type_definition_referance() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_pattern() -> None:
@@ -382,8 +333,4 @@ def test_to_graph_should_return_pattern() -> None:
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
