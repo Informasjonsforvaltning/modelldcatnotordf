@@ -1,7 +1,23 @@
 """Utils for displaying debug information."""
 
 from rdflib import Graph
-from rdflib.compare import graph_diff
+from rdflib.compare import graph_diff, isomorphic
+
+
+def assert_isomorphic(g1: Graph, g2: Graph) -> None:
+    """Compares two graphs an asserts that they are isomorphic.
+
+        If not isomorpic a graph diff will be dumped.
+
+    Args:
+        g1 (Graph): a graph to compare
+        g2 (Graph): the graph to compare with
+
+    """
+    _isomorphic = isomorphic(g1, g2)
+    if not _isomorphic:
+        _dump_diff(g1, g2)
+    assert _isomorphic
 
 
 def _dump_diff(g1: Graph, g2: Graph) -> None:

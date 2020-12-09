@@ -5,12 +5,11 @@ from concepttordf import Concept
 from datacatalogtordf import Agent
 import pytest
 from rdflib import Graph, Namespace
-from rdflib.compare import isomorphic
 
 from modelldcatnotordf.licensedocument import LicenseDocument
 from modelldcatnotordf.modelldcatno import InformationModel
 from modelldcatnotordf.modelldcatno import ModelElement
-from tests.testutils import _dump_diff
+from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class InformationModel.
@@ -54,11 +53,7 @@ def test_to_graph_should_return_title_and_identifier() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_description() -> None:
@@ -83,11 +78,7 @@ def test_to_graph_should_return_description() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_theme() -> None:
@@ -114,11 +105,7 @@ def test_to_graph_should_return_theme() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_publisher() -> None:
@@ -154,11 +141,7 @@ def test_to_graph_should_return_publisher() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_subject() -> None:
@@ -202,11 +185,7 @@ def test_to_graph_should_return_subject() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_contains_model_element() -> None:
@@ -239,11 +218,7 @@ def test_to_graph_should_return_contains_model_element() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_modelelements_blank_node() -> None:
@@ -268,11 +243,7 @@ def test_to_graph_should_return_modelelements_blank_node() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_modelelements_blank_node_with_properties() -> None:
@@ -300,11 +271,7 @@ def test_to_graph_should_return_modelelements_blank_node_with_properties() -> No
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_informationmodelidentifier() -> None:
@@ -328,11 +295,7 @@ def test_to_graph_should_return_informationmodelidentifier() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-    pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_licensedocument() -> None:
@@ -364,11 +327,7 @@ def test_to_graph_should_return_licensedocument() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_license_document_bnode() -> None:
@@ -397,11 +356,7 @@ def test_to_graph_should_return_license_document_bnode() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_license_document_bnode_with_types() -> None:
@@ -441,8 +396,4 @@ def test_to_graph_should_return_license_document_bnode_with_types() -> None:
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)

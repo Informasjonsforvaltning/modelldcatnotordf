@@ -1,10 +1,9 @@
 """Test cases for the attribute module."""
 import pytest
 from rdflib import Graph
-from rdflib.compare import isomorphic
 
 from modelldcatnotordf.modelldcatno import Attribute, DataType, ObjectType, SimpleType
-from tests.testutils import _dump_diff
+from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class Attribute.
@@ -37,11 +36,7 @@ def test_to_graph_should_return_blank_node() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_identifier() -> None:
@@ -62,11 +57,7 @@ def test_to_graph_should_return_identifier() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_contains_object_type_both_identifiers() -> None:
@@ -95,11 +86,7 @@ def test_to_graph_should_return_contains_object_type_both_identifiers() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_contains_object_type_bnode_attribute_id() -> None:
@@ -124,11 +111,7 @@ def test_to_graph_should_return_contains_object_type_bnode_attribute_id() -> Non
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_contains_object_type_blank_node_objecttype() -> None:
@@ -156,11 +139,7 @@ def test_to_graph_should_return_contains_object_type_blank_node_objecttype() -> 
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_contains_object_type_blank_nodes() -> None:
@@ -184,11 +163,7 @@ def test_to_graph_should_return_contains_object_type_blank_nodes() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_has_simple_type_both_identifiers() -> None:
@@ -217,11 +192,7 @@ def test_to_graph_should_return_has_simple_type_both_identifiers() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_has_simple_type_bnode_attribute_id() -> None:
@@ -246,11 +217,7 @@ def test_to_graph_should_return_has_simple_type_bnode_attribute_id() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_has_simple_type_blank_node_simpletype() -> None:
@@ -278,11 +245,7 @@ def test_to_graph_should_return_has_simple_type_blank_node_simpletype() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_has_simple_type_blank_nodes() -> None:
@@ -306,11 +269,7 @@ def test_to_graph_should_return_has_simple_type_blank_nodes() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-        pass
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_has_data_type_both_identifiers() -> None:
@@ -339,10 +298,7 @@ def test_to_graph_should_return_has_data_type_both_identifiers() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_has_data_type_bnode_attribute_id() -> None:
@@ -367,10 +323,7 @@ def test_to_graph_should_return_has_data_type_bnode_attribute_id() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_has_data_type_blank_node_datatype() -> None:
@@ -398,10 +351,7 @@ def test_to_graph_should_return_has_data_type_blank_node_datatype() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
 
 
 def test_to_graph_should_return_has_data_type_blank_nodes() -> None:
@@ -425,7 +375,4 @@ def test_to_graph_should_return_has_data_type_blank_nodes() -> None:
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
-    _isomorphic = isomorphic(g1, g2)
-    if not _isomorphic:
-        _dump_diff(g1, g2)
-    assert _isomorphic
+    assert_isomorphic(g1, g2)
