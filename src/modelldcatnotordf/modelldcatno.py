@@ -1352,10 +1352,11 @@ class Attribute(ModelProperty):
 
         if getattr(self, "has_value_from", None):
 
-            if getattr(self._has_value_from, "identifier", None):
-                _has_value_from = URIRef(self._has_value_from.identifier)
-            else:
-                _has_value_from = BNode()
+            _has_value_from = (
+                URIRef(self._has_value_from.identifier)
+                if getattr(self._has_value_from, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._has_value_from._to_graph().triples(
                 (None, None, None)
@@ -1721,10 +1722,9 @@ class CodeList(ModelElement):
         Returns:
             the root object type graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(CodeList, self)._to_graph(MODELLDCATNO.CodeList, _self)
 
