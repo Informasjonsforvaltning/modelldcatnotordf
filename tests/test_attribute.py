@@ -2,7 +2,13 @@
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import Attribute, DataType, ObjectType, SimpleType
+from modelldcatnotordf.modelldcatno import (
+    Attribute,
+    CodeList,
+    DataType,
+    ObjectType,
+    SimpleType,
+)
 from tests.testutils import assert_isomorphic
 
 """
@@ -370,6 +376,112 @@ def test_to_graph_should_return_has_data_type_blank_nodes() -> None:
 
         [ a modelldcatno:Attribute ;
             modelldcatno:hasDataType [ a modelldcatno:DataType ]
+        ] .
+        """
+    g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_has_value_from_both_identifiers() -> None:
+    """It returns a has_value_from graph isomorphic to spec."""
+    attribute = Attribute()
+    attribute.identifier = "http://example.com/attributes/1"
+
+    codelist = CodeList()
+    codelist.identifier = "http://example.com/codelists/1"
+    attribute.has_value_from = codelist
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        <http://example.com/attributes/1> a modelldcatno:Attribute ;
+            modelldcatno:hasValueFrom <http://example.com/codelists/1> .
+
+        <http://example.com/codelists/1> a modelldcatno:CodeList ;
+
+        .
+        """
+    g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_has_value_from_bnode_attribute_id() -> None:
+    """It returns a has_value_from graph isomorphic to spec."""
+    attribute = Attribute()
+    attribute.identifier = "http://example.com/attributes/1"
+
+    codelist = CodeList()
+    attribute.has_value_from = codelist
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        <http://example.com/attributes/1> a modelldcatno:Attribute ;
+            modelldcatno:hasValueFrom [ a modelldcatno:CodeList ] .
+
+        """
+    g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_has_value_from_blank_node_codelist() -> None:
+    """It returns a has_value_from graph isomorphic to spec."""
+    attribute = Attribute()
+
+    codelist = CodeList()
+    codelist.identifier = "http://example.com/codelists/1"
+    attribute.has_value_from = codelist
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        [ a modelldcatno:Attribute ;
+            modelldcatno:hasValueFrom <http://example.com/codelists/1>
+        ] .
+
+        <http://example.com/codelists/1> a modelldcatno:CodeList .
+
+        """
+    g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_has_value_from_blank_nodes() -> None:
+    """It returns a has_value_from graph isomorphic to spec."""
+    attribute = Attribute()
+
+    codelist = CodeList()
+    attribute.has_value_from = codelist
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        [ a modelldcatno:Attribute ;
+            modelldcatno:hasValueFrom [ a modelldcatno:CodeList ]
         ] .
         """
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
