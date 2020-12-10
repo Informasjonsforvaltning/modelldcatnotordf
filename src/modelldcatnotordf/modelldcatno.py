@@ -1740,6 +1740,7 @@ class CodeElement:
         "_g",
         "_type",
         "_subject",
+        "_preflabel",
     )
 
     _identifier: URI
@@ -1747,6 +1748,7 @@ class CodeElement:
     _g: Graph
     _type: str
     _subject: Concept
+    _preflabel: dict
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1781,6 +1783,16 @@ class CodeElement:
     def subject(self: CodeElement, subject: Concept) -> None:
         """Set for subject."""
         self._subject = subject
+
+    @property
+    def preflabel(self: CodeElement) -> dict:
+        """Get for preflabel."""
+        return self._preflabel
+
+    @preflabel.setter
+    def preflabel(self: CodeElement, preflabel: dict) -> None:
+        """Set for preflabel."""
+        self._preflabel = preflabel
 
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -1817,6 +1829,7 @@ class CodeElement:
         if getattr(self, "dct_identifier", None):
             self._g.add((_self, DCT.identifier, Literal(self._dct_identifier)))
 
+        self._preflabel_to_graph(_self)
         self._subject_to_graph(_self)
 
         return self._g
@@ -1831,3 +1844,17 @@ class CodeElement:
                 self._g.add((_subject, p, o))
 
             self._g.add((_self, DCT.subject, _subject))
+
+    def _preflabel_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "preflabel", None):
+
+            for key in self.preflabel:
+
+                self._g.add(
+                    (
+                        _self,
+                        SKOS.prefLabel,
+                        Literal(self.preflabel[key], lang=key),
+                    )
+                )
