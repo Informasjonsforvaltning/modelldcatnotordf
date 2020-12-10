@@ -1208,6 +1208,7 @@ class Attribute(ModelProperty):
         "_contains_object_type",
         "_has_simple_type",
         "_has_data_type",
+        "_has_value_from",
     )
 
     _identifier: URI
@@ -1215,6 +1216,7 @@ class Attribute(ModelProperty):
     _g: Graph
     _has_simple_type: SimpleType
     _has_data_type: DataType
+    _has_value_from: CodeList
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1249,6 +1251,16 @@ class Attribute(ModelProperty):
     def has_data_type(self: Attribute, has_data_type: DataType) -> None:
         """Set for has_data_type."""
         self._has_data_type = has_data_type
+
+    @property
+    def has_value_from(self: Attribute) -> CodeList:
+        """Get for has_value_from."""
+        return self._has_value_from
+
+    @has_value_from.setter
+    def has_value_from(self: Attribute, has_value_from: CodeList) -> None:
+        """Set for has_value_from."""
+        self._has_value_from = has_value_from
 
     def to_rdf(
         self: Attribute, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -1286,6 +1298,7 @@ class Attribute(ModelProperty):
         self._contains_object_type_to_graph(_self)
         self._has_simple_type_to_graph(_self)
         self._has_data_type_to_graph(_self)
+        self._has_value_from_to_graph(_self)
 
         return self._g
 
@@ -1334,6 +1347,22 @@ class Attribute(ModelProperty):
                 self._g.add((_has_data_type, p, o))
 
             self._g.add((_self, MODELLDCATNO.hasDataType, _has_data_type))
+
+    def _has_value_from_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "has_value_from", None):
+
+            if getattr(self._has_value_from, "identifier", None):
+                _has_value_from = URIRef(self._has_value_from.identifier)
+            else:
+                _has_value_from = BNode()
+
+            for _s, p, o in self._has_value_from._to_graph().triples(
+                (None, None, None)
+            ):
+                self._g.add((_has_value_from, p, o))
+
+            self._g.add((_self, MODELLDCATNO.hasValueFrom, _has_value_from))
 
 
 class Specialization(ModelProperty):
