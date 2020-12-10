@@ -1729,3 +1729,105 @@ class CodeList(ModelElement):
         super(CodeList, self)._to_graph(MODELLDCATNO.CodeList, _self)
 
         return self._g
+
+
+class CodeElement:
+    """A class representing a modelldcatno:CodeElement."""
+
+    __slots__ = (
+        "_identifier",
+        "_dct_identifier",
+        "_g",
+        "_type",
+        "_subject",
+    )
+
+    _identifier: URI
+    _dct_identifier: str
+    _g: Graph
+    _type: str
+    _subject: Concept
+
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        self._type = MODELLDCATNO.CodeElement
+
+    @property
+    def identifier(self: CodeElement) -> str:
+        """Get for identifier."""
+        return self._identifier
+
+    @identifier.setter
+    def identifier(self: CodeElement, identifier: str) -> None:
+        """Set for identifier."""
+        self._identifier = URI(identifier)
+
+    @property
+    def dct_identifier(self: CodeElement) -> str:
+        """Get for dct_identifier."""
+        return self._dct_identifier
+
+    @dct_identifier.setter
+    def dct_identifier(self: CodeElement, dct_identifier: str) -> None:
+        """Set for dct_identifier."""
+        self._dct_identifier = dct_identifier
+
+    @property
+    def subject(self: CodeElement) -> Concept:
+        """Get for subject."""
+        return self._subject
+
+    @subject.setter
+    def subject(self: CodeElement, subject: Concept) -> None:
+        """Set for subject."""
+        self._subject = subject
+
+    def to_rdf(
+        self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the code element to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(self: CodeElement) -> Graph:
+        """Returns the code element as graph.
+
+        Returns:
+            the code element graph
+        """
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
+
+        # Set up graph and namespaces:
+        self._g = Graph()
+        self._g.bind("modelldcatno", MODELLDCATNO)
+        self._g.bind("dct", DCT)
+        self._g.bind("skos", SKOS)
+
+        self._g.add((_self, RDF.type, self._type))
+
+        if getattr(self, "dct_identifier", None):
+            self._g.add((_self, DCT.identifier, Literal(self._dct_identifier)))
+
+        self._subject_to_graph(_self)
+
+        return self._g
+
+    def _subject_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "subject", None):
+
+            _subject = URIRef(self.subject.identifier)
+
+            for _s, p, o in self.subject._to_graph().triples((None, None, None)):
+                self._g.add((_subject, p, o))
+
+            self._g.add((_self, DCT.subject, _subject))
