@@ -1741,6 +1741,7 @@ class CodeElement:
         "_type",
         "_subject",
         "_preflabel",
+        "_notation",
     )
 
     _identifier: URI
@@ -1749,6 +1750,7 @@ class CodeElement:
     _type: str
     _subject: Concept
     _preflabel: dict
+    _notation: str
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1794,6 +1796,16 @@ class CodeElement:
         """Set for preflabel."""
         self._preflabel = preflabel
 
+    @property
+    def notation(self: CodeElement) -> str:
+        """Get for notation."""
+        return self._notation
+
+    @notation.setter
+    def notation(self: CodeElement, notation: str) -> None:
+        """Set for notation."""
+        self._notation = notation
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -1828,6 +1840,9 @@ class CodeElement:
 
         if getattr(self, "dct_identifier", None):
             self._g.add((_self, DCT.identifier, Literal(self._dct_identifier)))
+
+        if getattr(self, "notation", None):
+            self._g.add((_self, SKOS.notation, Literal(self._notation)))
 
         self._preflabel_to_graph(_self)
         self._subject_to_graph(_self)
