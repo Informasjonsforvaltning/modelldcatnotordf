@@ -23,6 +23,7 @@ PROV = Namespace("http://www.w3.org/ns/prov#")
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
+XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
 
 
 class InformationModel(Resource):
@@ -1865,7 +1866,6 @@ class CodeElement:
         if getattr(self, "preflabel", None):
 
             for key in self.preflabel:
-
                 self._g.add(
                     (
                         _self,
