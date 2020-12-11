@@ -1743,6 +1743,7 @@ class CodeElement:
         "_subject",
         "_preflabel",
         "_notation",
+        "_in_scheme",
     )
 
     _identifier: URI
@@ -1752,6 +1753,7 @@ class CodeElement:
     _subject: Concept
     _preflabel: dict
     _notation: str
+    _in_scheme: List[CodeList]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1807,6 +1809,16 @@ class CodeElement:
         """Set for notation."""
         self._notation = notation
 
+    @property
+    def in_scheme(self: CodeElement) -> List[CodeList]:
+        """Get for in_scheme."""
+        return self._in_scheme
+
+    @in_scheme.setter
+    def in_scheme(self: CodeElement, in_scheme: List[CodeList]) -> None:
+        """Set for in_scheme."""
+        self._in_scheme = in_scheme
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -1847,6 +1859,7 @@ class CodeElement:
 
         self._preflabel_to_graph(_self)
         self._subject_to_graph(_self)
+        self._in_scheme_to_graph(_self)
 
         return self._g
 
@@ -1873,3 +1886,19 @@ class CodeElement:
                         Literal(self.preflabel[key], lang=key),
                     )
                 )
+
+    def _in_scheme_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "in_scheme", None):
+
+            for in_scheme in self._in_scheme:
+
+                if getattr(in_scheme, "identifier", None):
+                    _in_scheme = URIRef(in_scheme.identifier)
+                else:
+                    _in_scheme = BNode()
+
+                for _s, p, o in in_scheme._to_graph().triples((None, None, None)):
+                    self._g.add((_in_scheme, p, o))
+
+                self._g.add((_self, SKOS.inScheme, _in_scheme))
