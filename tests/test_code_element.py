@@ -131,3 +131,27 @@ def test_to_graph_should_return_preflabel() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_notation_as_graph() -> None:
+    """It returns a notation graph isomorphic to spec."""
+    codeelement = CodeElement()
+    codeelement.identifier = "http://example.com/codeelements/1"
+    codeelement.notation = "str"
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+    <http://example.com/codeelements/1>    a modelldcatno:CodeElement ;
+        skos:notation "str";
+    .
+    """
+    g1 = Graph().parse(data=codeelement.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
