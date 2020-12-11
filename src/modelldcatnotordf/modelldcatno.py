@@ -1744,6 +1744,7 @@ class CodeElement:
         "_preflabel",
         "_notation",
         "_in_scheme",
+        "_top_concept_of",
     )
 
     _identifier: URI
@@ -1754,6 +1755,7 @@ class CodeElement:
     _preflabel: dict
     _notation: str
     _in_scheme: List[CodeList]
+    _top_concept_of: List[CodeList]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1819,6 +1821,16 @@ class CodeElement:
         """Set for in_scheme."""
         self._in_scheme = in_scheme
 
+    @property
+    def top_concept_of(self: CodeElement) -> List[CodeList]:
+        """Get for top_concept_of."""
+        return self._top_concept_of
+
+    @top_concept_of.setter
+    def top_concept_of(self: CodeElement, top_concept_of: List[CodeList]) -> None:
+        """Set for top_concept_of."""
+        self._top_concept_of = top_concept_of
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -1860,6 +1872,7 @@ class CodeElement:
         self._preflabel_to_graph(_self)
         self._subject_to_graph(_self)
         self._in_scheme_to_graph(_self)
+        self._top_concept_of_to_graph(_self)
 
         return self._g
 
@@ -1902,3 +1915,19 @@ class CodeElement:
                     self._g.add((_in_scheme, p, o))
 
                 self._g.add((_self, SKOS.inScheme, _in_scheme))
+
+    def _top_concept_of_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "top_concept_of", None):
+
+            for top_concept_of in self._top_concept_of:
+
+                if getattr(top_concept_of, "identifier", None):
+                    _top_concept_of = URIRef(top_concept_of.identifier)
+                else:
+                    _top_concept_of = BNode()
+
+                for _s, p, o in top_concept_of._to_graph().triples((None, None, None)):
+                    self._g.add((_top_concept_of, p, o))
+
+                self._g.add((_self, SKOS.topConceptOf, _top_concept_of))
