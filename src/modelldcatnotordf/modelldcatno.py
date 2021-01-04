@@ -217,10 +217,11 @@ class InformationModel(Resource):
                     _modelelement = BNode()
 
                 for _s, p, o in modelelement._to_graph().triples((None, None, None)):
-                    if isinstance(_modelelement, BNode):
-                        self._g.add((_modelelement, p, o))
-                    else:
-                        self._g.add((_s, p, o))
+                    self._g.add(
+                        (_modelelement, p, o)
+                        if isinstance(_modelelement, BNode)
+                        else (_s, p, o)
+                    )
 
                 self._g.add(
                     (
@@ -243,10 +244,11 @@ class InformationModel(Resource):
             for _s, p, o in self.licensedocument._to_graph().triples(
                 (None, None, None)
             ):
-                if isinstance(_licensedocument, BNode):
-                    self._g.add((_licensedocument, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_licensedocument, p, o)
+                    if isinstance(_licensedocument, BNode)
+                    else (_s, p, o)
+                )
 
             self._g.add((URIRef(self.identifier), DCT.license, _licensedocument))
 
@@ -405,10 +407,11 @@ class ModelElement:
                     _has_property = BNode()
 
                 for _s, p, o in has_property._to_graph().triples((None, None, None)):
-                    if isinstance(_has_property, BNode):
-                        self._g.add((_has_property, p, o))
-                    else:
-                        self._g.add((_s, p, o))
+                    self._g.add(
+                        (_has_property, p, o)
+                        if isinstance(_has_property, BNode)
+                        else (_s, p, o)
+                    )
 
                 self._g.add(
                     (
@@ -588,10 +591,11 @@ class ModelProperty:
                     _has_type = BNode()
 
                 for _s, p, o in has_type._to_graph().triples((None, None, None)):
-                    if isinstance(_has_type, BNode):
-                        self._g.add((_has_type, p, o))
-                    else:
-                        self._g.add((_s, p, o))
+                    self._g.add(
+                        (_has_type, p, o)
+                        if isinstance(_has_type, BNode)
+                        else (_s, p, o)
+                    )
 
                 self._g.add(
                     (
@@ -677,10 +681,11 @@ class Role(ModelProperty):
             for _s, p, o in self._has_object_type._to_graph().triples(
                 (None, None, None)
             ):
-                if isinstance(_has_object_type, BNode):
-                    self._g.add((_has_object_type, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_has_object_type, p, o)
+                    if isinstance(_has_object_type, BNode)
+                    else (_s, p, o)
+                )
 
             self._g.add((_self, MODELLDCATNO.hasObjectType, _has_object_type))
 
@@ -989,10 +994,9 @@ class Composition(ModelProperty):
                 _contains = BNode()
 
             for _s, p, o in self._contains._to_graph().triples((None, None, None)):
-                if isinstance(_contains, BNode):
-                    self._g.add((_contains, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_contains, p, o) if isinstance(_contains, BNode) else (_s, p, o)
+                )
 
             self._g.add((_self, MODELLDCATNO.contains, _contains))
 
@@ -1063,10 +1067,11 @@ class Collection(ModelProperty):
                 _has_member = BNode()
 
             for _s, p, o in self._has_member._to_graph().triples((None, None, None)):
-                if isinstance(_has_member, BNode):
-                    self._g.add((_has_member, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_has_member, p, o)
+                    if isinstance(_has_member, BNode)
+                    else (_s, p, o)
+                )
 
             self._g.add((_self, MODELLDCATNO.hasMember, _has_member))
 
@@ -1137,10 +1142,9 @@ class Association(ModelProperty):
                 _refers_to = BNode()
 
             for _s, p, o in self._refers_to._to_graph().triples((None, None, None)):
-                if isinstance(_refers_to, BNode):
-                    self._g.add((_refers_to, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_refers_to, p, o) if isinstance(_refers_to, BNode) else (_s, p, o)
+                )
 
             self._g.add((_self, MODELLDCATNO.refersTo, _refers_to))
 
@@ -1220,10 +1224,11 @@ class Choice(ModelProperty):
                     _has_some = BNode()
 
                 for _s, p, o in has_some._to_graph().triples((None, None, None)):
-                    if isinstance(_has_some, BNode):
-                        self._g.add((_has_some, p, o))
-                    else:
-                        self._g.add((_s, p, o))
+                    self._g.add(
+                        (_has_some, p, o)
+                        if isinstance(_has_some, BNode)
+                        else (_s, p, o)
+                    )
 
                 self._g.add((_self, MODELLDCATNO.hasSome, _has_some))
 
@@ -1342,10 +1347,11 @@ class Attribute(ModelProperty):
             for _s, p, o in self._contains_object_type._to_graph().triples(
                 (None, None, None)
             ):
-                if isinstance(_contains_object_type, BNode):
-                    self._g.add((_contains_object_type, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_contains_object_type, p, o)
+                    if isinstance(_contains_object_type, BNode)
+                    else (_s, p, o)
+                )
 
             self._g.add((_self, MODELLDCATNO.containsObjectType, _contains_object_type))
 
@@ -1361,10 +1367,11 @@ class Attribute(ModelProperty):
             for _s, p, o in self._has_simple_type._to_graph().triples(
                 (None, None, None)
             ):
-                if isinstance(_has_simple_type, BNode):
-                    self._g.add((_has_simple_type, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_has_simple_type, p, o)
+                    if isinstance(_has_simple_type, BNode)
+                    else (_s, p, o)
+                )
 
             self._g.add((_self, MODELLDCATNO.hasSimpleType, _has_simple_type))
 
@@ -1378,10 +1385,11 @@ class Attribute(ModelProperty):
                 _has_data_type = BNode()
 
             for _s, p, o in self._has_data_type._to_graph().triples((None, None, None)):
-                if isinstance(_has_data_type, BNode):
-                    self._g.add((_has_data_type, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_has_data_type, p, o)
+                    if isinstance(_has_data_type, BNode)
+                    else (_s, p, o)
+                )
 
             self._g.add((_self, MODELLDCATNO.hasDataType, _has_data_type))
 
@@ -1398,10 +1406,11 @@ class Attribute(ModelProperty):
             for _s, p, o in self._has_value_from._to_graph().triples(
                 (None, None, None)
             ):
-                if isinstance(_has_value_from, BNode):
-                    self._g.add((_has_value_from, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_has_value_from, p, o)
+                    if isinstance(_has_value_from, BNode)
+                    else (_s, p, o)
+                )
 
             self._g.add((_self, MODELLDCATNO.hasValueFrom, _has_value_from))
 
@@ -1471,19 +1480,20 @@ class Specialization(ModelProperty):
         if getattr(self, "has_general_concept", None):
 
             if getattr(self._has_general_concept, "identifier", None):
-                has_general_concept = URIRef(self.has_general_concept.identifier)
+                _has_general_concept = URIRef(self.has_general_concept.identifier)
             else:
-                has_general_concept = BNode()
+                _has_general_concept = BNode()
 
             for _s, p, o in self._has_general_concept._to_graph().triples(
                 (None, None, None)
             ):
-                if isinstance(has_general_concept, BNode):
-                    self._g.add((has_general_concept, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_has_general_concept, p, o)
+                    if isinstance(_has_general_concept, BNode)
+                    else (_s, p, o)
+                )
 
-            self._g.add((_self, MODELLDCATNO.hasGeneralConcept, has_general_concept))
+            self._g.add((_self, MODELLDCATNO.hasGeneralConcept, _has_general_concept))
 
 
 class Realization(ModelProperty):
@@ -1552,10 +1562,11 @@ class Realization(ModelProperty):
                 _has_supplier = BNode()
 
             for _s, p, o in self._has_supplier._to_graph().triples((None, None, None)):
-                if isinstance(_has_supplier, BNode):
-                    self._g.add((_has_supplier, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_has_supplier, p, o)
+                    if isinstance(_has_supplier, BNode)
+                    else (_s, p, o)
+                )
 
             self._g.add((_self, MODELLDCATNO.hasSupplier, _has_supplier))
 
@@ -1628,10 +1639,11 @@ class Abstraction(ModelProperty):
             for _s, p, o in self._is_abstraction_of._to_graph().triples(
                 (None, None, None)
             ):
-                if isinstance(_is_abstraction_of, BNode):
-                    self._g.add((_is_abstraction_of, p, o))
-                else:
-                    self._g.add((_s, p, o))
+                self._g.add(
+                    (_is_abstraction_of, p, o)
+                    if isinstance(_is_abstraction_of, BNode)
+                    else (_s, p, o)
+                )
 
             self._g.add((_self, MODELLDCATNO.isAbstractionOf, _is_abstraction_of))
 
@@ -1960,12 +1972,11 @@ class CodeElement:
                     _in_scheme = BNode()
 
                 for _s, p, o in in_scheme._to_graph().triples((None, None, None)):
-
-                    if isinstance(_in_scheme, BNode):
-                        self._g.add((_in_scheme, p, o))
-
-                    else:
-                        self._g.add((_s, p, o))
+                    self._g.add(
+                        (_in_scheme, p, o)
+                        if isinstance(_in_scheme, BNode)
+                        else (_s, p, o)
+                    )
 
                 self._g.add((_self, SKOS.inScheme, _in_scheme))
 
@@ -1981,9 +1992,10 @@ class CodeElement:
                     _top_concept_of = BNode()
 
                 for _s, p, o in top_concept_of._to_graph().triples((None, None, None)):
-                    if isinstance(_top_concept_of, BNode):
-                        self._g.add((_top_concept_of, p, o))
-                    else:
-                        self._g.add((_s, p, o))
+                    self._g.add(
+                        (_top_concept_of, p, o)
+                        if isinstance(_top_concept_of, BNode)
+                        else (_s, p, o)
+                    )
 
                 self._g.add((_self, SKOS.topConceptOf, _top_concept_of))
