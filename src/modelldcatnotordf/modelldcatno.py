@@ -1805,6 +1805,7 @@ class CodeElement:
         "_notation",
         "_in_scheme",
         "_top_concept_of",
+        "_altlabel",
     )
 
     _identifier: URI
@@ -1816,6 +1817,7 @@ class CodeElement:
     _notation: str
     _in_scheme: List[CodeList]
     _top_concept_of: List[CodeList]
+    _altlabel: dict
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1891,6 +1893,16 @@ class CodeElement:
         """Set for top_concept_of."""
         self._top_concept_of = top_concept_of
 
+    @property
+    def altlabel(self: CodeElement) -> dict:
+        """Get for altlabel."""
+        return self._altlabel
+
+    @altlabel.setter
+    def altlabel(self: CodeElement, altlabel: dict) -> None:
+        """Set for altlabel."""
+        self._altlabel = altlabel
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -1933,6 +1945,7 @@ class CodeElement:
         self._subject_to_graph(_self)
         self._in_scheme_to_graph(_self)
         self._top_concept_of_to_graph(_self)
+        self._altlabel_to_graph(_self)
 
         return self._g
 
@@ -1999,3 +2012,16 @@ class CodeElement:
                     )
 
                 self._g.add((_self, SKOS.topConceptOf, _top_concept_of))
+
+    def _altlabel_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "altlabel", None):
+
+            for key in self.altlabel:
+                self._g.add(
+                    (
+                        _self,
+                        SKOS.altLabel,
+                        Literal(self.altlabel[key], lang=key),
+                    )
+                )
