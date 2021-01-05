@@ -3,7 +3,7 @@
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import Association, ModelElement
+from modelldcatnotordf.modelldcatno import Association, ObjectType
 from tests.testutils import assert_isomorphic
 
 """
@@ -66,7 +66,7 @@ def test_to_graph_should_return_refers_to_both_identifiers() -> None:
     association = Association()
     association.identifier = "http://example.com/associations/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     association.refers_to = modelelement
 
@@ -80,7 +80,7 @@ def test_to_graph_should_return_refers_to_both_identifiers() -> None:
         <http://example.com/associations/1> a modelldcatno:Association ;
             modelldcatno:refersTo <http://example.com/modelelements/1> .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
 
         .
         """
@@ -95,7 +95,7 @@ def test_to_graph_should_return_refers_to_blank_node_association_identifier() ->
     association = Association()
     association.identifier = "http://example.com/associations/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     association.refers_to = modelelement
 
     src = """
@@ -106,7 +106,7 @@ def test_to_graph_should_return_refers_to_blank_node_association_identifier() ->
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/associations/1> a modelldcatno:Association ;
-            modelldcatno:refersTo [ a modelldcatno:ModelElement ] .
+            modelldcatno:refersTo [ a modelldcatno:ObjectType ] .
 
         """
     g1 = Graph().parse(data=association.to_rdf(), format="turtle")
@@ -119,7 +119,7 @@ def test_to_graph_should_return_refers_to_blank_node_modelelement_identifier() -
     """It returns a refers_to graph isomorphic to spec."""
     association = Association()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     association.refers_to = modelelement
 
@@ -134,7 +134,7 @@ def test_to_graph_should_return_refers_to_blank_node_modelelement_identifier() -
             modelldcatno:refersTo <http://example.com/modelelements/1>
         ] .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement .
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType .
 
         """
     g1 = Graph().parse(data=association.to_rdf(), format="turtle")
@@ -147,7 +147,7 @@ def test_to_graph_should_return_refers_to_blank_nodes() -> None:
     """It returns a refers_to graph isomorphic to spec."""
     association = Association()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     association.refers_to = modelelement
 
     src = """
@@ -158,7 +158,7 @@ def test_to_graph_should_return_refers_to_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [ a modelldcatno:Association ;
-            modelldcatno:refersTo [ a modelldcatno:ModelElement ]
+            modelldcatno:refersTo [ a modelldcatno:ObjectType ]
         ] .
         """
     g1 = Graph().parse(data=association.to_rdf(), format="turtle")

@@ -3,7 +3,7 @@
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import ModelElement, Realization
+from modelldcatnotordf.modelldcatno import ObjectType, Realization
 from tests.testutils import assert_isomorphic
 
 """
@@ -66,7 +66,7 @@ def test_to_graph_should_return_has_supplier_both_identifiers() -> None:
     realization = Realization()
     realization.identifier = "http://example.com/realizations/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     realization.has_supplier = modelelement
 
@@ -80,7 +80,7 @@ def test_to_graph_should_return_has_supplier_both_identifiers() -> None:
         <http://example.com/realizations/1> a modelldcatno:Realization ;
             modelldcatno:hasSupplier <http://example.com/modelelements/1> .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
 
         .
         """
@@ -95,7 +95,7 @@ def test_to_graph_should_return_has_supplier_bnode_realization_id() -> None:
     realization = Realization()
     realization.identifier = "http://example.com/realizations/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     realization.has_supplier = modelelement
 
     src = """
@@ -106,7 +106,7 @@ def test_to_graph_should_return_has_supplier_bnode_realization_id() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/realizations/1> a modelldcatno:Realization ;
-            modelldcatno:hasSupplier [ a modelldcatno:ModelElement ] .
+            modelldcatno:hasSupplier [ a modelldcatno:ObjectType ] .
 
         """
     g1 = Graph().parse(data=realization.to_rdf(), format="turtle")
@@ -119,7 +119,7 @@ def test_to_graph_should_return_has_supplier_bnode_modelelement_id() -> None:
     """It returns a has_supplier graph isomorphic to spec."""
     realization = Realization()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     realization.has_supplier = modelelement
 
@@ -134,7 +134,7 @@ def test_to_graph_should_return_has_supplier_bnode_modelelement_id() -> None:
             modelldcatno:hasSupplier <http://example.com/modelelements/1>
         ] .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement .
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType .
 
         """
     g1 = Graph().parse(data=realization.to_rdf(), format="turtle")
@@ -147,7 +147,7 @@ def test_to_graph_should_return_has_supplier_blank_nodes() -> None:
     """It returns a has_supplier graph isomorphic to spec."""
     realization = Realization()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     realization.has_supplier = modelelement
 
     src = """
@@ -158,7 +158,7 @@ def test_to_graph_should_return_has_supplier_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [ a modelldcatno:Realization ;
-            modelldcatno:hasSupplier [ a modelldcatno:ModelElement ]
+            modelldcatno:hasSupplier [ a modelldcatno:ObjectType ]
         ] .
         """
     g1 = Graph().parse(data=realization.to_rdf(), format="turtle")

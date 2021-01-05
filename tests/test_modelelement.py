@@ -2,11 +2,9 @@
 from typing import List
 
 from concepttordf import Concept
-import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import ModelElement
-from modelldcatnotordf.modelldcatno import ModelProperty
+from modelldcatnotordf.modelldcatno import ModelProperty, ObjectType
 from tests.testutils import assert_isomorphic
 
 """
@@ -15,19 +13,11 @@ A test class for testing the class ModelElement.
 """
 
 
-def test_instantiate_modelelement() -> None:
-    """It returns a TypeErro exception."""
-    try:
-        _ = ModelElement()
-    except Exception:
-        pytest.fail("Unexpected Exception ..")
-
-
 def test_to_graph_should_return_title_and_identifier() -> None:
     """It returns a title graph isomorphic to spec."""
     """It returns an identifier graph isomorphic to spec."""
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     modelelement.title = {"nb": "Tittel 1", "en": "Title 1"}
 
@@ -38,7 +28,7 @@ def test_to_graph_should_return_title_and_identifier() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement;
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType;
                 dct:title   "Title 1"@en, "Tittel 1"@nb ;
         .
         """
@@ -50,7 +40,7 @@ def test_to_graph_should_return_title_and_identifier() -> None:
 
 def test_to_graph_should_return_title_and_no_identifier() -> None:
     """It returns a title graph isomorphic to spec."""
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.title = {"nb": "Tittel 1", "en": "Title 1"}
 
     src = """
@@ -60,7 +50,7 @@ def test_to_graph_should_return_title_and_no_identifier() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:ModelElement ;
+        [ a modelldcatno:ObjectType ;
             dct:title   "Title 1"@en, "Tittel 1"@nb ;
         ]
         .
@@ -73,7 +63,7 @@ def test_to_graph_should_return_title_and_no_identifier() -> None:
 
 def test_to_graph_should_return_dct_identifier_as_graph() -> None:
     """It returns a dct_identifier graph isomorphic to spec."""
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     modelelement.dct_identifier = "123456789"
 
@@ -84,7 +74,7 @@ def test_to_graph_should_return_dct_identifier_as_graph() -> None:
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://example.com/modelelements/1>    a modelldcatno:ModelElement ;
+    <http://example.com/modelelements/1>    a modelldcatno:ObjectType ;
         dct:identifier "123456789";
     .
     """
@@ -96,7 +86,7 @@ def test_to_graph_should_return_dct_identifier_as_graph() -> None:
 
 def test_to_graph_should_return_subject() -> None:
     """It returns a subject graph isomorphic to spec."""
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     subject = Concept()
     subject.identifier = "https://example.com/subjects/1"
@@ -110,7 +100,7 @@ def test_to_graph_should_return_subject() -> None:
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
     @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-    <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+    <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
         dct:subject <https://example.com/subjects/1> ;
     .
      <https://example.com/subjects/1> a skos:Concept .
@@ -124,7 +114,7 @@ def test_to_graph_should_return_subject() -> None:
 
 def test_to_graph_should_return_has_property_both_identifiers() -> None:
     """It returns a has_property graph isomorphic to spec."""
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
 
     modelproperty = ModelProperty()
@@ -141,7 +131,7 @@ def test_to_graph_should_return_has_property_both_identifiers() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
         modelldcatno:hasProperty <http://example.com/properties/1> .
 
         <http://example.com/properties/1> a modelldcatno:Property ;
@@ -156,7 +146,7 @@ def test_to_graph_should_return_has_property_both_identifiers() -> None:
 
 def test_to_graph_should_return_has_property_bnode_modelelement_id() -> None:
     """It returns a has_property graph isomorphic to spec."""
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
 
     modelproperty = ModelProperty()
@@ -169,7 +159,7 @@ def test_to_graph_should_return_has_property_bnode_modelelement_id() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
             modelldcatno:hasProperty [ a modelldcatno:Property ] .
 
         """
@@ -181,7 +171,7 @@ def test_to_graph_should_return_has_property_bnode_modelelement_id() -> None:
 
 def test_to_graph_should_return_has_property_bnode_modelproperty_id() -> None:
     """It returns a has_property graph isomorphic to spec."""
-    modelelement = ModelElement()
+    modelelement = ObjectType()
 
     modelproperty = ModelProperty()
     modelproperty.identifier = "http://example.com/properties/1"
@@ -194,7 +184,7 @@ def test_to_graph_should_return_has_property_bnode_modelproperty_id() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:ModelElement ;
+        [ a modelldcatno:ObjectType ;
             modelldcatno:hasProperty <http://example.com/properties/1>
         ] .
 
@@ -209,7 +199,7 @@ def test_to_graph_should_return_has_property_bnode_modelproperty_id() -> None:
 
 def test_to_graph_should_return_has_property_blank_nodes() -> None:
     """It returns a has_property graph isomorphic to spec."""
-    modelelement = ModelElement()
+    modelelement = ObjectType()
 
     modelproperty = ModelProperty()
     modelelement.has_property.append(modelproperty)
@@ -221,7 +211,7 @@ def test_to_graph_should_return_has_property_blank_nodes() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:ModelElement ;
+        [ a modelldcatno:ObjectType ;
             modelldcatno:hasProperty [ a modelldcatno:Property ]
         ] .
         """

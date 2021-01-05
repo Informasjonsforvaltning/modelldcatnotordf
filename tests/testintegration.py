@@ -2,7 +2,7 @@
 
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import InformationModel, ModelElement
+from modelldcatnotordf.modelldcatno import InformationModel, ObjectType
 from modelldcatnotordf.modelldcatno import ModelProperty
 from tests.testutils import assert_isomorphic
 
@@ -14,7 +14,7 @@ Test cases for larger scale integration across classes.
 
 def test_title_should_be_set_on_correct_element() -> None:
     """It returns a information model graph isomorphic to spec."""
-    element = ModelElement()
+    element = ObjectType()
     element.identifier = "http://example.com/element"
     element.title = {"nb": "element"}
 
@@ -56,7 +56,7 @@ def test_title_should_be_set_on_correct_element() -> None:
         <http://example.com/egenskap2> a modelldcatno:Property ;
                 dct:title "egenskap2"@nb .
 
-        <http://example.com/element> a modelldcatno:ModelElement ;
+        <http://example.com/element> a modelldcatno:ObjectType ;
                 dct:title "element"@nb ;
                 modelldcatno:hasProperty <http://example.com/egenskap0>,
                                         <http://example.com/egenskap1>,

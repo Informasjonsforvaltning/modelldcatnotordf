@@ -7,6 +7,7 @@ Refer to sub-class for typical usage examples.
 """
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 from typing import Any, List, Optional
 
 from concepttordf import Concept
@@ -253,7 +254,7 @@ class InformationModel(Resource):
             self._g.add((URIRef(self.identifier), DCT.license, _licensedocument))
 
 
-class ModelElement:
+class ModelElement(ABC):
     """A class representing a modelldcatno:ModelElement."""
 
     __slots__ = (
@@ -273,6 +274,7 @@ class ModelElement:
     _has_property: List[ModelProperty]
     _subject: Concept
 
+    @abstractmethod
     def __init__(self) -> None:
         """Inits an object with default values."""
         self._type = MODELLDCATNO.ModelElement
@@ -328,6 +330,7 @@ class ModelElement:
         """Set for has_property."""
         self._has_property = has_property
 
+    @abstractmethod
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the modelelement to rdf.
 
@@ -335,10 +338,7 @@ class ModelElement:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
-        Returns:
-            a rdf serialization as a string according to format.
         """
-        return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
         self, type: str = MODELLDCATNO.ModelElement, selfobject: Any = None
@@ -360,28 +360,20 @@ class ModelElement:
         self._g.bind("skos", SKOS)
         self._g.bind("xsd", XSD)
 
-        if selfobject:
-            _self = selfobject
-
-        elif getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-
-        else:
-            _self = BNode()
-        self._g.add((_self, RDF.type, type))
+        self._g.add((selfobject, RDF.type, type))
 
         if getattr(self, "title", None):
             for key in self.title:
                 self._g.add(
                     (
-                        _self,
+                        selfobject,
                         DCT.title,
                         Literal(self.title[key], lang=key),
                     )
                 )
 
         if getattr(self, "dct_identifier", None):
-            self._g.add((_self, DCT.identifier, Literal(self._dct_identifier)))
+            self._g.add((selfobject, DCT.identifier, Literal(self._dct_identifier)))
 
         if getattr(self, "subject", None):
 
@@ -390,10 +382,10 @@ class ModelElement:
             for _s, p, o in self.subject._to_graph().triples((None, None, None)):
                 self._g.add((_subject, p, o))
 
-            self._g.add((_self, DCT.subject, _subject))
+            self._g.add((selfobject, DCT.subject, _subject))
 
         if getattr(self, "has_property", None):
-            self._has_property_to_graph(_self)
+            self._has_property_to_graph(selfobject)
 
         return self._g
 

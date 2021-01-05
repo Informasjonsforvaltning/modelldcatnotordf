@@ -3,7 +3,7 @@
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import Collection, ModelElement
+from modelldcatnotordf.modelldcatno import Collection, ObjectType
 from tests.testutils import assert_isomorphic
 
 """
@@ -66,7 +66,7 @@ def test_to_graph_should_return_has_member_both_identifiers() -> None:
     collection = Collection()
     collection.identifier = "http://example.com/collections/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     collection.has_member = modelelement
 
@@ -80,7 +80,7 @@ def test_to_graph_should_return_has_member_both_identifiers() -> None:
         <http://example.com/collections/1> a modelldcatno:Collection ;
             modelldcatno:hasMember <http://example.com/modelelements/1> .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
 
         .
         """
@@ -95,7 +95,7 @@ def test_to_graph_should_return_has_member_blank_node_collection_identifier() ->
     collection = Collection()
     collection.identifier = "http://example.com/collections/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     collection.has_member = modelelement
 
     src = """
@@ -106,7 +106,7 @@ def test_to_graph_should_return_has_member_blank_node_collection_identifier() ->
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/collections/1> a modelldcatno:Collection ;
-            modelldcatno:hasMember [ a modelldcatno:ModelElement ] .
+            modelldcatno:hasMember [ a modelldcatno:ObjectType ] .
 
         """
     g1 = Graph().parse(data=collection.to_rdf(), format="turtle")
@@ -119,7 +119,7 @@ def test_to_graph_should_return_has_member_blank_node_modelelement_identifier() 
     """It returns a has_member graph isomorphic to spec."""
     collection = Collection()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     collection.has_member = modelelement
 
@@ -134,7 +134,7 @@ def test_to_graph_should_return_has_member_blank_node_modelelement_identifier() 
             modelldcatno:hasMember <http://example.com/modelelements/1>
         ] .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement .
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType .
 
         """
     g1 = Graph().parse(data=collection.to_rdf(), format="turtle")
@@ -147,7 +147,7 @@ def test_to_graph_should_return_has_member_blank_nodes() -> None:
     """It returns a has_member graph isomorphic to spec."""
     collection = Collection()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     collection.has_member = modelelement
 
     src = """
@@ -158,7 +158,7 @@ def test_to_graph_should_return_has_member_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [ a modelldcatno:Collection ;
-            modelldcatno:hasMember [ a modelldcatno:ModelElement ]
+            modelldcatno:hasMember [ a modelldcatno:ObjectType ]
         ] .
         """
     g1 = Graph().parse(data=collection.to_rdf(), format="turtle")

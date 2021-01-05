@@ -3,7 +3,7 @@
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import Abstraction, ModelElement
+from modelldcatnotordf.modelldcatno import Abstraction, ObjectType
 from tests.testutils import assert_isomorphic
 
 """
@@ -66,7 +66,7 @@ def test_to_graph_should_return_is_abstraction_of_both_identifiers() -> None:
     abstraction = Abstraction()
     abstraction.identifier = "http://example.com/abstractions/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     abstraction.is_abstraction_of = modelelement
 
@@ -80,7 +80,7 @@ def test_to_graph_should_return_is_abstraction_of_both_identifiers() -> None:
         <http://example.com/abstractions/1> a modelldcatno:Abstraction ;
             modelldcatno:isAbstractionOf <http://example.com/modelelements/1> .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
 
         .
         """
@@ -95,7 +95,7 @@ def test_to_graph_should_return_is_abstr_blank_node_abstr_identifier() -> None:
     abstraction = Abstraction()
     abstraction.identifier = "http://example.com/abstractions/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     abstraction.is_abstraction_of = modelelement
 
     src = """
@@ -106,7 +106,7 @@ def test_to_graph_should_return_is_abstr_blank_node_abstr_identifier() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/abstractions/1> a modelldcatno:Abstraction ;
-            modelldcatno:isAbstractionOf [ a modelldcatno:ModelElement ] .
+            modelldcatno:isAbstractionOf [ a modelldcatno:ObjectType ] .
 
         """
     g1 = Graph().parse(data=abstraction.to_rdf(), format="turtle")
@@ -119,7 +119,7 @@ def test_to_graph_should_return_is_abstr_of_bnode_modelelement_id() -> None:
     """It returns a is_abstraction_of graph isomorphic to spec."""
     abstraction = Abstraction()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     abstraction.is_abstraction_of = modelelement
 
@@ -134,7 +134,7 @@ def test_to_graph_should_return_is_abstr_of_bnode_modelelement_id() -> None:
             modelldcatno:isAbstractionOf <http://example.com/modelelements/1>
         ] .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement .
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType .
 
         """
     g1 = Graph().parse(data=abstraction.to_rdf(), format="turtle")
@@ -147,7 +147,7 @@ def test_to_graph_should_return_is_abstraction_of_blank_nodes() -> None:
     """It returns a is_abstraction_of graph isomorphic to spec."""
     abstraction = Abstraction()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     abstraction.is_abstraction_of = modelelement
 
     src = """
@@ -158,7 +158,7 @@ def test_to_graph_should_return_is_abstraction_of_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [ a modelldcatno:Abstraction ;
-            modelldcatno:isAbstractionOf [ a modelldcatno:ModelElement ]
+            modelldcatno:isAbstractionOf [ a modelldcatno:ObjectType ]
         ] .
         """
     g1 = Graph().parse(data=abstraction.to_rdf(), format="turtle")
