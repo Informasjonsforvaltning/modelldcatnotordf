@@ -4,7 +4,7 @@ from typing import List
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import Choice, ModelElement
+from modelldcatnotordf.modelldcatno import Choice, ModelElement, ObjectType
 from tests.testutils import assert_isomorphic
 
 """
@@ -67,15 +67,13 @@ def test_to_graph_should_return_has_some_both_identifiers() -> None:
     choice = Choice()
     choice.identifier = "http://example.com/choices/1"
 
-    modelelement1 = ModelElement()
+    modelelement1 = ObjectType()
     modelelement1.identifier = "http://example.com/modelelements/1"
 
-    modelelement2 = ModelElement()
+    modelelement2 = ObjectType()
     modelelement2.identifier = "http://example.com/modelelements/2"
 
-    has_somes: List[ModelElement] = []
-    has_somes.append(modelelement1)
-    has_somes.append(modelelement2)
+    has_somes: List[ModelElement] = [modelelement1, modelelement2]
     choice.has_some = has_somes
 
     src = """
@@ -91,8 +89,8 @@ def test_to_graph_should_return_has_some_both_identifiers() -> None:
             modelldcatno:hasSome <http://example.com/modelelements/2> ;
 
         .
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement .
-        <http://example.com/modelelements/2> a modelldcatno:ModelElement .
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType .
+        <http://example.com/modelelements/2> a modelldcatno:ObjectType .
 
         """
     g1 = Graph().parse(data=choice.to_rdf(), format="turtle")
@@ -106,7 +104,7 @@ def test_to_graph_should_return_has_some_blank_node_choice_identifier() -> None:
     choice = Choice()
     choice.identifier = "http://example.com/choices/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     choice.has_some.append(modelelement)
 
     src = """
@@ -117,7 +115,7 @@ def test_to_graph_should_return_has_some_blank_node_choice_identifier() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/choices/1> a modelldcatno:Choice ;
-            modelldcatno:hasSome [ a modelldcatno:ModelElement ] .
+            modelldcatno:hasSome [ a modelldcatno:ObjectType ] .
 
         """
     g1 = Graph().parse(data=choice.to_rdf(), format="turtle")
@@ -130,7 +128,7 @@ def test_to_graph_should_return_has_some_blank_node_modelelement_identifier() ->
     """It returns a has_some graph isomorphic to spec."""
     choice = Choice()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     choice.has_some.append(modelelement)
 
@@ -145,7 +143,7 @@ def test_to_graph_should_return_has_some_blank_node_modelelement_identifier() ->
             modelldcatno:hasSome <http://example.com/modelelements/1>
         ] .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement .
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType .
 
         """
     g1 = Graph().parse(data=choice.to_rdf(), format="turtle")
@@ -158,7 +156,7 @@ def test_to_graph_should_return_has_some_blank_nodes() -> None:
     """It returns a has_some graph isomorphic to spec."""
     choice = Choice()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     choice.has_some.append(modelelement)
 
     src = """
@@ -169,7 +167,7 @@ def test_to_graph_should_return_has_some_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [ a modelldcatno:Choice ;
-            modelldcatno:hasSome [ a modelldcatno:ModelElement ]
+            modelldcatno:hasSome [ a modelldcatno:ObjectType ]
         ] .
         """
     g1 = Graph().parse(data=choice.to_rdf(), format="turtle")

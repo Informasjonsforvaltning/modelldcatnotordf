@@ -7,8 +7,7 @@ import pytest
 from rdflib import Graph, Namespace
 
 from modelldcatnotordf.licensedocument import LicenseDocument
-from modelldcatnotordf.modelldcatno import InformationModel
-from modelldcatnotordf.modelldcatno import ModelElement
+from modelldcatnotordf.modelldcatno import InformationModel, ModelElement, ObjectType
 from tests.testutils import assert_isomorphic
 
 """
@@ -192,12 +191,11 @@ def test_to_graph_should_return_contains_model_element() -> None:
     """It returns a subject graph isomorphic to spec."""
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     modelelement.title = {"nb": "Tittel 1", "en": "Title 1"}
 
-    modelelements: List[ModelElement] = []
-    modelelements.append(modelelement)
+    modelelements: List[ModelElement] = [modelelement]
     informationmodel.modelelements = modelelements
 
     src = """
@@ -211,7 +209,7 @@ def test_to_graph_should_return_contains_model_element() -> None:
     <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         modelldcatno:containsModelelement <http://example.com/modelelements/1> .
 
-    <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+    <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
         dct:title   "Title 1"@en, "Tittel 1"@nb
     .
     """
@@ -226,7 +224,7 @@ def test_to_graph_should_return_modelelements_blank_node() -> None:
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     informationmodel.modelelements.append(modelelement)
 
     src = """
@@ -237,7 +235,7 @@ def test_to_graph_should_return_modelelements_blank_node() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
-            modelldcatno:containsModelelement [ a modelldcatno:ModelElement ] .
+            modelldcatno:containsModelelement [ a modelldcatno:ObjectType ] .
 
         """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -251,7 +249,7 @@ def test_to_graph_should_return_modelelements_blank_node_with_properties() -> No
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.title = {"nb": "Tittel 1", "en": "Title 1"}
 
     informationmodel.modelelements.append(modelelement)
@@ -264,7 +262,7 @@ def test_to_graph_should_return_modelelements_blank_node_with_properties() -> No
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
-            modelldcatno:containsModelelement [ a modelldcatno:ModelElement ;
+            modelldcatno:containsModelelement [ a modelldcatno:ObjectType ;
             dct:title   "Title 1"@en, "Tittel 1"@nb ] .
 
         """

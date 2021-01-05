@@ -5,8 +5,7 @@ from concepttordf import Concept
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import ModelElement
-from modelldcatnotordf.modelldcatno import ModelProperty
+from modelldcatnotordf.modelldcatno import ModelElement, ModelProperty, ObjectType
 from tests.testutils import assert_isomorphic
 
 """
@@ -69,11 +68,10 @@ def test_to_graph_should_return_has_type_both_identifiers() -> None:
     property = ModelProperty()
     property.identifier = "http://example.com/properties/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
 
-    has_types: List[ModelElement] = []
-    has_types.append(modelelement)
+    has_types: List[ModelElement] = [modelelement]
     property.has_type = has_types
 
     src = """
@@ -86,7 +84,7 @@ def test_to_graph_should_return_has_type_both_identifiers() -> None:
         <http://example.com/properties/1> a modelldcatno:Property ;
         modelldcatno:hasType <http://example.com/modelelements/1> .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
 
         .
         """
@@ -101,7 +99,7 @@ def test_to_graph_should_return_has_type_blank_node_property_identifier() -> Non
     property = ModelProperty()
     property.identifier = "http://example.com/properties/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     property.has_type.append(modelelement)
 
     src = """
@@ -112,7 +110,7 @@ def test_to_graph_should_return_has_type_blank_node_property_identifier() -> Non
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/properties/1> a modelldcatno:Property ;
-            modelldcatno:hasType [ a modelldcatno:ModelElement ] .
+            modelldcatno:hasType [ a modelldcatno:ObjectType ] .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -125,7 +123,7 @@ def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() ->
     """It returns a has_type graph isomorphic to spec."""
     property = ModelProperty()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     property.has_type.append(modelelement)
 
@@ -140,7 +138,7 @@ def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() ->
             modelldcatno:hasType <http://example.com/modelelements/1>
         ] .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement .
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -153,7 +151,7 @@ def test_to_graph_should_return_has_type_blank_nodes() -> None:
     """It returns a has_type graph isomorphic to spec."""
     property = ModelProperty()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     property.has_type.append(modelelement)
 
     src = """
@@ -164,7 +162,7 @@ def test_to_graph_should_return_has_type_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [ a modelldcatno:Property ;
-            modelldcatno:hasType [ a modelldcatno:ModelElement ]
+            modelldcatno:hasType [ a modelldcatno:ObjectType ]
         ] .
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")

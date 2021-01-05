@@ -3,7 +3,7 @@
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import Composition, ModelElement
+from modelldcatnotordf.modelldcatno import Composition, ObjectType
 from tests.testutils import assert_isomorphic
 
 """
@@ -66,7 +66,7 @@ def test_to_graph_should_return_contains_both_identifiers() -> None:
     composition = Composition()
     composition.identifier = "http://example.com/compositions/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     composition.contains = modelelement
 
@@ -80,7 +80,7 @@ def test_to_graph_should_return_contains_both_identifiers() -> None:
         <http://example.com/compositions/1> a modelldcatno:Composition ;
             modelldcatno:contains <http://example.com/modelelements/1> .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
 
         .
         """
@@ -95,7 +95,7 @@ def test_to_graph_should_return_contains_blank_node_composition_identifier() -> 
     composition = Composition()
     composition.identifier = "http://example.com/compositions/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     composition.contains = modelelement
 
     src = """
@@ -106,7 +106,7 @@ def test_to_graph_should_return_contains_blank_node_composition_identifier() -> 
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/compositions/1> a modelldcatno:Composition ;
-            modelldcatno:contains [ a modelldcatno:ModelElement ] .
+            modelldcatno:contains [ a modelldcatno:ObjectType ] .
 
         """
     g1 = Graph().parse(data=composition.to_rdf(), format="turtle")
@@ -119,7 +119,7 @@ def test_to_graph_should_return_contains_blank_node_modelelement_identifier() ->
     """It returns a contains graph isomorphic to spec."""
     composition = Composition()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     composition.contains = modelelement
 
@@ -134,7 +134,7 @@ def test_to_graph_should_return_contains_blank_node_modelelement_identifier() ->
             modelldcatno:contains <http://example.com/modelelements/1>
         ] .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement .
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType .
 
         """
     g1 = Graph().parse(data=composition.to_rdf(), format="turtle")
@@ -147,7 +147,7 @@ def test_to_graph_should_return_contains_blank_nodes() -> None:
     """It returns a contains graph isomorphic to spec."""
     composition = Composition()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     composition.contains = modelelement
 
     src = """
@@ -158,7 +158,7 @@ def test_to_graph_should_return_contains_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [ a modelldcatno:Composition ;
-            modelldcatno:contains [ a modelldcatno:ModelElement ]
+            modelldcatno:contains [ a modelldcatno:ObjectType ]
         ] .
         """
     g1 = Graph().parse(data=composition.to_rdf(), format="turtle")

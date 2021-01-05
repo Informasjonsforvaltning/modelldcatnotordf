@@ -3,7 +3,7 @@
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import ModelElement, Specialization
+from modelldcatnotordf.modelldcatno import ObjectType, Specialization
 from tests.testutils import assert_isomorphic
 
 """
@@ -66,7 +66,7 @@ def test_to_graph_should_return_has_general_concept_both_identifiers() -> None:
     specialization = Specialization()
     specialization.identifier = "http://example.com/specializations/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     specialization.has_general_concept = modelelement
 
@@ -80,7 +80,7 @@ def test_to_graph_should_return_has_general_concept_both_identifiers() -> None:
         <http://example.com/specializations/1> a modelldcatno:Specialization ;
             modelldcatno:hasGeneralConcept <http://example.com/modelelements/1> .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement ;
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
 
         .
         """
@@ -95,7 +95,7 @@ def test_to_graph_should_return_has_general_concept_bnode_specialization_id() ->
     specialization = Specialization()
     specialization.identifier = "http://example.com/specializations/1"
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     specialization.has_general_concept = modelelement
 
     src = """
@@ -106,7 +106,7 @@ def test_to_graph_should_return_has_general_concept_bnode_specialization_id() ->
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/specializations/1> a modelldcatno:Specialization ;
-            modelldcatno:hasGeneralConcept [ a modelldcatno:ModelElement ] .
+            modelldcatno:hasGeneralConcept [ a modelldcatno:ObjectType ] .
 
         """
     g1 = Graph().parse(data=specialization.to_rdf(), format="turtle")
@@ -119,7 +119,7 @@ def test_to_graph_should_return_has_general_concept_bnode_modelelement_id() -> N
     """It returns a has_general_concept graph isomorphic to spec."""
     specialization = Specialization()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     specialization.has_general_concept = modelelement
 
@@ -134,7 +134,7 @@ def test_to_graph_should_return_has_general_concept_bnode_modelelement_id() -> N
             modelldcatno:hasGeneralConcept <http://example.com/modelelements/1>
         ] .
 
-        <http://example.com/modelelements/1> a modelldcatno:ModelElement .
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType .
 
         """
     g1 = Graph().parse(data=specialization.to_rdf(), format="turtle")
@@ -147,7 +147,7 @@ def test_to_graph_should_return_has_general_concept_blank_nodes() -> None:
     """It returns a has_general_concept graph isomorphic to spec."""
     specialization = Specialization()
 
-    modelelement = ModelElement()
+    modelelement = ObjectType()
     specialization.has_general_concept = modelelement
 
     src = """
@@ -158,7 +158,7 @@ def test_to_graph_should_return_has_general_concept_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [ a modelldcatno:Specialization ;
-            modelldcatno:hasGeneralConcept [ a modelldcatno:ModelElement ]
+            modelldcatno:hasGeneralConcept [ a modelldcatno:ObjectType ]
         ] .
         """
     g1 = Graph().parse(data=specialization.to_rdf(), format="turtle")
