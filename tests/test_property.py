@@ -5,7 +5,7 @@ from concepttordf import Concept
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import ModelElement, ModelProperty, ObjectType
+from modelldcatnotordf.modelldcatno import ModelElement, ObjectType, Role
 from tests.testutils import assert_isomorphic
 
 """
@@ -17,14 +17,14 @@ A test class for testing the class Property.
 def test_instantiate_property() -> None:
     """It returns a TypeErro exception."""
     try:
-        _ = ModelProperty()
+        _ = Role()
     except Exception:
         pytest.fail("Unexpected Exception ..")
 
 
 def test_to_graph_should_return_blank_node() -> None:
     """It returns a property graph as blank node isomorphic to spec."""
-    property = ModelProperty()
+    property = Role()
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -33,7 +33,7 @@ def test_to_graph_should_return_blank_node() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Property ] .
+        [ a modelldcatno:Role ] .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -44,7 +44,7 @@ def test_to_graph_should_return_blank_node() -> None:
 
 def test_to_graph_should_return_identifier() -> None:
     """It returns an identifier graph isomorphic to spec."""
-    property = ModelProperty()
+    property = Role()
     property.identifier = "http://example.com/properties/1"
 
     src = """
@@ -54,7 +54,7 @@ def test_to_graph_should_return_identifier() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/properties/1> a modelldcatno:Property .
+        <http://example.com/properties/1> a modelldcatno:Role .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -65,7 +65,7 @@ def test_to_graph_should_return_identifier() -> None:
 
 def test_to_graph_should_return_has_type_both_identifiers() -> None:
     """It returns a has_type graph isomorphic to spec."""
-    property = ModelProperty()
+    property = Role()
     property.identifier = "http://example.com/properties/1"
 
     modelelement = ObjectType()
@@ -81,7 +81,7 @@ def test_to_graph_should_return_has_type_both_identifiers() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/properties/1> a modelldcatno:Property ;
+        <http://example.com/properties/1> a modelldcatno:Role ;
         modelldcatno:hasType <http://example.com/modelelements/1> .
 
         <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
@@ -96,7 +96,7 @@ def test_to_graph_should_return_has_type_both_identifiers() -> None:
 
 def test_to_graph_should_return_has_type_blank_node_property_identifier() -> None:
     """It returns a has_type graph isomorphic to spec."""
-    property = ModelProperty()
+    property = Role()
     property.identifier = "http://example.com/properties/1"
 
     modelelement = ObjectType()
@@ -109,7 +109,7 @@ def test_to_graph_should_return_has_type_blank_node_property_identifier() -> Non
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/properties/1> a modelldcatno:Property ;
+        <http://example.com/properties/1> a modelldcatno:Role ;
             modelldcatno:hasType [ a modelldcatno:ObjectType ] .
 
         """
@@ -121,7 +121,7 @@ def test_to_graph_should_return_has_type_blank_node_property_identifier() -> Non
 
 def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() -> None:
     """It returns a has_type graph isomorphic to spec."""
-    property = ModelProperty()
+    property = Role()
 
     modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
@@ -134,7 +134,7 @@ def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() ->
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Property ;
+        [ a modelldcatno:Role ;
             modelldcatno:hasType <http://example.com/modelelements/1>
         ] .
 
@@ -149,7 +149,7 @@ def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() ->
 
 def test_to_graph_should_return_has_type_blank_nodes() -> None:
     """It returns a has_type graph isomorphic to spec."""
-    property = ModelProperty()
+    property = Role()
 
     modelelement = ObjectType()
     property.has_type.append(modelelement)
@@ -161,7 +161,7 @@ def test_to_graph_should_return_has_type_blank_nodes() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Property ;
+        [ a modelldcatno:Role ;
             modelldcatno:hasType [ a modelldcatno:ObjectType ]
         ] .
         """
@@ -173,7 +173,7 @@ def test_to_graph_should_return_has_type_blank_nodes() -> None:
 
 def test_to_graph_should_return_min_occurs() -> None:
     """It returns a has_type graph isomorphic to spec."""
-    property = ModelProperty()
+    property = Role()
     property.identifier = "http://example.com/properties/1"
     property.min_occurs = 1
 
@@ -185,7 +185,7 @@ def test_to_graph_should_return_min_occurs() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-        <http://example.com/properties/1> a modelldcatno:Property ;
+        <http://example.com/properties/1> a modelldcatno:Role ;
             xsd:minOccurs 1 .
 
         """
@@ -197,7 +197,7 @@ def test_to_graph_should_return_min_occurs() -> None:
 
 def test_to_graph_should_return_max_occurs() -> None:
     """It returns a has_type graph isomorphic to spec."""
-    property = ModelProperty()
+    property = Role()
     property.identifier = "http://example.com/properties/1"
     property.max_occurs = 1
 
@@ -209,7 +209,7 @@ def test_to_graph_should_return_max_occurs() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-        <http://example.com/properties/1> a modelldcatno:Property ;
+        <http://example.com/properties/1> a modelldcatno:Role ;
             xsd:maxOccurs 1 .
 
         """
@@ -223,7 +223,7 @@ def test_to_graph_should_return_title_and_identifier() -> None:
     """It returns a title graph isomorphic to spec."""
     """It returns an identifier graph isomorphic to spec."""
 
-    modelproperty = ModelProperty()
+    modelproperty = Role()
     modelproperty.identifier = "http://example.com/properties/1"
     modelproperty.title = {"nb": "Tittel 1", "en": "Title 1"}
 
@@ -234,7 +234,7 @@ def test_to_graph_should_return_title_and_identifier() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/properties/1> a modelldcatno:Property;
+        <http://example.com/properties/1> a modelldcatno:Role;
                 dct:title   "Title 1"@en, "Tittel 1"@nb ;
         .
         """
@@ -246,7 +246,7 @@ def test_to_graph_should_return_title_and_identifier() -> None:
 
 def test_to_graph_should_return_subject() -> None:
     """It returns a subject graph isomorphic to spec."""
-    modelproperty = ModelProperty()
+    modelproperty = Role()
     modelproperty.identifier = "http://example.com/properties/1"
     subject = Concept()
     subject.identifier = "https://example.com/subjects/1"
@@ -260,7 +260,7 @@ def test_to_graph_should_return_subject() -> None:
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
     @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-    <http://example.com/properties/1> a modelldcatno:Property ;
+    <http://example.com/properties/1> a modelldcatno:Role ;
         dct:subject <https://example.com/subjects/1> ;
     .
      <https://example.com/subjects/1> a skos:Concept .
