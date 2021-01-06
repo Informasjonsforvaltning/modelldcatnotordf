@@ -4,7 +4,7 @@ from typing import List
 from concepttordf import Concept
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import ModelProperty, ObjectType
+from modelldcatnotordf.modelldcatno import ModelProperty, ObjectType, Role
 from tests.testutils import assert_isomorphic
 
 """
@@ -117,7 +117,7 @@ def test_to_graph_should_return_has_property_both_identifiers() -> None:
     modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
 
-    modelproperty = ModelProperty()
+    modelproperty = Role()
     modelproperty.identifier = "http://example.com/properties/1"
 
     has_properties: List[ModelProperty] = []
@@ -134,7 +134,7 @@ def test_to_graph_should_return_has_property_both_identifiers() -> None:
         <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
         modelldcatno:hasProperty <http://example.com/properties/1> .
 
-        <http://example.com/properties/1> a modelldcatno:Property ;
+        <http://example.com/properties/1> a modelldcatno:Role ;
 
         .
         """
@@ -149,7 +149,7 @@ def test_to_graph_should_return_has_property_bnode_modelelement_id() -> None:
     modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
 
-    modelproperty = ModelProperty()
+    modelproperty = Role()
     modelelement.has_property.append(modelproperty)
 
     src = """
@@ -160,7 +160,7 @@ def test_to_graph_should_return_has_property_bnode_modelelement_id() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
-            modelldcatno:hasProperty [ a modelldcatno:Property ] .
+            modelldcatno:hasProperty [ a modelldcatno:Role ] .
 
         """
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")
@@ -173,7 +173,7 @@ def test_to_graph_should_return_has_property_bnode_modelproperty_id() -> None:
     """It returns a has_property graph isomorphic to spec."""
     modelelement = ObjectType()
 
-    modelproperty = ModelProperty()
+    modelproperty = Role()
     modelproperty.identifier = "http://example.com/properties/1"
     modelelement.has_property.append(modelproperty)
 
@@ -188,7 +188,7 @@ def test_to_graph_should_return_has_property_bnode_modelproperty_id() -> None:
             modelldcatno:hasProperty <http://example.com/properties/1>
         ] .
 
-        <http://example.com/properties/1> a modelldcatno:Property .
+        <http://example.com/properties/1> a modelldcatno:Role .
 
         """
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")
@@ -201,7 +201,7 @@ def test_to_graph_should_return_has_property_blank_nodes() -> None:
     """It returns a has_property graph isomorphic to spec."""
     modelelement = ObjectType()
 
-    modelproperty = ModelProperty()
+    modelproperty = Role()
     modelelement.has_property.append(modelproperty)
 
     src = """
@@ -212,7 +212,7 @@ def test_to_graph_should_return_has_property_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         [ a modelldcatno:ObjectType ;
-            modelldcatno:hasProperty [ a modelldcatno:Property ]
+            modelldcatno:hasProperty [ a modelldcatno:Role ]
         ] .
         """
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")

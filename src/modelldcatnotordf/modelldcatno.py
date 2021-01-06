@@ -414,7 +414,7 @@ class ModelElement(ABC):
                 )
 
 
-class ModelProperty:
+class ModelProperty(ABC):
     """A class representing a modelldcatno:Property."""
 
     __slots__ = (
@@ -437,6 +437,7 @@ class ModelProperty:
     _title: dict
     _subject: Concept
 
+    @abstractmethod
     def __init__(self) -> None:
         """Inits an object with default values."""
         self._type = MODELLDCATNO.Property
@@ -502,17 +503,14 @@ class ModelProperty:
         """Set for max_occurs."""
         self._max_occurs = max_occurs
 
+    @abstractmethod
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the property to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
-
-        Returns:
-            a rdf serialization as a string according to format.
         """
-        return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
         self, type: str = MODELLDCATNO.Property, selfobject: Any = None
@@ -532,30 +530,21 @@ class ModelProperty:
         self._g.bind("dct", DCT)
         self._g.bind("skos", SKOS)
 
-        if selfobject:
-            _self = selfobject
+        self._g.add((selfobject, RDF.type, type))
 
-        elif getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-
-        else:
-            _self = BNode()
-
-        self._g.add((_self, RDF.type, type))
-
-        self._has_type_to_graph(_self)
+        self._has_type_to_graph(selfobject)
 
         if getattr(self, "min_occurs", None):
-            self._g.add((_self, XSD.minOccurs, Literal(self.min_occurs)))
+            self._g.add((selfobject, XSD.minOccurs, Literal(self.min_occurs)))
 
         if getattr(self, "max_occurs", None):
-            self._g.add((_self, XSD.maxOccurs, Literal(self.max_occurs)))
+            self._g.add((selfobject, XSD.maxOccurs, Literal(self.max_occurs)))
 
         if getattr(self, "title", None):
             for key in self.title:
                 self._g.add(
                     (
-                        _self,
+                        selfobject,
                         DCT.title,
                         Literal(self.title[key], lang=key),
                     )
@@ -568,7 +557,7 @@ class ModelProperty:
             for _s, p, o in self.subject._to_graph().triples((None, None, None)):
                 self._g.add((_subject, p, o))
 
-            self._g.add((_self, DCT.subject, _subject))
+            self._g.add((selfobject, DCT.subject, _subject))
 
         return self._g
 
@@ -939,6 +928,10 @@ class Composition(ModelProperty):
         """Set for contains."""
         self._contains = contains
 
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
+
     def to_rdf(
         self: Composition, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -1011,6 +1004,10 @@ class Collection(ModelProperty):
     def has_member(self: Collection, has_member: ModelElement) -> None:
         """Set for has_member."""
         self._has_member = has_member
+
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
 
     def to_rdf(
         self: Collection, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -1086,6 +1083,10 @@ class Association(ModelProperty):
     def refers_to(self: Association, refers_to: ModelElement) -> None:
         """Set for refers_to."""
         self._refers_to = refers_to
+
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
 
     def to_rdf(
         self: Association, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -1428,6 +1429,10 @@ class Specialization(ModelProperty):
         """Set for has_general_concept."""
         self._has_general_concept = has_general_concept
 
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
+
     def to_rdf(
         self: Specialization, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -1507,6 +1512,10 @@ class Realization(ModelProperty):
         """Set for has_supplier."""
         self._has_supplier = has_supplier
 
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
+
     def to_rdf(
         self: Realization, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -1581,6 +1590,10 @@ class Abstraction(ModelProperty):
     def is_abstraction_of(self: Abstraction, is_abstraction_of: ModelElement) -> None:
         """Set for is_abstraction_of."""
         self._is_abstraction_of = is_abstraction_of
+
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
 
     def to_rdf(
         self: Abstraction, format: str = "turtle", encoding: Optional[str] = "utf-8"
