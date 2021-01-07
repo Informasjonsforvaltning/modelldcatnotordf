@@ -15,7 +15,7 @@ A test class for testing the class Property.
 
 
 def test_instantiate_property() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = Role()
     except Exception:

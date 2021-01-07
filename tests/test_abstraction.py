@@ -13,7 +13,7 @@ A test class for testing the class Abstraction.
 
 
 def test_instantiate_abstraction() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = Abstraction()
     except Exception:
