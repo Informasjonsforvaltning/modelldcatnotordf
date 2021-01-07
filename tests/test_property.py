@@ -5,7 +5,7 @@ from concepttordf import Concept
 import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import ModelElement, ObjectType, Role
+from modelldcatnotordf.modelldcatno import ModelElement, ModelProperty, ObjectType, Role
 from tests.testutils import assert_isomorphic
 
 """
@@ -14,12 +14,10 @@ A test class for testing the class Property.
 """
 
 
-def test_instantiate_property() -> None:
-    """It does not raise an exception."""
-    try:
-        _ = Role()
-    except Exception:
-        pytest.fail("Unexpected Exception ..")
+def test_instantiate_resource_should_fail_with_typeerror() -> None:
+    """It returns a TypeErro exception."""
+    with pytest.raises(TypeError):
+        _ = ModelProperty()  # type: ignore
 
 
 def test_to_graph_should_return_blank_node() -> None:

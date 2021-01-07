@@ -2,15 +2,22 @@
 from typing import List
 
 from concepttordf import Concept
+import pytest
 from rdflib import Graph
 
-from modelldcatnotordf.modelldcatno import ModelProperty, ObjectType, Role
+from modelldcatnotordf.modelldcatno import ModelElement, ModelProperty, ObjectType, Role
 from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class ModelElement.
 
 """
+
+
+def test_instantiate_resource_should_fail_with_typeerror() -> None:
+    """It returns a TypeErro exception."""
+    with pytest.raises(TypeError):
+        _ = ModelElement()  # type: ignore
 
 
 def test_to_graph_should_return_title_and_identifier() -> None:
