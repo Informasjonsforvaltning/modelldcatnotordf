@@ -14,7 +14,7 @@ A test class for testing the class DataType.
 
 
 def test_instantiate_datatype() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = DataType()
     except Exception:

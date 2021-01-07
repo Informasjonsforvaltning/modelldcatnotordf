@@ -12,7 +12,7 @@ A test class for testing the class Agent.
 
 
 def test_instantiate_agent() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = Agent()
     except Exception:

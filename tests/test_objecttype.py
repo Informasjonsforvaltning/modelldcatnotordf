@@ -14,7 +14,7 @@ A test class for testing the class ObjectType.
 
 
 def test_instantiate_objectype() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = ObjectType()
     except Exception:

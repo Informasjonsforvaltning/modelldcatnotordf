@@ -10,7 +10,7 @@ from tests.testutils import assert_isomorphic
 
 
 def test_instantiate_codeelement() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = CodeElement()
     except Exception:

@@ -14,7 +14,7 @@ A test class for testing the class RootObjectType.
 
 
 def test_instantiate_rootobjecttype() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = RootObjectType()
     except Exception:

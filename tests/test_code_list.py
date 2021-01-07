@@ -14,7 +14,7 @@ A test class for testing the class CodeList.
 
 
 def test_instantiate_codelist() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = CodeList()
     except Exception:

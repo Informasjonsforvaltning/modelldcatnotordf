@@ -13,7 +13,7 @@ A test class for testing the class Specialization.
 
 
 def test_instantiate_specialization() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = Specialization()
     except Exception:

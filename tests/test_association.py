@@ -13,7 +13,7 @@ A test class for testing the class Association.
 
 
 def test_instantiate_association() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = Association()
     except Exception:

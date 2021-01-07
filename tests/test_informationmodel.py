@@ -17,7 +17,7 @@ A test class for testing the class InformationModel.
 
 
 def test_instantiate_informationmodel() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = InformationModel()
     except Exception:

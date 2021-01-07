@@ -13,7 +13,7 @@ A test class for testing the class Collection.
 
 
 def test_instantiate_collection() -> None:
-    """It returns a TypeErro exception."""
+    """It does not raise an exception."""
     try:
         _ = Collection()
     except Exception:
