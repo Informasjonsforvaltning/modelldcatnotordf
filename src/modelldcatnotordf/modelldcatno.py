@@ -1812,6 +1812,7 @@ class CodeElement:
         "_top_concept_of",
         "_altlabel",
         "_definition",
+        "_example",
     )
 
     _identifier: URI
@@ -1825,6 +1826,7 @@ class CodeElement:
     _top_concept_of: List[CodeList]
     _altlabel: dict
     _definition: dict
+    _example: List[str]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1920,6 +1922,16 @@ class CodeElement:
         """Set for definition."""
         self._definition = definition
 
+    @property
+    def example(self: CodeElement) -> List[str]:
+        """Get for example."""
+        return self._example
+
+    @example.setter
+    def example(self: CodeElement, example: List[str]) -> None:
+        """Set for example."""
+        self._example = example
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -1964,6 +1976,7 @@ class CodeElement:
         self._top_concept_of_to_graph(_self)
         self._altlabel_to_graph(_self)
         self._definition_to_graph(_self)
+        self._example_to_graph(_self)
 
         return self._g
 
@@ -2056,3 +2069,10 @@ class CodeElement:
                         Literal(self.definition[key], lang=key),
                     )
                 )
+
+    def _example_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "example", None):
+
+            for example in self.example:
+                self._g.add((_self, SKOS.example, Literal(example)))
