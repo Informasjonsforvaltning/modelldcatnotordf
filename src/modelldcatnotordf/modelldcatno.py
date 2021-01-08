@@ -1813,6 +1813,7 @@ class CodeElement:
         "_altlabel",
         "_definition",
         "_example",
+        "_hiddenlabel",
     )
 
     _identifier: URI
@@ -1827,6 +1828,7 @@ class CodeElement:
     _altlabel: dict
     _definition: dict
     _example: List[str]
+    _hiddenlabel: dict
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1932,6 +1934,16 @@ class CodeElement:
         """Set for example."""
         self._example = example
 
+    @property
+    def hiddenlabel(self: CodeElement) -> dict:
+        """Get for hiddenlabel."""
+        return self._hiddenlabel
+
+    @hiddenlabel.setter
+    def hiddenlabel(self: CodeElement, hiddenlabel: dict) -> None:
+        """Set for hiddenlabel."""
+        self._hiddenlabel = hiddenlabel
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -1977,6 +1989,7 @@ class CodeElement:
         self._altlabel_to_graph(_self)
         self._definition_to_graph(_self)
         self._example_to_graph(_self)
+        self._hiddenlabel_to_graph(_self)
 
         return self._g
 
@@ -2076,3 +2089,16 @@ class CodeElement:
 
             for example in self.example:
                 self._g.add((_self, SKOS.example, Literal(example)))
+
+    def _hiddenlabel_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "hiddenlabel", None):
+
+            for key in self.hiddenlabel:
+                self._g.add(
+                    (
+                        _self,
+                        SKOS.hiddenLabel,
+                        Literal(self.hiddenlabel[key], lang=key),
+                    )
+                )
