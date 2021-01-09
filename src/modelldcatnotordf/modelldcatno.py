@@ -1816,6 +1816,7 @@ class CodeElement:
         "_hiddenlabel",
         "_note",
         "_scopenote",
+        "_exclusion_note",
     )
 
     _identifier: URI
@@ -1833,6 +1834,7 @@ class CodeElement:
     _hiddenlabel: dict
     _note: dict
     _scopenote: dict
+    _exclusion_note: dict
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1968,6 +1970,16 @@ class CodeElement:
         """Set for scopenote."""
         self._scopenote = scopenote
 
+    @property
+    def exclusion_note(self: CodeElement) -> dict:
+        """Get for exclusion_note."""
+        return self._exclusion_note
+
+    @exclusion_note.setter
+    def exclusion_note(self: CodeElement, exclusion_note: dict) -> None:
+        """Set for exclusion_note."""
+        self._exclusion_note = exclusion_note
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -2016,6 +2028,7 @@ class CodeElement:
         self._hiddenlabel_to_graph(_self)
         self._note_to_graph(_self)
         self._scopenote_to_graph(_self)
+        self._exclusion_note_to_graph(_self)
 
         return self._g
 
@@ -2152,5 +2165,17 @@ class CodeElement:
                         _self,
                         SKOS.scopeNote,
                         Literal(self.scopenote[key], lang=key),
+                    )
+                )
+
+    def _exclusion_note_to_graph(self, _self: Any) -> None:
+        if getattr(self, "exclusion_note", None):
+
+            for key in self.exclusion_note:
+                self._g.add(
+                    (
+                        _self,
+                        XKOS.exclusionNote,
+                        Literal(self.exclusion_note[key], lang=key),
                     )
                 )
