@@ -1814,6 +1814,7 @@ class CodeElement:
         "_definition",
         "_example",
         "_hiddenlabel",
+        "_note",
     )
 
     _identifier: URI
@@ -1829,6 +1830,7 @@ class CodeElement:
     _definition: dict
     _example: List[str]
     _hiddenlabel: dict
+    _note: dict
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1944,6 +1946,16 @@ class CodeElement:
         """Set for hiddenlabel."""
         self._hiddenlabel = hiddenlabel
 
+    @property
+    def note(self: CodeElement) -> dict:
+        """Get for note."""
+        return self._note
+
+    @note.setter
+    def note(self: CodeElement, note: dict) -> None:
+        """Set for note."""
+        self._note = note
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -1990,6 +2002,7 @@ class CodeElement:
         self._definition_to_graph(_self)
         self._example_to_graph(_self)
         self._hiddenlabel_to_graph(_self)
+        self._note_to_graph(_self)
 
         return self._g
 
@@ -2100,5 +2113,18 @@ class CodeElement:
                         _self,
                         SKOS.hiddenLabel,
                         Literal(self.hiddenlabel[key], lang=key),
+                    )
+                )
+
+    def _note_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "note", None):
+
+            for key in self.note:
+                self._g.add(
+                    (
+                        _self,
+                        SKOS.note,
+                        Literal(self.note[key], lang=key),
                     )
                 )
