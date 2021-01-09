@@ -1817,6 +1817,7 @@ class CodeElement:
         "_note",
         "_scopenote",
         "_exclusion_note",
+        "_inclusion_note",
     )
 
     _identifier: URI
@@ -1835,6 +1836,7 @@ class CodeElement:
     _note: dict
     _scopenote: dict
     _exclusion_note: dict
+    _inclusion_note: dict
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1980,6 +1982,16 @@ class CodeElement:
         """Set for exclusion_note."""
         self._exclusion_note = exclusion_note
 
+    @property
+    def inclusion_note(self: CodeElement) -> dict:
+        """Get for inclusion_note."""
+        return self._inclusion_note
+
+    @inclusion_note.setter
+    def inclusion_note(self: CodeElement, inclusion_note: dict) -> None:
+        """Set for inclusion_note."""
+        self._inclusion_note = inclusion_note
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -2029,6 +2041,7 @@ class CodeElement:
         self._note_to_graph(_self)
         self._scopenote_to_graph(_self)
         self._exclusion_note_to_graph(_self)
+        self._inclusion_note_to_graph(_self)
 
         return self._g
 
@@ -2177,5 +2190,17 @@ class CodeElement:
                         _self,
                         XKOS.exclusionNote,
                         Literal(self.exclusion_note[key], lang=key),
+                    )
+                )
+
+    def _inclusion_note_to_graph(self, _self: Any) -> None:
+        if getattr(self, "inclusion_note", None):
+
+            for key in self.inclusion_note:
+                self._g.add(
+                    (
+                        _self,
+                        XKOS.inclusionNote,
+                        Literal(self.inclusion_note[key], lang=key),
                     )
                 )
