@@ -1818,6 +1818,7 @@ class CodeElement:
         "_scopenote",
         "_exclusion_note",
         "_inclusion_note",
+        "_next_element",
     )
 
     _identifier: URI
@@ -1837,6 +1838,7 @@ class CodeElement:
     _scopenote: dict
     _exclusion_note: dict
     _inclusion_note: dict
+    _next_element: CodeElement
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1992,6 +1994,16 @@ class CodeElement:
         """Set for inclusion_note."""
         self._inclusion_note = inclusion_note
 
+    @property
+    def next_element(self: CodeElement) -> CodeElement:
+        """Get for next_element."""
+        return self._next_element
+
+    @next_element.setter
+    def next_element(self: CodeElement, next_element: CodeElement) -> None:
+        """Set for next_element."""
+        self._next_element = next_element
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -2042,6 +2054,7 @@ class CodeElement:
         self._scopenote_to_graph(_self)
         self._exclusion_note_to_graph(_self)
         self._inclusion_note_to_graph(_self)
+        self._next_element_to_graph(_self)
 
         return self._g
 
@@ -2204,3 +2217,21 @@ class CodeElement:
                         Literal(self.inclusion_note[key], lang=key),
                     )
                 )
+
+    def _next_element_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "next_element", None):
+
+            if getattr(self.next_element, "identifier", None):
+                _next_element = URIRef(self.next_element.identifier)
+            else:
+                _next_element = BNode()
+
+            for _s, p, o in self.next_element._to_graph().triples((None, None, None)):
+                self._g.add(
+                    (_next_element, p, o)
+                    if isinstance(_next_element, BNode)
+                    else (_s, p, o)
+                )
+
+            self._g.add((_self, XKOS.next, _next_element))
