@@ -1819,6 +1819,7 @@ class CodeElement:
         "_exclusion_note",
         "_inclusion_note",
         "_next_element",
+        "_previous_element",
     )
 
     _identifier: URI
@@ -1839,6 +1840,7 @@ class CodeElement:
     _exclusion_note: dict
     _inclusion_note: dict
     _next_element: CodeElement
+    _previous_element: CodeElement
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -2004,6 +2006,16 @@ class CodeElement:
         """Set for next_element."""
         self._next_element = next_element
 
+    @property
+    def previous_element(self: CodeElement) -> CodeElement:
+        """Get for previous_element."""
+        return self._previous_element
+
+    @previous_element.setter
+    def previous_element(self: CodeElement, previous_element: CodeElement) -> None:
+        """Set for previous_element."""
+        self._previous_element = previous_element
+
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> str:
@@ -2055,6 +2067,7 @@ class CodeElement:
         self._exclusion_note_to_graph(_self)
         self._inclusion_note_to_graph(_self)
         self._next_element_to_graph(_self)
+        self._previous_element_to_graph(_self)
 
         return self._g
 
@@ -2235,3 +2248,23 @@ class CodeElement:
                 )
 
             self._g.add((_self, XKOS.next, _next_element))
+
+    def _previous_element_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "previous_element", None):
+
+            if getattr(self.previous_element, "identifier", None):
+                _previous_element = URIRef(self.previous_element.identifier)
+            else:
+                _previous_element = BNode()
+
+            for _s, p, o in self.previous_element._to_graph().triples(
+                (None, None, None)
+            ):
+                self._g.add(
+                    (_previous_element, p, o)
+                    if isinstance(_previous_element, BNode)
+                    else (_s, p, o)
+                )
+
+            self._g.add((_self, XKOS.previous, _previous_element))
