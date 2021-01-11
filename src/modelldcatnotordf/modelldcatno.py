@@ -42,6 +42,8 @@ class InformationModel(Resource):
         "_licensedocument",
         "_replaces",
         "_is_replaced_by",
+        "_has_part",
+        "_is_part_of",
     )
 
     _title: dict
@@ -52,6 +54,8 @@ class InformationModel(Resource):
     _licensedocument: LicenseDocument
     _replaces: List[InformationModel]
     _is_replaced_by: List[InformationModel]
+    _has_part: List[InformationModel]
+    _is_part_of: List[InformationModel]
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -61,6 +65,8 @@ class InformationModel(Resource):
         self._modelelements = []
         self._replaces = []
         self._is_replaced_by = []
+        self._has_part = []
+        self._is_part_of = []
 
     @property
     def informationmodelidentifier(self) -> str:
@@ -171,6 +177,26 @@ class InformationModel(Resource):
         """Set for is_replaced_by."""
         self._is_replaced_by = is_replaced_by
 
+    @property
+    def has_part(self: InformationModel) -> List[InformationModel]:
+        """Get for has_part."""
+        return self._has_part
+
+    @has_part.setter
+    def has_part(self: InformationModel, has_part: List[InformationModel]) -> None:
+        """Set for has_part."""
+        self._has_part = has_part
+
+    @property
+    def is_part_of(self: InformationModel) -> List[InformationModel]:
+        """Get for is_part_of."""
+        return self._is_part_of
+
+    @is_part_of.setter
+    def is_part_of(self: InformationModel, is_part_of: List[InformationModel]) -> None:
+        """Set for is_part_of."""
+        self._is_part_of = is_part_of
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -206,6 +232,8 @@ class InformationModel(Resource):
         self._licensedocument_to_graph()
         self._replaces_to_graph()
         self._is_replaced_by_to_graph()
+        self._has_part_to_graph()
+        self._is_part_of_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -316,6 +344,42 @@ class InformationModel(Resource):
                         URIRef(self.identifier),
                         DCT.isReplacedBy,
                         _is_replaced_by,
+                    )
+                )
+
+    def _has_part_to_graph(self: InformationModel) -> None:
+        if getattr(self, "has_part", None):
+
+            for has_part in self._has_part:
+
+                _has_part = URIRef(has_part.identifier)
+
+                for _s, p, o in has_part._to_graph().triples((None, None, None)):
+                    self._g.add((_has_part, p, o))
+
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCT.hasPart,
+                        _has_part,
+                    )
+                )
+
+    def _is_part_of_to_graph(self: InformationModel) -> None:
+        if getattr(self, "is_part_of", None):
+
+            for is_part_of in self._is_part_of:
+
+                _is_part_of = URIRef(is_part_of.identifier)
+
+                for _s, p, o in is_part_of._to_graph().triples((None, None, None)):
+                    self._g.add((_is_part_of, p, o))
+
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCT.isPartOf,
+                        _is_part_of,
                     )
                 )
 
