@@ -40,6 +40,7 @@ class InformationModel(Resource):
         "_modelelements",
         "_informationmodelidentifier",
         "_licensedocument",
+        "_replaces",
     )
 
     _title: dict
@@ -48,6 +49,7 @@ class InformationModel(Resource):
     _modelelements: List[ModelElement]
     _informationmodelidentifier: str
     _licensedocument: LicenseDocument
+    _replaces: List[InformationModel]
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -55,6 +57,7 @@ class InformationModel(Resource):
         self._type = MODELLDCATNO.InformationModel
         self._subject = []
         self._modelelements = []
+        self._replaces = []
 
     @property
     def informationmodelidentifier(self) -> str:
@@ -143,6 +146,16 @@ class InformationModel(Resource):
         """Set for modelelements."""
         self._modelelements = modelelements
 
+    @property
+    def replaces(self: InformationModel) -> List[InformationModel]:
+        """Get for replaces."""
+        return self._replaces
+
+    @replaces.setter
+    def replaces(self: InformationModel, replaces: List[InformationModel]) -> None:
+        """Set for replaces."""
+        self._replaces = replaces
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -176,6 +189,7 @@ class InformationModel(Resource):
         self._subject_to_graph()
         self._modelelements_to_graph()
         self._licensedocument_to_graph()
+        self._replaces_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -252,6 +266,24 @@ class InformationModel(Resource):
                 )
 
             self._g.add((URIRef(self.identifier), DCT.license, _licensedocument))
+
+    def _replaces_to_graph(self: InformationModel) -> None:
+        if getattr(self, "replaces", None):
+
+            for replaces in self._replaces:
+
+                _replaces = URIRef(replaces.identifier)
+
+                for _s, p, o in replaces._to_graph().triples((None, None, None)):
+                    self._g.add((_replaces, p, o))
+
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCT.replaces,
+                        _replaces,
+                    )
+                )
 
 
 class ModelElement(ABC):
