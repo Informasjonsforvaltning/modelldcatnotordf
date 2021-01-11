@@ -41,6 +41,7 @@ class InformationModel(Resource):
         "_informationmodelidentifier",
         "_licensedocument",
         "_replaces",
+        "_is_replaced_by",
     )
 
     _title: dict
@@ -50,6 +51,7 @@ class InformationModel(Resource):
     _informationmodelidentifier: str
     _licensedocument: LicenseDocument
     _replaces: List[InformationModel]
+    _is_replaced_by: List[InformationModel]
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -58,6 +60,7 @@ class InformationModel(Resource):
         self._subject = []
         self._modelelements = []
         self._replaces = []
+        self._is_replaced_by = []
 
     @property
     def informationmodelidentifier(self) -> str:
@@ -156,6 +159,18 @@ class InformationModel(Resource):
         """Set for replaces."""
         self._replaces = replaces
 
+    @property
+    def is_replaced_by(self: InformationModel) -> List[InformationModel]:
+        """Get for is_replaced_by."""
+        return self._is_replaced_by
+
+    @is_replaced_by.setter
+    def is_replaced_by(
+        self: InformationModel, is_replaced_by: List[InformationModel]
+    ) -> None:
+        """Set for is_replaced_by."""
+        self._is_replaced_by = is_replaced_by
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -190,6 +205,7 @@ class InformationModel(Resource):
         self._modelelements_to_graph()
         self._licensedocument_to_graph()
         self._replaces_to_graph()
+        self._is_replaced_by_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -282,6 +298,24 @@ class InformationModel(Resource):
                         URIRef(self.identifier),
                         DCT.replaces,
                         _replaces,
+                    )
+                )
+
+    def _is_replaced_by_to_graph(self: InformationModel) -> None:
+        if getattr(self, "is_replaced_by", None):
+
+            for is_replaced_by in self._is_replaced_by:
+
+                _is_replaced_by = URIRef(is_replaced_by.identifier)
+
+                for _s, p, o in is_replaced_by._to_graph().triples((None, None, None)):
+                    self._g.add((_is_replaced_by, p, o))
+
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCT.isReplacedBy,
+                        _is_replaced_by,
                     )
                 )
 
