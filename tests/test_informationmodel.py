@@ -622,3 +622,28 @@ def test_to_graph_should_return_homepage() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_keyword() -> None:
+    """It returns a keyword graph isomorphic to spec."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+    _keyword = {"nb": "Etnøkkelord", "nn": "Eitnøkkelord", "en": "Akeyword"}
+    informationmodel.keyword = _keyword
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcat: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+
+    <http://example.com/informationmodels/1> a modelldcat:InformationModel ;
+        dcat:keyword   "Akeyword"@en, "Etnøkkelord"@nb, "Eitnøkkelord"@nn ;
+        .
+    """
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
