@@ -44,6 +44,7 @@ class InformationModel(Resource):
         "_is_replaced_by",
         "_has_part",
         "_is_part_of",
+        "_homepage",
     )
 
     _title: dict
@@ -56,6 +57,7 @@ class InformationModel(Resource):
     _is_replaced_by: List[InformationModel]
     _has_part: List[InformationModel]
     _is_part_of: List[InformationModel]
+    _homepage: URI
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -197,6 +199,15 @@ class InformationModel(Resource):
         """Set for is_part_of."""
         self._is_part_of = is_part_of
 
+    @property
+    def homepage(self: InformationModel) -> str:
+        """Get/set for homepage."""
+        return self._homepage
+
+    @homepage.setter
+    def homepage(self: InformationModel, homepage: str) -> None:
+        self._homepage = URI(homepage)
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -234,6 +245,7 @@ class InformationModel(Resource):
         self._is_replaced_by_to_graph()
         self._has_part_to_graph()
         self._is_part_of_to_graph()
+        self._homepage_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -382,6 +394,10 @@ class InformationModel(Resource):
                         _is_part_of,
                     )
                 )
+
+    def _homepage_to_graph(self: InformationModel) -> None:
+        if getattr(self, "homepage", None):
+            self._g.add((URIRef(self.identifier), FOAF.homepage, URIRef(self.homepage)))
 
 
 class ModelElement(ABC):
