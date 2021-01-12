@@ -571,3 +571,30 @@ def test_to_graph_should_return_is_part_of() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_language() -> None:
+    """It returns a language graph isomorphic to spec."""
+    """It returns an identifier graph isomorphic to spec."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+
+    informationmodel.language.append("http://id.loc.gov/vocabulary/iso639-1/en")
+    informationmodel.language.append("http://id.loc.gov/vocabulary/iso639-1/nb")
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+    <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
+                dct:language    <http://id.loc.gov/vocabulary/iso639-1/en> ,
+                                <http://id.loc.gov/vocabulary/iso639-1/nb> ;
+    .
+    """
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
