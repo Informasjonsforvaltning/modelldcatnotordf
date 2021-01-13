@@ -10,7 +10,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, List, Optional
 
-from concepttordf import Concept
+from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Resource, URI
 from rdflib import BNode, Graph, Literal, Namespace, RDF, URIRef
 
@@ -45,6 +45,7 @@ class InformationModel(Resource):
         "_has_part",
         "_is_part_of",
         "_homepage",
+        "_contactpoints",
     )
 
     _title: dict
@@ -58,6 +59,7 @@ class InformationModel(Resource):
     _has_part: List[InformationModel]
     _is_part_of: List[InformationModel]
     _homepage: URI
+    _contactpoints: List[Contact]
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -69,6 +71,7 @@ class InformationModel(Resource):
         self._is_replaced_by = []
         self._has_part = []
         self._is_part_of = []
+        self._contactpoints = []
 
     @property
     def informationmodelidentifier(self) -> str:
@@ -208,6 +211,15 @@ class InformationModel(Resource):
     def homepage(self: InformationModel, homepage: str) -> None:
         self._homepage = URI(homepage)
 
+    @property
+    def contactpoints(self: InformationModel) -> List[Contact]:
+        """Get/set for contactpoints."""
+        return self._contactpoints
+
+    @contactpoints.setter
+    def contactpoints(self: InformationModel, contactpoints: List[Contact]) -> None:
+        self._contactpoints = contactpoints
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -246,6 +258,7 @@ class InformationModel(Resource):
         self._has_part_to_graph()
         self._is_part_of_to_graph()
         self._homepage_to_graph()
+        self._contactpoints_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -398,6 +411,24 @@ class InformationModel(Resource):
     def _homepage_to_graph(self: InformationModel) -> None:
         if getattr(self, "homepage", None):
             self._g.add((URIRef(self.identifier), FOAF.homepage, URIRef(self.homepage)))
+
+    def _contactpoints_to_graph(self: InformationModel) -> None:
+        if getattr(self, "contactpoints", None):
+
+            for contactpoint in self._contactpoints:
+
+                _contactpoint = BNode()
+
+                for _s, p, o in contactpoint._to_graph().triples((None, None, None)):
+                    self._g.add((_contactpoint, p, o))
+
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCAT.contactPoint,
+                        _contactpoint,
+                    )
+                )
 
 
 class ModelElement(ABC):
