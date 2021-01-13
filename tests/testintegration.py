@@ -45,7 +45,7 @@ def test_title_should_be_set_on_correct_element() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/modell> a modelldcatno:InformationModel ;
-                modelldcatno:containsModelelement <http://example.com/element> .
+                modelldcatno:containsModelElement <http://example.com/element> .
 
         <http://example.com/egenskap0> a modelldcatno:Role ;
                 dct:title "egenskap0"@nb .
