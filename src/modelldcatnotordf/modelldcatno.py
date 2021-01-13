@@ -285,7 +285,7 @@ class InformationModel(Resource):
                 self._g.add(
                     (
                         URIRef(self.identifier),
-                        MODELLDCATNO.containsModelelement,
+                        MODELLDCATNO.containsModelElement,
                         _modelelement,
                     )
                 )
