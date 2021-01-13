@@ -1,7 +1,7 @@
 """Test cases for the informationmodel module."""
 from typing import List
 
-from concepttordf import Concept
+from concepttordf import Concept, Contact
 from datacatalogtordf import Agent
 import pytest
 from rdflib import Graph, Namespace
@@ -662,7 +662,6 @@ def test_to_graph_should_return_release_date() -> None:
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcat: <https://data.norge.no/vocabulary/modelldcatno#> .
     @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
-
     @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 
     <http://example.com/informationmodels/1> a modelldcat:InformationModel ;
@@ -670,6 +669,49 @@ def test_to_graph_should_return_release_date() -> None:
         .
     """
 
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_contactpoint() -> None:
+    """It returns a contactpoint graph isomorphic to spec."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+    # Create contact:
+    contact = Contact()
+    contact.name = {
+        "en": "Norwegian Digitalisation Agency",
+        "nb": "Digitaliseringsdirektoratet",
+    }
+    contact.email = "sbd@example.com"
+    contact.url = "https://digdir.no"
+    contact.telephone = "12345678"
+    # Set the contactpoint to new contact:
+    informationmodel.contactpoints = [contact]
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+    @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+    @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+
+    <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
+        dcat:contactPoint    [ a               vcard:Organization ;
+                               vcard:hasEmail  <mailto:sbd@example.com> ;
+                               vcard:hasOrganizationName
+                                        "Norwegian Digitalisation Agency"@en,
+                                        "Digitaliseringsdirektoratet"@nb ;
+                               vcard:hasURL <https://digdir.no> ;
+                               vcard:hasTelephone <tel:12345678> ;
+                              ] ;
+        .
+    """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
