@@ -750,3 +750,29 @@ def test_to_graph_should_return_centroid_as_graph() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_modified() -> None:
+    """It returns a issued graph isomorphic to spec."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+    informationmodel.modified = "2020-03-24"
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcat: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+    @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+    <http://example.com/informationmodels/1> a modelldcat:InformationModel ;
+        dct:modified   "2020-03-24"^^xsd:date ;
+        .
+    """
+
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
