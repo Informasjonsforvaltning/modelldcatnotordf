@@ -12,6 +12,7 @@ from typing import Any, List, Optional
 
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, Resource, URI
+from datacatalogtordf.periodoftime import Date
 from rdflib import BNode, Graph, Literal, Namespace, RDF, URIRef
 
 from modelldcatnotordf.licensedocument import LicenseDocument
@@ -47,6 +48,7 @@ class InformationModel(Resource):
         "_homepage",
         "_contactpoints",
         "_locations",
+        "_modified",
     )
 
     _title: dict
@@ -62,6 +64,7 @@ class InformationModel(Resource):
     _homepage: URI
     _contactpoints: List[Contact]
     _locations: List[Location]
+    _modified: Date
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -232,6 +235,15 @@ class InformationModel(Resource):
     def locations(self: InformationModel, locations: List[Location]) -> None:
         self._locations = locations
 
+    @property
+    def modified(self: InformationModel) -> str:
+        """Get/set for modified."""
+        return self._modified
+
+    @modified.setter
+    def modified(self: InformationModel, modified: str) -> None:
+        self._modified = Date(modified)
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -272,6 +284,7 @@ class InformationModel(Resource):
         self._homepage_to_graph()
         self._contactpoints_to_graph()
         self._locations_to_graph()
+        self._modified_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -460,6 +473,16 @@ class InformationModel(Resource):
                         _location,
                     )
                 )
+
+    def _modified_to_graph(self: InformationModel) -> None:
+        if getattr(self, "modified", None):
+            self._g.add(
+                (
+                    URIRef(self.identifier),
+                    DCT.modified,
+                    Literal(self.modified, datatype=XSD.date),
+                )
+            )
 
 
 class ModelElement(ABC):
