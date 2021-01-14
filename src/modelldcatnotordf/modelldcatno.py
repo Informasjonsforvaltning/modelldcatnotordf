@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 from typing import Any, List, Optional
 
 from concepttordf import Concept, Contact
-from datacatalogtordf import Agent, Resource, URI
+from datacatalogtordf import Agent, Location, Resource, URI
 from rdflib import BNode, Graph, Literal, Namespace, RDF, URIRef
 
 from modelldcatnotordf.licensedocument import LicenseDocument
@@ -46,6 +46,7 @@ class InformationModel(Resource):
         "_is_part_of",
         "_homepage",
         "_contactpoints",
+        "_locations",
     )
 
     _title: dict
@@ -60,6 +61,7 @@ class InformationModel(Resource):
     _is_part_of: List[InformationModel]
     _homepage: URI
     _contactpoints: List[Contact]
+    _locations: List[Location]
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -72,6 +74,7 @@ class InformationModel(Resource):
         self._has_part = []
         self._is_part_of = []
         self._contactpoints = []
+        self._locations = []
 
     @property
     def informationmodelidentifier(self) -> str:
@@ -220,6 +223,15 @@ class InformationModel(Resource):
     def contactpoints(self: InformationModel, contactpoints: List[Contact]) -> None:
         self._contactpoints = contactpoints
 
+    @property
+    def locations(self: InformationModel) -> List[Location]:
+        """Get/set for locations."""
+        return self._locations
+
+    @locations.setter
+    def locations(self: InformationModel, locations: List[Location]) -> None:
+        self._locations = locations
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -259,6 +271,7 @@ class InformationModel(Resource):
         self._is_part_of_to_graph()
         self._homepage_to_graph()
         self._contactpoints_to_graph()
+        self._locations_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -427,6 +440,24 @@ class InformationModel(Resource):
                         URIRef(self.identifier),
                         DCAT.contactPoint,
                         _contactpoint,
+                    )
+                )
+
+    def _locations_to_graph(self: InformationModel) -> None:
+        if getattr(self, "locations", None):
+
+            for location in self._locations:
+
+                _location = BNode()
+
+                for _s, p, o in location._to_graph().triples((None, None, None)):
+                    self._g.add((_location, p, o))
+
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCT.spatial,
+                        _location,
                     )
                 )
 

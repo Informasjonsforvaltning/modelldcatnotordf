@@ -2,7 +2,7 @@
 from typing import List
 
 from concepttordf import Concept, Contact
-from datacatalogtordf import Agent
+from datacatalogtordf import Agent, Location
 import pytest
 from rdflib import Graph, Namespace
 
@@ -711,6 +711,40 @@ def test_to_graph_should_return_contactpoint() -> None:
                                vcard:hasTelephone <tel:12345678> ;
                               ] ;
         .
+    """
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_centroid_as_graph() -> None:
+    """It returns a centroid graph isomorphic to spec."""
+    location = Location()
+    location.identifier = "http://example.com/locations/1"
+    location.centroid = "POINT(4.88412 52.37509)"
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+    informationmodel.locations = [location]
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix locn: <http://www.w3.org/ns/locn#> .
+    @prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+    @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+    @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+
+    <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
+        dct:spatial [
+                    a dct:Location ;
+                      dcat:centroid \"POINT(4.88412 52.37509)\"^^geosparql:asWKT ]
+
+    .
     """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
