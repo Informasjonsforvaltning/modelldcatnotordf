@@ -27,6 +27,7 @@ FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
 XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
 OWL = Namespace("http://www.w3.org/2002/07/owl#")
+ADMS = Namespace("http://www.w3.org/ns/adms#")
 
 
 class InformationModel(Resource):
@@ -52,6 +53,7 @@ class InformationModel(Resource):
         "_modified",
         "_dct_type",
         "_version_info",
+        "_version_note",
     )
 
     _title: dict
@@ -70,6 +72,7 @@ class InformationModel(Resource):
     _modified: Date
     _dct_type: Concept
     _version_info: str
+    _version_note: dict
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -267,6 +270,16 @@ class InformationModel(Resource):
     def version_info(self: InformationModel, version_info: str) -> None:
         self._version_info = version_info
 
+    @property
+    def version_note(self) -> dict:
+        """Get for version_note."""
+        return self._version_note
+
+    @version_note.setter
+    def version_note(self, version_note: dict) -> None:
+        """Set for version_note."""
+        self._version_note = version_note
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -309,6 +322,7 @@ class InformationModel(Resource):
         self._locations_to_graph()
         self._modified_to_graph()
         self._dct_type_to_graph()
+        self._version_note_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -532,6 +546,18 @@ class InformationModel(Resource):
                     _dct_type,
                 )
             )
+
+    def _version_note_to_graph(self: InformationModel) -> None:
+        if getattr(self, "version_note", None):
+
+            for key in self.version_note:
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        ADMS.versionNotes,
+                        Literal(self.version_note[key], lang=key),
+                    )
+                )
 
 
 class ModelElement(ABC):
