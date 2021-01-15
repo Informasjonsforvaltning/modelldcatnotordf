@@ -54,6 +54,7 @@ class InformationModel(Resource):
         "_dct_type",
         "_version_info",
         "_version_note",
+        "_status",
     )
 
     _title: dict
@@ -73,6 +74,7 @@ class InformationModel(Resource):
     _dct_type: Concept
     _version_info: str
     _version_note: dict
+    _status: Concept
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -280,6 +282,16 @@ class InformationModel(Resource):
         """Set for version_note."""
         self._version_note = version_note
 
+    @property
+    def status(self) -> Concept:
+        """Get for status."""
+        return self._status
+
+    @status.setter
+    def status(self, status: Concept) -> None:
+        """Set for status."""
+        self._status = status
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -341,6 +353,15 @@ class InformationModel(Resource):
                     Literal(self._version_info),
                 )
             )
+
+        if getattr(self, "status", None):
+
+            _status = URIRef(self.status.identifier)
+
+            for _s, p, o in self.status._to_graph().triples((None, None, None)):
+                self._g.add((_status, p, o))
+
+            self._g.add((URIRef(self.identifier), ADMS.status, _status))
 
         return self._g
 
