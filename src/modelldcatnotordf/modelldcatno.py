@@ -26,6 +26,7 @@ MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
 XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
+OWL = Namespace("http://www.w3.org/2002/07/owl#")
 
 
 class InformationModel(Resource):
@@ -50,6 +51,7 @@ class InformationModel(Resource):
         "_locations",
         "_modified",
         "_dct_type",
+        "_version_info",
     )
 
     _title: dict
@@ -67,6 +69,7 @@ class InformationModel(Resource):
     _locations: List[Location]
     _modified: Date
     _dct_type: Concept
+    _version_info: str
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -255,6 +258,15 @@ class InformationModel(Resource):
     def dct_type(self: InformationModel, dct_type: Concept) -> None:
         self._dct_type = dct_type
 
+    @property
+    def version_info(self: InformationModel) -> str:
+        """Get/set for version_info."""
+        return self._version_info
+
+    @version_info.setter
+    def version_info(self: InformationModel, version_info: str) -> None:
+        self._version_info = version_info
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -304,6 +316,15 @@ class InformationModel(Resource):
                     URIRef(self.identifier),
                     MODELLDCATNO.informationModelIdentifier,
                     Literal(self._informationmodelidentifier),
+                )
+            )
+
+        if getattr(self, "version_info", None):
+            self._g.add(
+                (
+                    URIRef(self.identifier),
+                    OWL.versionInfo,
+                    Literal(self._version_info),
                 )
             )
 
