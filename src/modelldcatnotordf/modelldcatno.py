@@ -49,6 +49,7 @@ class InformationModel(Resource):
         "_contactpoints",
         "_locations",
         "_modified",
+        "_dct_type",
     )
 
     _title: dict
@@ -65,6 +66,7 @@ class InformationModel(Resource):
     _contactpoints: List[Contact]
     _locations: List[Location]
     _modified: Date
+    _dct_type: Concept
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -244,6 +246,15 @@ class InformationModel(Resource):
     def modified(self: InformationModel, modified: str) -> None:
         self._modified = Date(modified)
 
+    @property
+    def dct_type(self: InformationModel) -> Concept:
+        """Get/set for dct_type."""
+        return self._dct_type
+
+    @dct_type.setter
+    def dct_type(self: InformationModel, dct_type: Concept) -> None:
+        self._dct_type = dct_type
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -285,6 +296,7 @@ class InformationModel(Resource):
         self._contactpoints_to_graph()
         self._locations_to_graph()
         self._modified_to_graph()
+        self._dct_type_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -481,6 +493,22 @@ class InformationModel(Resource):
                     URIRef(self.identifier),
                     DCT.modified,
                     Literal(self.modified, datatype=XSD.date),
+                )
+            )
+
+    def _dct_type_to_graph(self: InformationModel) -> None:
+        if getattr(self, "dct_type", None):
+
+            _dct_type = URIRef(self.dct_type.identifier)
+
+            for _s, p, o in self.dct_type._to_graph().triples((None, None, None)):
+                self._g.add((_dct_type, p, o))
+
+            self._g.add(
+                (
+                    URIRef(self.identifier),
+                    DCT.type,
+                    _dct_type,
                 )
             )
 
