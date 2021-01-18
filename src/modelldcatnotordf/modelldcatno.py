@@ -27,9 +27,7 @@ from rdflib import (
     XSD,
 )
 
-
 from modelldcatnotordf.licensedocument import LicenseDocument
-
 
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
@@ -2106,13 +2104,26 @@ class RootObjectType(ModelElement):
 class CodeList(ModelElement):
     """A class representing a modelldcatno:CodeList."""
 
+    __slots__ = ("_identifier", "_dct_identifier", "g", "_code_list_reference")
+
     _identifier: URI
     _dct_identifier: str
     _g: Graph
+    _code_list_reference: CodeList
 
     def __init__(self) -> None:
         """Inits an object with default values."""
         super().__init__()
+
+    @property
+    def code_list_reference(self: CodeList) -> CodeList:
+        """Get for code_list_reference."""
+        return self._code_list_reference
+
+    @code_list_reference.setter
+    def code_list_reference(self: CodeList, code_list_reference: CodeList) -> None:
+        """Set for code_list_reference."""
+        self._code_list_reference = code_list_reference
 
     def to_rdf(
         self: CodeList, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -2148,7 +2159,29 @@ class CodeList(ModelElement):
 
         super(CodeList, self)._to_graph(MODELLDCATNO.CodeList, _self)
 
+        self._code_list_reference_to_graph(_self)
+
         return self._g
+
+    def _code_list_reference_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "code_list_reference", None):
+
+            if getattr(self.code_list_reference, "identifier", None):
+                _code_list_reference = URIRef(self.code_list_reference.identifier)
+            else:
+                _code_list_reference = BNode()
+
+            for _s, p, o in self.code_list_reference._to_graph().triples(
+                (None, None, None)
+            ):
+                self._g.add(
+                    (_code_list_reference, p, o)
+                    if isinstance(_code_list_reference, BNode)
+                    else (_s, p, o)
+                )
+
+            self._g.add((_self, MODELLDCATNO.codeListReference, _code_list_reference))
 
 
 class CodeElement:
