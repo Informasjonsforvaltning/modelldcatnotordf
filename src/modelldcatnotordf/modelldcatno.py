@@ -13,20 +13,29 @@ from typing import Any, List, Optional
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, Resource, URI
 from datacatalogtordf.periodoftime import Date
-from rdflib import BNode, Graph, Literal, Namespace, RDF, URIRef
+from rdflib import (
+    BNode,
+    DCTERMS,
+    FOAF,
+    Graph,
+    Literal,
+    Namespace,
+    OWL,
+    RDF,
+    SKOS,
+    URIRef,
+    XSD,
+)
+
 
 from modelldcatnotordf.licensedocument import LicenseDocument
 
-DCT = Namespace("http://purl.org/dc/terms/")
+
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
-XSD = Namespace("http://www.w3.org/2001/XMLSchema#")
 PROV = Namespace("http://www.w3.org/ns/prov#")
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
-FOAF = Namespace("http://xmlns.com/foaf/0.1/")
-SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
 XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
-OWL = Namespace("http://www.w3.org/2002/07/owl#")
 ADMS = Namespace("http://www.w3.org/ns/adms#")
 
 
@@ -384,7 +393,7 @@ class InformationModel(Resource):
                 self._g.add(
                     (
                         URIRef(self.identifier),
-                        DCT.subject,
+                        DCTERMS.subject,
                         _subject,
                     )
                 )
@@ -434,7 +443,7 @@ class InformationModel(Resource):
                     else (_s, p, o)
                 )
 
-            self._g.add((URIRef(self.identifier), DCT.license, _licensedocument))
+            self._g.add((URIRef(self.identifier), DCTERMS.license, _licensedocument))
 
     def _replaces_to_graph(self: InformationModel) -> None:
         if getattr(self, "replaces", None):
@@ -449,7 +458,7 @@ class InformationModel(Resource):
                 self._g.add(
                     (
                         URIRef(self.identifier),
-                        DCT.replaces,
+                        DCTERMS.replaces,
                         _replaces,
                     )
                 )
@@ -467,7 +476,7 @@ class InformationModel(Resource):
                 self._g.add(
                     (
                         URIRef(self.identifier),
-                        DCT.isReplacedBy,
+                        DCTERMS.isReplacedBy,
                         _is_replaced_by,
                     )
                 )
@@ -485,7 +494,7 @@ class InformationModel(Resource):
                 self._g.add(
                     (
                         URIRef(self.identifier),
-                        DCT.hasPart,
+                        DCTERMS.hasPart,
                         _has_part,
                     )
                 )
@@ -503,7 +512,7 @@ class InformationModel(Resource):
                 self._g.add(
                     (
                         URIRef(self.identifier),
-                        DCT.isPartOf,
+                        DCTERMS.isPartOf,
                         _is_part_of,
                     )
                 )
@@ -543,7 +552,7 @@ class InformationModel(Resource):
                 self._g.add(
                     (
                         URIRef(self.identifier),
-                        DCT.spatial,
+                        DCTERMS.spatial,
                         _location,
                     )
                 )
@@ -553,7 +562,7 @@ class InformationModel(Resource):
             self._g.add(
                 (
                     URIRef(self.identifier),
-                    DCT.modified,
+                    DCTERMS.modified,
                     Literal(self.modified, datatype=XSD.date),
                 )
             )
@@ -569,7 +578,7 @@ class InformationModel(Resource):
             self._g.add(
                 (
                     URIRef(self.identifier),
-                    DCT.type,
+                    DCTERMS.type,
                     _dct_type,
                 )
             )
@@ -688,7 +697,7 @@ class ModelElement(ABC):
         # Set up graph and namespaces:
         self._g = Graph()
         self._g.bind("modelldcatno", MODELLDCATNO)
-        self._g.bind("dct", DCT)
+        self._g.bind("dct", DCTERMS)
         self._g.bind("dcat", DCAT)
         self._g.bind("skos", SKOS)
         self._g.bind("xsd", XSD)
@@ -700,13 +709,13 @@ class ModelElement(ABC):
                 self._g.add(
                     (
                         selfobject,
-                        DCT.title,
+                        DCTERMS.title,
                         Literal(self.title[key], lang=key),
                     )
                 )
 
         if getattr(self, "dct_identifier", None):
-            self._g.add((selfobject, DCT.identifier, Literal(self._dct_identifier)))
+            self._g.add((selfobject, DCTERMS.identifier, Literal(self._dct_identifier)))
 
         if getattr(self, "subject", None):
 
@@ -715,7 +724,7 @@ class ModelElement(ABC):
             for _s, p, o in self.subject._to_graph().triples((None, None, None)):
                 self._g.add((_subject, p, o))
 
-            self._g.add((selfobject, DCT.subject, _subject))
+            self._g.add((selfobject, DCTERMS.subject, _subject))
 
         if getattr(self, "has_property", None):
             self._has_property_to_graph(selfobject)
@@ -860,7 +869,7 @@ class ModelProperty(ABC):
         # Set up graph and namespaces:
         self._g = Graph()
         self._g.bind("modelldcatno", MODELLDCATNO)
-        self._g.bind("dct", DCT)
+        self._g.bind("dct", DCTERMS)
         self._g.bind("skos", SKOS)
 
         self._g.add((selfobject, RDF.type, type))
@@ -878,7 +887,7 @@ class ModelProperty(ABC):
                 self._g.add(
                     (
                         selfobject,
-                        DCT.title,
+                        DCTERMS.title,
                         Literal(self.title[key], lang=key),
                     )
                 )
@@ -890,7 +899,7 @@ class ModelProperty(ABC):
             for _s, p, o in self.subject._to_graph().triples((None, None, None)):
                 self._g.add((_subject, p, o))
 
-            self._g.add((selfobject, DCT.subject, _subject))
+            self._g.add((selfobject, DCTERMS.subject, _subject))
 
         return self._g
 
@@ -2376,13 +2385,13 @@ class CodeElement:
         # Set up graph and namespaces:
         self._g = Graph()
         self._g.bind("modelldcatno", MODELLDCATNO)
-        self._g.bind("dct", DCT)
+        self._g.bind("dct", DCTERMS)
         self._g.bind("skos", SKOS)
 
         self._g.add((_self, RDF.type, self._type))
 
         if getattr(self, "dct_identifier", None):
-            self._g.add((_self, DCT.identifier, Literal(self._dct_identifier)))
+            self._g.add((_self, DCTERMS.identifier, Literal(self._dct_identifier)))
 
         if getattr(self, "notation", None):
             self._g.add((_self, SKOS.notation, Literal(self._notation)))
@@ -2413,7 +2422,7 @@ class CodeElement:
             for _s, p, o in self.subject._to_graph().triples((None, None, None)):
                 self._g.add((_subject, p, o))
 
-            self._g.add((_self, DCT.subject, _subject))
+            self._g.add((_self, DCTERMS.subject, _subject))
 
     def _preflabel_to_graph(self, _self: Any) -> None:
 
