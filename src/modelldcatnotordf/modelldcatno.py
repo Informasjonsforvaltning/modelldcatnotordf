@@ -64,6 +64,7 @@ class InformationModel(Resource):
         "_version_info",
         "_version_note",
         "_status",
+        "_creator",
     )
 
     _title: dict
@@ -84,6 +85,7 @@ class InformationModel(Resource):
     _version_info: str
     _version_note: dict
     _status: Concept
+    _creator: Agent
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -306,6 +308,16 @@ class InformationModel(Resource):
     def status(self, status: Concept) -> None:
         """Set for status."""
         self._status = status
+
+    @property
+    def creator(self: InformationModel) -> Agent:
+        """Get for creator."""
+        return self._creator
+
+    @creator.setter
+    def creator(self: InformationModel, creator: Agent) -> None:
+        """Set for creator."""
+        self._creator = creator
 
     def to_rdf(
         self: InformationModel,
