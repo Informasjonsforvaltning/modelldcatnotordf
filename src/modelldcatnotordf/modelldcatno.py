@@ -220,56 +220,62 @@ class InformationModel(Resource):
 
     @property
     def homepage(self: InformationModel) -> str:
-        """Get/set for homepage."""
+        """Get for homepage."""
         return self._homepage
 
     @homepage.setter
     def homepage(self: InformationModel, homepage: str) -> None:
+        """Set for homepage."""
         self._homepage = URI(homepage)
 
     @property
     def contactpoints(self: InformationModel) -> List[Contact]:
-        """Get/set for contactpoints."""
+        """Get for contactpoints."""
         return self._contactpoints
 
     @contactpoints.setter
     def contactpoints(self: InformationModel, contactpoints: List[Contact]) -> None:
+        """Set for contactpoints."""
         self._contactpoints = contactpoints
 
     @property
     def locations(self: InformationModel) -> List[Location]:
-        """Get/set for locations."""
+        """Get for locations."""
         return self._locations
 
     @locations.setter
     def locations(self: InformationModel, locations: List[Location]) -> None:
+        """Set for locations."""
         self._locations = locations
 
     @property
     def modified(self: InformationModel) -> str:
-        """Get/set for modified."""
+        """Get for modified."""
         return self._modified
 
     @modified.setter
     def modified(self: InformationModel, modified: str) -> None:
+        """Set for modified."""
         self._modified = Date(modified)
 
     @property
     def dct_type(self: InformationModel) -> Concept:
-        """Get/set for dct_type."""
+        """Get for dct_type."""
         return self._dct_type
 
     @dct_type.setter
     def dct_type(self: InformationModel, dct_type: Concept) -> None:
+        """Set for dct_type."""
         self._dct_type = dct_type
 
     @property
     def version_info(self: InformationModel) -> str:
-        """Get/set for version_info."""
+        """Get for version_info."""
         return self._version_info
 
     @version_info.setter
     def version_info(self: InformationModel, version_info: str) -> None:
+        """Set for version_info."""
         self._version_info = version_info
 
     @property
