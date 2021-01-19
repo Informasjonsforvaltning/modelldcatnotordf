@@ -2655,3 +2655,76 @@ class CodeElement:
                 )
 
             self._g.add((_self, XKOS.previous, _previous_element))
+
+
+class Note(ModelProperty):
+    """A class representing a modelldcatno:Note."""
+
+    __slots__ = "_property_note"
+
+    _property_note: dict
+    _identifier: URI
+    _g: Graph
+
+    @property
+    def property_note(self: Note) -> dict:
+        """Get for property_note."""
+        return self._property_note
+
+    @property_note.setter
+    def property_note(self: Note, property_note: dict) -> None:
+        """Set for property_note."""
+        self._property_note = property_note
+
+    def __init__(self) -> None:
+        """Inits an object with default values."""
+        super().__init__()
+
+    def to_rdf(
+        self: Note, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
+        """Maps the role to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Note, type: str = MODELLDCATNO.Note, selfobject: Any = None
+    ) -> Graph:
+        """Returns the role as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Note
+            selfobject: a bnode or URI passed from a subclass Default: None
+
+        Returns:
+            the role graph
+        """
+        if getattr(self, "identifier", None):
+            _self = URIRef(self.identifier)
+        else:
+            _self = BNode()
+
+        super(Note, self)._to_graph(MODELLDCATNO.Note, _self)
+
+        self._property_note_to_graph(_self)
+
+        return self._g
+
+    def _property_note_to_graph(self: Note, _self: Any) -> None:
+        if getattr(self, "property_note", None):
+
+            for key in self.property_note:
+                self._g.add(
+                    (
+                        _self,
+                        MODELLDCATNO.propertyNote,
+                        Literal(self.property_note[key], lang=key),
+                    )
+                )
