@@ -2171,15 +2171,14 @@ class CodeList(ModelElement):
                 _code_list_reference = URIRef(self.code_list_reference.identifier)
             else:
                 _code_list_reference = BNode()
-
-            for _s, p, o in self.code_list_reference._to_graph().triples(
-                (None, None, None)
-            ):
-                self._g.add(
-                    (_code_list_reference, p, o)
-                    if isinstance(_code_list_reference, BNode)
-                    else (_s, p, o)
-                )
+                for _s, p, o in self.code_list_reference._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_code_list_reference, p, o)
+                        if isinstance(_code_list_reference, BNode)
+                        else (_s, p, o)
+                    )
 
             self._g.add((_self, MODELLDCATNO.codeListReference, _code_list_reference))
 

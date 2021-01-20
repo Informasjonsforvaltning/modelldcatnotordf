@@ -144,8 +144,6 @@ def test_to_graph_should_return_code_list_reference() -> None:
                 a modelldcatno:CodeList;
                     modelldcatno:codeListReference <http://example.com/codelists/2> .
 
-        <http://example.com/codelists/2> a modelldcatno:CodeList .
-
         """
     g1 = Graph().parse(data=codelist1.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
