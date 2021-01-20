@@ -617,6 +617,7 @@ class ModelElement(ABC):
         "_has_property",
         "_dct_identifier",
         "_subject",
+        "_belongs_to_module",
     )
 
     _g: Graph
@@ -625,6 +626,7 @@ class ModelElement(ABC):
     _dct_identifier: str
     _has_property: List[ModelProperty]
     _subject: Concept
+    _belongs_to_module: List[str]
 
     @abstractmethod
     def __init__(self) -> None:
@@ -682,6 +684,16 @@ class ModelElement(ABC):
         """Set for has_property."""
         self._has_property = has_property
 
+    @property
+    def belongs_to_module(self) -> List[str]:
+        """Get for belongs_to_module."""
+        return self._belongs_to_module
+
+    @belongs_to_module.setter
+    def belongs_to_module(self, belongs_to_module: List[str]) -> None:
+        """Set for belongs_to_module."""
+        self._belongs_to_module = belongs_to_module
+
     @abstractmethod
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the modelelement to rdf.
@@ -738,6 +750,17 @@ class ModelElement(ABC):
 
         if getattr(self, "has_property", None):
             self._has_property_to_graph(selfobject)
+
+        if getattr(self, "belongs_to_module", None):
+
+            for belongs_to_module in self._belongs_to_module:
+                self._g.add(
+                    (
+                        selfobject,
+                        MODELLDCATNO.belongsToModule,
+                        Literal(belongs_to_module),
+                    )
+                )
 
         return self._g
 
@@ -1029,6 +1052,7 @@ class ObjectType(ModelElement):
     _identifier: URI
     _dct_identifier: str
     _g: Graph
+    _belongs_to_module: List[str]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -1097,6 +1121,7 @@ class SimpleType(ModelElement):
     _min_inclusive: float
     _type_definition_reference: URI
     _pattern: str
+    _belongs_to_module: List[str]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -2011,6 +2036,7 @@ class DataType(ModelElement):
     _identifier: URI
     _dct_identifier: str
     _g: Graph
+    _belongs_to_module: List[str]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -2058,6 +2084,7 @@ class RootObjectType(ModelElement):
     _identifier: URI
     _dct_identifier: str
     _g: Graph
+    _belongs_to_module: List[str]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -2104,12 +2131,18 @@ class RootObjectType(ModelElement):
 class CodeList(ModelElement):
     """A class representing a modelldcatno:CodeList."""
 
-    __slots__ = ("_identifier", "_dct_identifier", "g", "_code_list_reference")
+    __slots__ = (
+        "_identifier",
+        "_dct_identifier",
+        "g",
+        "_code_list_reference",
+    )
 
     _identifier: URI
     _dct_identifier: str
     _g: Graph
     _code_list_reference: CodeList
+    _belongs_to_module: List[str]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
