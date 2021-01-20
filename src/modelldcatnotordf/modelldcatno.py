@@ -618,6 +618,7 @@ class ModelElement(ABC):
         "_dct_identifier",
         "_subject",
         "_belongs_to_module",
+        "_description",
     )
 
     _g: Graph
@@ -627,6 +628,7 @@ class ModelElement(ABC):
     _has_property: List[ModelProperty]
     _subject: Concept
     _belongs_to_module: List[str]
+    _description: dict
 
     @abstractmethod
     def __init__(self) -> None:
@@ -693,6 +695,16 @@ class ModelElement(ABC):
     def belongs_to_module(self, belongs_to_module: List[str]) -> None:
         """Set for belongs_to_module."""
         self._belongs_to_module = belongs_to_module
+
+    @property
+    def description(self: ModelElement) -> dict:
+        """Get for description."""
+        return self._description
+
+    @description.setter
+    def description(self: ModelElement, description: dict) -> None:
+        """Set for description."""
+        self._description = description
 
     @abstractmethod
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
@@ -762,7 +774,20 @@ class ModelElement(ABC):
                     )
                 )
 
+        self._description_to_graph(selfobject)
+
         return self._g
+
+    def _description_to_graph(self: ModelElement, selfobject: Any) -> None:
+        if getattr(self, "description", None):
+            for key in self.description:
+                self._g.add(
+                    (
+                        selfobject,
+                        DCTERMS.description,
+                        Literal(self.description[key], lang=key),
+                    )
+                )
 
     def _has_property_to_graph(self, _self: Any) -> None:
         if getattr(self, "has_property", None):
