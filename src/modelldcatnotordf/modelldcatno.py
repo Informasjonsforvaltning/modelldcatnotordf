@@ -26,6 +26,7 @@ from rdflib import (
     URIRef,
     XSD,
 )
+import validators
 
 from modelldcatnotordf.licensedocument import LicenseDocument
 
@@ -763,20 +764,25 @@ class ModelElement(ABC):
         if getattr(self, "has_property", None):
             self._has_property_to_graph(selfobject)
 
-        if getattr(self, "belongs_to_module", None):
-
-            for belongs_to_module in self._belongs_to_module:
-                self._g.add(
-                    (
-                        selfobject,
-                        MODELLDCATNO.belongsToModule,
-                        Literal(belongs_to_module),
-                    )
-                )
+        self._belongs_to_module_to_graph(selfobject)
 
         self._description_to_graph(selfobject)
 
         return self._g
+
+    def _belongs_to_module_to_graph(self: ModelElement, selfobject: Any) -> None:
+        if getattr(self, "belongs_to_module", None):
+
+            for belongs_to_module in self._belongs_to_module:
+                _datatype = XSD.anyURI if validators.url(belongs_to_module) else None
+
+                self._g.add(
+                    (
+                        selfobject,
+                        MODELLDCATNO.belongsToModule,
+                        Literal(belongs_to_module, datatype=_datatype),
+                    )
+                )
 
     def _description_to_graph(self: ModelElement, selfobject: Any) -> None:
         if getattr(self, "description", None):
