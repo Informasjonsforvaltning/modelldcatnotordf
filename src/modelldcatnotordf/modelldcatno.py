@@ -833,6 +833,7 @@ class ModelProperty(ABC):
         "_max_occurs",
         "_title",
         "_subject",
+        "_description",
     )
 
     _g: Graph
@@ -842,6 +843,7 @@ class ModelProperty(ABC):
     _max_occurs: int
     _title: dict
     _subject: Concept
+    _description: dict
 
     @abstractmethod
     def __init__(self) -> None:
@@ -909,6 +911,16 @@ class ModelProperty(ABC):
         """Set for max_occurs."""
         self._max_occurs = max_occurs
 
+    @property
+    def description(self: ModelProperty) -> dict:
+        """Get for description."""
+        return self._description
+
+    @description.setter
+    def description(self: ModelProperty, description: dict) -> None:
+        """Set for description."""
+        self._description = description
+
     @abstractmethod
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the property to rdf.
@@ -965,6 +977,8 @@ class ModelProperty(ABC):
 
             self._g.add((selfobject, DCTERMS.subject, _subject))
 
+        self._description_to_graph(selfobject)
+
         return self._g
 
     def _has_type_to_graph(self, _self: Any) -> None:
@@ -989,6 +1003,17 @@ class ModelProperty(ABC):
                         _self,
                         MODELLDCATNO.hasType,
                         _has_type,
+                    )
+                )
+
+    def _description_to_graph(self: ModelProperty, selfobject: Any) -> None:
+        if getattr(self, "description", None):
+            for key in self.description:
+                self._g.add(
+                    (
+                        selfobject,
+                        DCTERMS.description,
+                        Literal(self.description[key], lang=key),
                     )
                 )
 
