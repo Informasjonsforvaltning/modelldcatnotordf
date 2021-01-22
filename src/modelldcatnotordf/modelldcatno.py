@@ -835,6 +835,7 @@ class ModelProperty(ABC):
         "_subject",
         "_description",
         "_belongs_to_module",
+        "_forms_symmetry_with",
     )
 
     _g: Graph
@@ -846,6 +847,7 @@ class ModelProperty(ABC):
     _subject: Concept
     _description: dict
     _belongs_to_module: List[str]
+    _forms_symmetry_with: ModelProperty
 
     @abstractmethod
     def __init__(self) -> None:
@@ -933,6 +935,18 @@ class ModelProperty(ABC):
         """Set for belongs_to_module."""
         self._belongs_to_module = belongs_to_module
 
+    @property
+    def forms_symmetry_with(self: ModelProperty) -> ModelProperty:
+        """Get for forms_symmetry_with."""
+        return self._forms_symmetry_with
+
+    @forms_symmetry_with.setter
+    def forms_symmetry_with(
+        self: ModelProperty, forms_symmetry_with: ModelProperty
+    ) -> None:
+        """Set for forms_symmetry_with."""
+        self._forms_symmetry_with = forms_symmetry_with
+
     @abstractmethod
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the property to rdf.
@@ -991,6 +1005,7 @@ class ModelProperty(ABC):
 
         self._description_to_graph(selfobject)
         self._belongs_to_module_to_graph(selfobject)
+        self._forms_symmetry_with_to_graph(selfobject)
 
         return self._g
 
@@ -1043,6 +1058,25 @@ class ModelProperty(ABC):
                         Literal(belongs_to_module, datatype=_datatype),
                     )
                 )
+
+    def _forms_symmetry_with_to_graph(self, _self: Any) -> None:
+
+        if getattr(self, "forms_symmetry_with", None):
+
+            if getattr(self.forms_symmetry_with, "identifier", None):
+                _forms_symmetry_with = URIRef(self.forms_symmetry_with.identifier)
+            else:
+                _forms_symmetry_with = BNode()
+                for _s, p, o in self.forms_symmetry_with._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_forms_symmetry_with, p, o)
+                        if isinstance(_forms_symmetry_with, BNode)
+                        else (_s, p, o)
+                    )
+
+            self._g.add((_self, MODELLDCATNO.formsSymmetryWith, _forms_symmetry_with))
 
 
 class Role(ModelProperty):
