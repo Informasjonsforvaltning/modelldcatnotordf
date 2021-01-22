@@ -834,6 +834,7 @@ class ModelProperty(ABC):
         "_title",
         "_subject",
         "_description",
+        "_belongs_to_module",
     )
 
     _g: Graph
@@ -844,6 +845,7 @@ class ModelProperty(ABC):
     _title: dict
     _subject: Concept
     _description: dict
+    _belongs_to_module: List[str]
 
     @abstractmethod
     def __init__(self) -> None:
@@ -921,6 +923,16 @@ class ModelProperty(ABC):
         """Set for description."""
         self._description = description
 
+    @property
+    def belongs_to_module(self: ModelProperty) -> List[str]:
+        """Get for belongs_to_module."""
+        return self._belongs_to_module
+
+    @belongs_to_module.setter
+    def belongs_to_module(self: ModelProperty, belongs_to_module: List[str]) -> None:
+        """Set for belongs_to_module."""
+        self._belongs_to_module = belongs_to_module
+
     @abstractmethod
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the property to rdf.
@@ -978,6 +990,7 @@ class ModelProperty(ABC):
             self._g.add((selfobject, DCTERMS.subject, _subject))
 
         self._description_to_graph(selfobject)
+        self._belongs_to_module_to_graph(selfobject)
 
         return self._g
 
@@ -1014,6 +1027,20 @@ class ModelProperty(ABC):
                         selfobject,
                         DCTERMS.description,
                         Literal(self.description[key], lang=key),
+                    )
+                )
+
+    def _belongs_to_module_to_graph(self: ModelProperty, selfobject: Any) -> None:
+        if getattr(self, "belongs_to_module", None):
+
+            for belongs_to_module in self._belongs_to_module:
+                _datatype = XSD.anyURI if validators.url(belongs_to_module) else None
+
+                self._g.add(
+                    (
+                        selfobject,
+                        MODELLDCATNO.belongsToModule,
+                        Literal(belongs_to_module, datatype=_datatype),
                     )
                 )
 
