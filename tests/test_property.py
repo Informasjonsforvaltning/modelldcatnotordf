@@ -381,6 +381,7 @@ def test_to_graph_should_return_forms_symmetry_with_bnode() -> None:
     modelproperty1.identifier = "http://example.com/properties/1"
 
     modelproperty2 = Role()
+    modelproperty2.title = {"ru": "заглавие", "nb": "Tittel 1", "en": "Title 1"}
 
     modelproperty1.forms_symmetry_with = modelproperty2
 
@@ -395,7 +396,13 @@ def test_to_graph_should_return_forms_symmetry_with_bnode() -> None:
 
         <http://example.com/properties/1>
                 a modelldcatno:Role;
-                    modelldcatno:formsSymmetryWith [ a modelldcatno:Role ]  .
+                    modelldcatno:formsSymmetryWith
+                    [ a modelldcatno:Role ;
+                        dct:title
+                                "заглавие"@ru,
+                                "Title 1"@en,
+                                "Tittel 1"@nb
+                     ]  .
 
         """
     g1 = Graph().parse(data=modelproperty1.to_rdf(), format="turtle")
