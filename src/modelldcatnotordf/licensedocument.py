@@ -64,10 +64,9 @@ class LicenseDocument:
         self._g = Graph()
         self._g.bind("dct", DCT)
 
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         self._g.add((_self, RDF.type, DCT.LicenseDocument))
 
