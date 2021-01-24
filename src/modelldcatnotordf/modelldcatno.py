@@ -8,7 +8,7 @@ Refer to sub-class for typical usage examples.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, Resource, URI
@@ -719,13 +719,15 @@ class ModelElement(ABC):
         """
 
     def _to_graph(
-        self, type: str = MODELLDCATNO.ModelElement, selfobject: Any = None
+        self,
+        type: str = MODELLDCATNO.ModelElement,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the modelelement as graph.
 
          Args:
             type: type for identifying class. Default: MODELLDCATNO.ModelElement
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the modelelement graph
@@ -771,7 +773,9 @@ class ModelElement(ABC):
 
         return self._g
 
-    def _belongs_to_module_to_graph(self: ModelElement, selfobject: Any) -> None:
+    def _belongs_to_module_to_graph(
+        self: ModelElement, selfobject: Union[URIRef, BNode]
+    ) -> None:
         if getattr(self, "belongs_to_module", None):
 
             for belongs_to_module in self._belongs_to_module:
@@ -785,7 +789,9 @@ class ModelElement(ABC):
                     )
                 )
 
-    def _description_to_graph(self: ModelElement, selfobject: Any) -> None:
+    def _description_to_graph(
+        self: ModelElement, selfobject: Union[URIRef, BNode]
+    ) -> None:
         if getattr(self, "description", None):
             for key in self.description:
                 self._g.add(
@@ -796,7 +802,7 @@ class ModelElement(ABC):
                     )
                 )
 
-    def _has_property_to_graph(self, _self: Any) -> None:
+    def _has_property_to_graph(self, _self: Union[URIRef, BNode]) -> None:
         if getattr(self, "has_property", None):
             for has_property in self._has_property:
 
@@ -959,13 +965,15 @@ class ModelProperty(ABC):
         """
 
     def _to_graph(
-        self, type: str = MODELLDCATNO.Property, selfobject: Any = None
+        self,
+        type: str = MODELLDCATNO.Property,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the property as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Property
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the property graph
@@ -1011,7 +1019,7 @@ class ModelProperty(ABC):
 
         return self._g
 
-    def _has_type_to_graph(self, _self: Any) -> None:
+    def _has_type_to_graph(self, _self: Union[URIRef, BNode]) -> None:
         if getattr(self, "has_type", None):
 
             for has_type in self._has_type:
@@ -1037,7 +1045,9 @@ class ModelProperty(ABC):
                     )
                 )
 
-    def _description_to_graph(self: ModelProperty, selfobject: Any) -> None:
+    def _description_to_graph(
+        self: ModelProperty, selfobject: Union[URIRef, BNode]
+    ) -> None:
         if getattr(self, "description", None):
             for key in self.description:
                 self._g.add(
@@ -1048,7 +1058,9 @@ class ModelProperty(ABC):
                     )
                 )
 
-    def _belongs_to_module_to_graph(self: ModelProperty, selfobject: Any) -> None:
+    def _belongs_to_module_to_graph(
+        self: ModelProperty, selfobject: Union[URIRef, BNode]
+    ) -> None:
         if getattr(self, "belongs_to_module", None):
 
             for belongs_to_module in self._belongs_to_module:
@@ -1062,7 +1074,7 @@ class ModelProperty(ABC):
                     )
                 )
 
-    def _forms_symmetry_with_to_graph(self, _self: Any) -> None:
+    def _forms_symmetry_with_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "forms_symmetry_with", None):
 
@@ -1126,13 +1138,15 @@ class Role(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Role, type: str = MODELLDCATNO.Role, selfobject: Any = None
+        self: Role,
+        type: str = MODELLDCATNO.Role,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the role as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Role
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -1147,7 +1161,7 @@ class Role(ModelProperty):
 
         return self._g
 
-    def _has_object_type_to_graph(self, _self: Any) -> None:
+    def _has_object_type_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "has_object_type", None):
 
@@ -1196,13 +1210,15 @@ class ObjectType(ModelElement):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: ObjectType, type: str = MODELLDCATNO.ObjectType, selfobject: Any = None
+        self: ObjectType,
+        type: str = MODELLDCATNO.ObjectType,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the object type as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.ObjectType
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the object type graph
@@ -1354,13 +1370,15 @@ class SimpleType(ModelElement):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: SimpleType, type: str = MODELLDCATNO.SimpleType, selfobject: Any = None
+        self: SimpleType,
+        type: str = MODELLDCATNO.SimpleType,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the object type as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.SimpleType
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the object type graph
@@ -1375,7 +1393,7 @@ class SimpleType(ModelElement):
 
         return self._g
 
-    def _add_properties(self, _self: Any) -> None:
+    def _add_properties(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "min_length", None):
             self._g.add((_self, XSD.minLength, Literal(self.min_length)))
@@ -1445,13 +1463,15 @@ class Composition(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Composition, type: str = MODELLDCATNO.Composition, selfobject: Any = None
+        self: Composition,
+        type: str = MODELLDCATNO.Composition,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the role as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Composition
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -1466,7 +1486,7 @@ class Composition(ModelProperty):
 
         return self._g
 
-    def _contains_to_graph(self, _self: Any) -> None:
+    def _contains_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "contains", None):
 
@@ -1522,13 +1542,15 @@ class Collection(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Collection, type: str = MODELLDCATNO.Collection, selfobject: Any = None
+        self: Collection,
+        type: str = MODELLDCATNO.Collection,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the role as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Collection
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -1543,7 +1565,7 @@ class Collection(ModelProperty):
 
         return self._g
 
-    def _has_member_to_graph(self, _self: Any) -> None:
+    def _has_member_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "has_member", None):
 
@@ -1601,13 +1623,15 @@ class Association(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Association, type: str = MODELLDCATNO.Association, selfobject: Any = None
+        self: Association,
+        type: str = MODELLDCATNO.Association,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the association as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Association
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the association graph
@@ -1622,7 +1646,7 @@ class Association(ModelProperty):
 
         return self._g
 
-    def _refers_to_to_graph(self, _self: Any) -> None:
+    def _refers_to_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "refers_to", None):
 
@@ -1681,13 +1705,15 @@ class Choice(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Choice, type: str = MODELLDCATNO.Choice, selfobject: Any = None
+        self: Choice,
+        type: str = MODELLDCATNO.Choice,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the role as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Choice
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -1702,7 +1728,7 @@ class Choice(ModelProperty):
 
         return self._g
 
-    def _has_some_to_graph(self, _self: Any) -> None:
+    def _has_some_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "has_some", None):
 
@@ -1801,13 +1827,15 @@ class Attribute(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Attribute, type: str = MODELLDCATNO.Attribute, selfobject: Any = None
+        self: Attribute,
+        type: str = MODELLDCATNO.Attribute,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the role as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Attribute
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -1825,7 +1853,7 @@ class Attribute(ModelProperty):
 
         return self._g
 
-    def _contains_object_type_to_graph(self, _self: Any) -> None:
+    def _contains_object_type_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "contains_object_type", None):
 
@@ -1846,7 +1874,7 @@ class Attribute(ModelProperty):
 
             self._g.add((_self, MODELLDCATNO.containsObjectType, _contains_object_type))
 
-    def _has_simple_type_to_graph(self, _self: Any) -> None:
+    def _has_simple_type_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "has_simple_type", None):
 
@@ -1867,7 +1895,7 @@ class Attribute(ModelProperty):
 
             self._g.add((_self, MODELLDCATNO.hasSimpleType, _has_simple_type))
 
-    def _has_data_type_to_graph(self, _self: Any) -> None:
+    def _has_data_type_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "has_data_type", None):
 
@@ -1886,7 +1914,7 @@ class Attribute(ModelProperty):
 
             self._g.add((_self, MODELLDCATNO.hasDataType, _has_data_type))
 
-    def _has_value_from_to_graph(self, _self: Any) -> None:
+    def _has_value_from_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "has_value_from", None):
 
@@ -1950,13 +1978,13 @@ class Specialization(ModelProperty):
     def _to_graph(
         self: Specialization,
         type: str = MODELLDCATNO.Specialization,
-        selfobject: Any = None,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the role as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Association
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -1971,7 +1999,7 @@ class Specialization(ModelProperty):
 
         return self._g
 
-    def _has_general_concept_to_graph(self, _self: Any) -> None:
+    def _has_general_concept_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "has_general_concept", None):
 
@@ -2031,13 +2059,15 @@ class Realization(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Realization, type: str = MODELLDCATNO.Realization, selfobject: Any = None
+        self: Realization,
+        type: str = MODELLDCATNO.Realization,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the realization as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Association
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the assocation graph
@@ -2052,7 +2082,7 @@ class Realization(ModelProperty):
 
         return self._g
 
-    def _has_supplier_to_graph(self, _self: Any) -> None:
+    def _has_supplier_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "has_supplier", None):
 
@@ -2110,13 +2140,15 @@ class Abstraction(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Abstraction, type: str = MODELLDCATNO.Abstraction, selfobject: Any = None
+        self: Abstraction,
+        type: str = MODELLDCATNO.Abstraction,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the role as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Abstraction
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -2131,7 +2163,7 @@ class Abstraction(ModelProperty):
 
         return self._g
 
-    def _is_abstraction_of_to_graph(self, _self: Any) -> None:
+    def _is_abstraction_of_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "is_abstraction_of", None):
 
@@ -2180,13 +2212,15 @@ class DataType(ModelElement):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: DataType, type: str = MODELLDCATNO.DataType, selfobject: Any = None
+        self: DataType,
+        type: str = MODELLDCATNO.DataType,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the data type as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.DataType
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the object type graph
@@ -2229,13 +2263,13 @@ class RootObjectType(ModelElement):
     def _to_graph(
         self: RootObjectType,
         type: str = MODELLDCATNO.RootObjectType,
-        selfobject: Any = None,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the root object type as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.RootObjectType
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the root object type graph
@@ -2296,13 +2330,13 @@ class CodeList(ModelElement):
     def _to_graph(
         self: CodeList,
         type: str = MODELLDCATNO.CodeList,
-        selfobject: Any = None,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the root object type as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.CodeList
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the root object type graph
@@ -2317,7 +2351,7 @@ class CodeList(ModelElement):
 
         return self._g
 
-    def _code_list_reference_to_graph(self, _self: Any) -> None:
+    def _code_list_reference_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "code_list_reference", None):
 
@@ -2614,7 +2648,7 @@ class CodeElement:
 
         return self._g
 
-    def _subject_to_graph(self, _self: Any) -> None:
+    def _subject_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "subject", None):
 
@@ -2625,7 +2659,7 @@ class CodeElement:
 
             self._g.add((_self, DCTERMS.subject, _subject))
 
-    def _preflabel_to_graph(self, _self: Any) -> None:
+    def _preflabel_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "preflabel", None):
 
@@ -2638,7 +2672,7 @@ class CodeElement:
                     )
                 )
 
-    def _in_scheme_to_graph(self, _self: Any) -> None:
+    def _in_scheme_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "in_scheme", None):
 
@@ -2659,7 +2693,7 @@ class CodeElement:
 
                 self._g.add((_self, SKOS.inScheme, _in_scheme))
 
-    def _top_concept_of_to_graph(self, _self: Any) -> None:
+    def _top_concept_of_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "top_concept_of", None):
 
@@ -2680,7 +2714,7 @@ class CodeElement:
 
                 self._g.add((_self, SKOS.topConceptOf, _top_concept_of))
 
-    def _altlabel_to_graph(self, _self: Any) -> None:
+    def _altlabel_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "altlabel", None):
 
@@ -2693,7 +2727,7 @@ class CodeElement:
                     )
                 )
 
-    def _definition_to_graph(self, _self: Any) -> None:
+    def _definition_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "definition", None):
 
@@ -2706,14 +2740,14 @@ class CodeElement:
                     )
                 )
 
-    def _example_to_graph(self, _self: Any) -> None:
+    def _example_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "example", None):
 
             for example in self.example:
                 self._g.add((_self, SKOS.example, Literal(example)))
 
-    def _hiddenlabel_to_graph(self, _self: Any) -> None:
+    def _hiddenlabel_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "hiddenlabel", None):
 
@@ -2726,7 +2760,7 @@ class CodeElement:
                     )
                 )
 
-    def _note_to_graph(self, _self: Any) -> None:
+    def _note_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "note", None):
 
@@ -2739,7 +2773,7 @@ class CodeElement:
                     )
                 )
 
-    def _scopenote_to_graph(self, _self: Any) -> None:
+    def _scopenote_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "scopenote", None):
 
@@ -2752,7 +2786,7 @@ class CodeElement:
                     )
                 )
 
-    def _exclusion_note_to_graph(self, _self: Any) -> None:
+    def _exclusion_note_to_graph(self, _self: Union[URIRef, BNode]) -> None:
         if getattr(self, "exclusion_note", None):
 
             for key in self.exclusion_note:
@@ -2764,7 +2798,7 @@ class CodeElement:
                     )
                 )
 
-    def _inclusion_note_to_graph(self, _self: Any) -> None:
+    def _inclusion_note_to_graph(self, _self: Union[URIRef, BNode]) -> None:
         if getattr(self, "inclusion_note", None):
 
             for key in self.inclusion_note:
@@ -2776,7 +2810,7 @@ class CodeElement:
                     )
                 )
 
-    def _next_element_to_graph(self, _self: Any) -> None:
+    def _next_element_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "next_element", None):
 
@@ -2795,7 +2829,7 @@ class CodeElement:
 
             self._g.add((_self, XKOS.next, _next_element))
 
-    def _previous_element_to_graph(self, _self: Any) -> None:
+    def _previous_element_to_graph(self, _self: Union[URIRef, BNode]) -> None:
 
         if getattr(self, "previous_element", None):
 
@@ -2855,13 +2889,15 @@ class Note(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Note, type: str = MODELLDCATNO.Note, selfobject: Any = None
+        self: Note,
+        type: str = MODELLDCATNO.Note,
+        selfobject: Union[URIRef, BNode] = None,
     ) -> Graph:
         """Returns the role as graph.
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Note
-            selfobject: a bnode or URI passed from a subclass Default: None
+            selfobject: a bnode or URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -2876,7 +2912,7 @@ class Note(ModelProperty):
 
         return self._g
 
-    def _property_note_to_graph(self: Note, _self: Any) -> None:
+    def _property_note_to_graph(self: Note, _self: Union[URIRef, BNode]) -> None:
         if getattr(self, "property_note", None):
 
             for key in self.property_note:
