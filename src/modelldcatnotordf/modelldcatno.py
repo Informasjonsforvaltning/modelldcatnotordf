@@ -415,10 +415,11 @@ class InformationModel(Resource):
 
             for modelelement in self._modelelements:
 
-                if getattr(modelelement, "identifier", None):
-                    _modelelement = URIRef(modelelement.identifier)
-                else:
-                    _modelelement = BNode()
+                _modelelement = (
+                    URIRef(modelelement.identifier)
+                    if getattr(modelelement, "identifier", None)
+                    else BNode()
+                )
 
                 for _s, p, o in modelelement._to_graph().triples((None, None, None)):
                     self._g.add(
@@ -439,11 +440,11 @@ class InformationModel(Resource):
 
         if getattr(self, "licensedocument", None):
 
-            if getattr(self.licensedocument, "identifier", None):
-                _licensedocument = URIRef(self.licensedocument.identifier)
-
-            else:
-                _licensedocument = BNode()
+            _licensedocument = (
+                URIRef(self.licensedocument.identifier)
+                if getattr(self.licensedocument, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self.licensedocument._to_graph().triples(
                 (None, None, None)
@@ -799,10 +800,11 @@ class ModelElement(ABC):
         if getattr(self, "has_property", None):
             for has_property in self._has_property:
 
-                if getattr(has_property, "identifier", None):
-                    _has_property = URIRef(has_property.identifier)
-                else:
-                    _has_property = BNode()
+                _has_property = (
+                    URIRef(has_property.identifier)
+                    if getattr(has_property, "identifier", None)
+                    else BNode()
+                )
 
                 for _s, p, o in has_property._to_graph().triples((None, None, None)):
                     self._g.add(
@@ -1014,10 +1016,11 @@ class ModelProperty(ABC):
 
             for has_type in self._has_type:
 
-                if getattr(has_type, "identifier", None):
-                    _has_type = URIRef(has_type.identifier)
-                else:
-                    _has_type = BNode()
+                _has_type = (
+                    URIRef(has_type.identifier)
+                    if getattr(has_type, "identifier", None)
+                    else BNode()
+                )
 
                 for _s, p, o in has_type._to_graph().triples((None, None, None)):
                     self._g.add(
@@ -1063,10 +1066,13 @@ class ModelProperty(ABC):
 
         if getattr(self, "forms_symmetry_with", None):
 
-            if getattr(self.forms_symmetry_with, "identifier", None):
-                _forms_symmetry_with = URIRef(self.forms_symmetry_with.identifier)
-            else:
-                _forms_symmetry_with = BNode()
+            _forms_symmetry_with = (
+                URIRef(self.forms_symmetry_with.identifier)
+                if getattr(self.forms_symmetry_with, "identifier", None)
+                else BNode()
+            )
+
+            if isinstance(_forms_symmetry_with, BNode):
                 for _s, p, o in self.forms_symmetry_with._to_graph().triples(
                     (None, None, None)
                 ):
@@ -1131,10 +1137,9 @@ class Role(ModelProperty):
         Returns:
             the role graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(Role, self)._to_graph(MODELLDCATNO.Role, _self)
 
@@ -1146,10 +1151,11 @@ class Role(ModelProperty):
 
         if getattr(self, "has_object_type", None):
 
-            if getattr(self._has_object_type, "identifier", None):
-                _has_object_type = URIRef(self._has_object_type.identifier)
-            else:
-                _has_object_type = BNode()
+            _has_object_type = (
+                URIRef(self._has_object_type.identifier)
+                if getattr(self._has_object_type, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._has_object_type._to_graph().triples(
                 (None, None, None)
@@ -1201,10 +1207,9 @@ class ObjectType(ModelElement):
         Returns:
             the object type graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(ObjectType, self)._to_graph(MODELLDCATNO.ObjectType, _self)
 
@@ -1360,10 +1365,9 @@ class SimpleType(ModelElement):
         Returns:
             the object type graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(SimpleType, self)._to_graph(MODELLDCATNO.SimpleType, _self)
 
@@ -1452,10 +1456,9 @@ class Composition(ModelProperty):
         Returns:
             the role graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(Composition, self)._to_graph(MODELLDCATNO.Composition, _self)
 
@@ -1467,10 +1470,11 @@ class Composition(ModelProperty):
 
         if getattr(self, "contains", None):
 
-            if getattr(self._contains, "identifier", None):
-                _contains = URIRef(self._contains.identifier)
-            else:
-                _contains = BNode()
+            _contains = (
+                URIRef(self._contains.identifier)
+                if getattr(self._contains, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._contains._to_graph().triples((None, None, None)):
                 self._g.add(
@@ -1529,10 +1533,9 @@ class Collection(ModelProperty):
         Returns:
             the role graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(Collection, self)._to_graph(MODELLDCATNO.Collection, _self)
 
@@ -1544,10 +1547,11 @@ class Collection(ModelProperty):
 
         if getattr(self, "has_member", None):
 
-            if getattr(self._has_member, "identifier", None):
-                _has_member = URIRef(self._has_member.identifier)
-            else:
-                _has_member = BNode()
+            _has_member = (
+                URIRef(self._has_member.identifier)
+                if getattr(self._has_member, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._has_member._to_graph().triples((None, None, None)):
                 self._g.add(
@@ -1608,10 +1612,9 @@ class Association(ModelProperty):
         Returns:
             the association graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(Association, self)._to_graph(MODELLDCATNO.Association, _self)
 
@@ -1623,10 +1626,11 @@ class Association(ModelProperty):
 
         if getattr(self, "refers_to", None):
 
-            if getattr(self._refers_to, "identifier", None):
-                _refers_to = URIRef(self._refers_to.identifier)
-            else:
-                _refers_to = BNode()
+            _refers_to = (
+                URIRef(self._refers_to.identifier)
+                if getattr(self._refers_to, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._refers_to._to_graph().triples((None, None, None)):
                 self._g.add(
@@ -1688,10 +1692,9 @@ class Choice(ModelProperty):
         Returns:
             the role graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(Choice, self)._to_graph(MODELLDCATNO.Choice, _self)
 
@@ -1705,10 +1708,11 @@ class Choice(ModelProperty):
 
             for has_some in self._has_some:
 
-                if getattr(has_some, "identifier", None):
-                    _has_some = URIRef(has_some.identifier)
-                else:
-                    _has_some = BNode()
+                _has_some = (
+                    URIRef(has_some.identifier)
+                    if getattr(has_some, "identifier", None)
+                    else BNode()
+                )
 
                 for _s, p, o in has_some._to_graph().triples((None, None, None)):
                     self._g.add(
@@ -1808,10 +1812,9 @@ class Attribute(ModelProperty):
         Returns:
             the role graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(Attribute, self)._to_graph(MODELLDCATNO.Attribute, _self)
 
@@ -1826,10 +1829,11 @@ class Attribute(ModelProperty):
 
         if getattr(self, "contains_object_type", None):
 
-            if getattr(self._contains_object_type, "identifier", None):
-                _contains_object_type = URIRef(self._contains_object_type.identifier)
-            else:
-                _contains_object_type = BNode()
+            _contains_object_type = (
+                URIRef(self._contains_object_type.identifier)
+                if getattr(self._contains_object_type, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._contains_object_type._to_graph().triples(
                 (None, None, None)
@@ -1846,10 +1850,11 @@ class Attribute(ModelProperty):
 
         if getattr(self, "has_simple_type", None):
 
-            if getattr(self._has_simple_type, "identifier", None):
-                _has_simple_type = URIRef(self._has_simple_type.identifier)
-            else:
-                _has_simple_type = BNode()
+            _has_simple_type = (
+                URIRef(self._has_simple_type.identifier)
+                if getattr(self._has_simple_type, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._has_simple_type._to_graph().triples(
                 (None, None, None)
@@ -1866,10 +1871,11 @@ class Attribute(ModelProperty):
 
         if getattr(self, "has_data_type", None):
 
-            if getattr(self._has_data_type, "identifier", None):
-                _has_data_type = URIRef(self._has_data_type.identifier)
-            else:
-                _has_data_type = BNode()
+            _has_data_type = (
+                URIRef(self._has_data_type.identifier)
+                if getattr(self._has_data_type, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._has_data_type._to_graph().triples((None, None, None)):
                 self._g.add(
@@ -1955,10 +1961,9 @@ class Specialization(ModelProperty):
         Returns:
             the role graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(Specialization, self)._to_graph(MODELLDCATNO.Specialization, _self)
 
@@ -1970,10 +1975,11 @@ class Specialization(ModelProperty):
 
         if getattr(self, "has_general_concept", None):
 
-            if getattr(self._has_general_concept, "identifier", None):
-                _has_general_concept = URIRef(self.has_general_concept.identifier)
-            else:
-                _has_general_concept = BNode()
+            _has_general_concept = (
+                URIRef(self.has_general_concept.identifier)
+                if getattr(self._has_general_concept, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._has_general_concept._to_graph().triples(
                 (None, None, None)
@@ -2036,10 +2042,9 @@ class Realization(ModelProperty):
         Returns:
             the assocation graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(Realization, self)._to_graph(MODELLDCATNO.Realization, _self)
 
@@ -2051,10 +2056,11 @@ class Realization(ModelProperty):
 
         if getattr(self, "has_supplier", None):
 
-            if getattr(self._has_supplier, "identifier", None):
-                _has_supplier = URIRef(self._has_supplier.identifier)
-            else:
-                _has_supplier = BNode()
+            _has_supplier = (
+                URIRef(self._has_supplier.identifier)
+                if getattr(self._has_supplier, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._has_supplier._to_graph().triples((None, None, None)):
                 self._g.add(
@@ -2115,10 +2121,9 @@ class Abstraction(ModelProperty):
         Returns:
             the role graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(Abstraction, self)._to_graph(MODELLDCATNO.Abstraction, _self)
 
@@ -2130,10 +2135,11 @@ class Abstraction(ModelProperty):
 
         if getattr(self, "is_abstraction_of", None):
 
-            if getattr(self._is_abstraction_of, "identifier", None):
-                _is_abstraction_of = URIRef(self._is_abstraction_of.identifier)
-            else:
-                _is_abstraction_of = BNode()
+            _is_abstraction_of = (
+                URIRef(self._is_abstraction_of.identifier)
+                if getattr(self._is_abstraction_of, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self._is_abstraction_of._to_graph().triples(
                 (None, None, None)
@@ -2185,10 +2191,9 @@ class DataType(ModelElement):
         Returns:
             the object type graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(DataType, self)._to_graph(MODELLDCATNO.DataType, _self)
 
@@ -2235,10 +2240,9 @@ class RootObjectType(ModelElement):
         Returns:
             the root object type graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(RootObjectType, self)._to_graph(MODELLDCATNO.RootObjectType, _self)
 
@@ -2317,10 +2321,13 @@ class CodeList(ModelElement):
 
         if getattr(self, "code_list_reference", None):
 
-            if getattr(self.code_list_reference, "identifier", None):
-                _code_list_reference = URIRef(self.code_list_reference.identifier)
-            else:
-                _code_list_reference = BNode()
+            _code_list_reference = (
+                URIRef(self.code_list_reference.identifier)
+                if getattr(self.code_list_reference, "identifier", None)
+                else BNode()
+            )
+
+            if isinstance(_code_list_reference, BNode):
                 for _s, p, o in self.code_list_reference._to_graph().triples(
                     (None, None, None)
                 ):
@@ -2637,10 +2644,11 @@ class CodeElement:
 
             for in_scheme in self._in_scheme:
 
-                if getattr(in_scheme, "identifier", None):
-                    _in_scheme = URIRef(in_scheme.identifier)
-                else:
-                    _in_scheme = BNode()
+                _in_scheme = (
+                    URIRef(in_scheme.identifier)
+                    if getattr(in_scheme, "identifier", None)
+                    else BNode()
+                )
 
                 for _s, p, o in in_scheme._to_graph().triples((None, None, None)):
                     self._g.add(
@@ -2657,10 +2665,11 @@ class CodeElement:
 
             for top_concept_of in self._top_concept_of:
 
-                if getattr(top_concept_of, "identifier", None):
-                    _top_concept_of = URIRef(top_concept_of.identifier)
-                else:
-                    _top_concept_of = BNode()
+                _top_concept_of = (
+                    URIRef(top_concept_of.identifier)
+                    if getattr(top_concept_of, "identifier", None)
+                    else BNode()
+                )
 
                 for _s, p, o in top_concept_of._to_graph().triples((None, None, None)):
                     self._g.add(
@@ -2771,10 +2780,11 @@ class CodeElement:
 
         if getattr(self, "next_element", None):
 
-            if getattr(self.next_element, "identifier", None):
-                _next_element = URIRef(self.next_element.identifier)
-            else:
-                _next_element = BNode()
+            _next_element = (
+                URIRef(self.next_element.identifier)
+                if getattr(self.next_element, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self.next_element._to_graph().triples((None, None, None)):
                 self._g.add(
@@ -2789,10 +2799,11 @@ class CodeElement:
 
         if getattr(self, "previous_element", None):
 
-            if getattr(self.previous_element, "identifier", None):
-                _previous_element = URIRef(self.previous_element.identifier)
-            else:
-                _previous_element = BNode()
+            _previous_element = (
+                URIRef(self.previous_element.identifier)
+                if getattr(self.previous_element, "identifier", None)
+                else BNode()
+            )
 
             for _s, p, o in self.previous_element._to_graph().triples(
                 (None, None, None)
@@ -2855,10 +2866,9 @@ class Note(ModelProperty):
         Returns:
             the role graph
         """
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        _self = (
+            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
+        )
 
         super(Note, self)._to_graph(MODELLDCATNO.Note, _self)
 
