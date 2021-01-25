@@ -844,6 +844,7 @@ class ModelProperty(ABC):
         "_description",
         "_belongs_to_module",
         "_forms_symmetry_with",
+        "_relation_property_label",
     )
 
     _g: Graph
@@ -856,6 +857,7 @@ class ModelProperty(ABC):
     _description: dict
     _belongs_to_module: List[str]
     _forms_symmetry_with: ModelProperty
+    _relation_property_label: dict
 
     @abstractmethod
     def __init__(self) -> None:
@@ -955,6 +957,18 @@ class ModelProperty(ABC):
         """Set for forms_symmetry_with."""
         self._forms_symmetry_with = forms_symmetry_with
 
+    @property
+    def relation_property_label(self: ModelProperty) -> dict:
+        """Get for relation_property_label."""
+        return self._relation_property_label
+
+    @relation_property_label.setter
+    def relation_property_label(
+        self: ModelProperty, relation_property_label: dict
+    ) -> None:
+        """Set for relation_property_label."""
+        self._relation_property_label = relation_property_label
+
     @abstractmethod
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the property to rdf.
@@ -1016,6 +1030,7 @@ class ModelProperty(ABC):
         self._description_to_graph(selfobject)
         self._belongs_to_module_to_graph(selfobject)
         self._forms_symmetry_with_to_graph(selfobject)
+        self._relation_property_label_to_graph(selfobject)
 
         return self._g
 
@@ -1095,6 +1110,19 @@ class ModelProperty(ABC):
                     )
 
             self._g.add((_self, MODELLDCATNO.formsSymmetryWith, _forms_symmetry_with))
+
+    def _relation_property_label_to_graph(
+        self: ModelProperty, selfobject: Union[URIRef, BNode]
+    ) -> None:
+        if getattr(self, "relation_property_label", None):
+            for key in self.relation_property_label:
+                self._g.add(
+                    (
+                        selfobject,
+                        MODELLDCATNO.relationPropertyLabel,
+                        Literal(self.relation_property_label[key], lang=key),
+                    )
+                )
 
 
 class Role(ModelProperty):
