@@ -845,6 +845,7 @@ class ModelProperty(ABC):
         "_belongs_to_module",
         "_forms_symmetry_with",
         "_relation_property_label",
+        "_sequence_number",
     )
 
     _g: Graph
@@ -858,6 +859,7 @@ class ModelProperty(ABC):
     _belongs_to_module: List[str]
     _forms_symmetry_with: ModelProperty
     _relation_property_label: dict
+    _sequence_number: int
 
     @abstractmethod
     def __init__(self) -> None:
@@ -969,6 +971,16 @@ class ModelProperty(ABC):
         """Set for relation_property_label."""
         self._relation_property_label = relation_property_label
 
+    @property
+    def sequence_number(self: ModelProperty) -> int:
+        """Get for sequence_number."""
+        return self._sequence_number
+
+    @sequence_number.setter
+    def sequence_number(self: ModelProperty, sequence_number: int) -> None:
+        """Set for sequence_number."""
+        self._sequence_number = sequence_number
+
     @abstractmethod
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the property to rdf.
@@ -1001,6 +1013,15 @@ class ModelProperty(ABC):
         self._g.add((selfobject, RDF.type, type))
 
         self._has_type_to_graph(selfobject)
+
+        if getattr(self, "sequence_number", None):
+            self._g.add(
+                (
+                    selfobject,
+                    MODELLDCATNO.sequenceNumber,
+                    Literal(self.sequence_number, datatype=XSD.positiveInteger),
+                )
+            )
 
         if getattr(self, "min_occurs", None):
             self._g.add((selfobject, XSD.minOccurs, Literal(self.min_occurs)))
