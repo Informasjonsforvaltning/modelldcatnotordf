@@ -28,6 +28,7 @@ from rdflib import (
 )
 import validators
 
+from modelldcatnotordf.document import FoafDocument
 from modelldcatnotordf.licensedocument import LicenseDocument
 
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
@@ -64,6 +65,7 @@ class InformationModel(Resource):
         "_version_note",
         "_status",
         "_creator",
+        "_has_format",
     )
 
     _title: dict
@@ -85,6 +87,7 @@ class InformationModel(Resource):
     _version_note: dict
     _status: Concept
     _creator: Agent
+    _has_format: List[FoafDocument]
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -98,6 +101,7 @@ class InformationModel(Resource):
         self._is_part_of = []
         self._contactpoints = []
         self._locations = []
+        self._has_format = []
 
     @property
     def informationmodelidentifier(self) -> str:
@@ -318,6 +322,16 @@ class InformationModel(Resource):
         """Set for creator."""
         self._creator = creator
 
+    @property
+    def has_format(self: InformationModel) -> List[FoafDocument]:
+        """Get for has_format."""
+        return self._has_format
+
+    @has_format.setter
+    def has_format(self: InformationModel, has_format: List[FoafDocument]) -> None:
+        """Set for has_format."""
+        self._has_format = has_format
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -361,6 +375,7 @@ class InformationModel(Resource):
         self._modified_to_graph()
         self._dct_type_to_graph()
         self._version_note_to_graph()
+        self._has_formats_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -604,6 +619,33 @@ class InformationModel(Resource):
                         URIRef(self.identifier),
                         ADMS.versionNotes,
                         Literal(self.version_note[key], lang=key),
+                    )
+                )
+
+    def _has_formats_to_graph(self: InformationModel) -> None:
+
+        if getattr(self, "has_format", None):
+
+            for has_format in self._has_format:
+
+                _has_format = (
+                    URIRef(has_format.identifier)
+                    if getattr(has_format, "identifier", None)
+                    else BNode()
+                )
+
+                for _s, p, o in has_format._to_graph().triples((None, None, None)):
+                    self._g.add(
+                        (_has_format, p, o)
+                        if isinstance(_has_format, BNode)
+                        else (_s, p, o)
+                    )
+
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCTERMS.hasFormat,
+                        _has_format,
                     )
                 )
 
