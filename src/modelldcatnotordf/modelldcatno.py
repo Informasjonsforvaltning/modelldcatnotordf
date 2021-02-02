@@ -12,7 +12,7 @@ from typing import Any, List, Optional, Union
 
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, Resource, URI
-from datacatalogtordf.periodoftime import Date
+from datacatalogtordf.periodoftime import Date, PeriodOfTime
 from rdflib import (
     BNode,
     DCTERMS,
@@ -66,6 +66,7 @@ class InformationModel(Resource):
         "_status",
         "_creator",
         "_has_format",
+        "_temporal",
     )
 
     _title: dict
@@ -88,6 +89,7 @@ class InformationModel(Resource):
     _status: Concept
     _creator: Agent
     _has_format: List[FoafDocument]
+    _temporal: List[PeriodOfTime]
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -102,6 +104,7 @@ class InformationModel(Resource):
         self._contactpoints = []
         self._locations = []
         self._has_format = []
+        self._temporal = []
 
     @property
     def informationmodelidentifier(self) -> str:
@@ -332,6 +335,16 @@ class InformationModel(Resource):
         """Set for has_format."""
         self._has_format = has_format
 
+    @property
+    def temporal(self: InformationModel) -> List[PeriodOfTime]:
+        """Get for temporal."""
+        return self._temporal
+
+    @temporal.setter
+    def temporal(self: InformationModel, temporal: List[PeriodOfTime]) -> None:
+        """Set for temporal."""
+        self._temporal = temporal
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -376,6 +389,7 @@ class InformationModel(Resource):
         self._dct_type_to_graph()
         self._version_note_to_graph()
         self._has_formats_to_graph()
+        self._temporals_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -646,6 +660,24 @@ class InformationModel(Resource):
                         URIRef(self.identifier),
                         DCTERMS.hasFormat,
                         _has_format,
+                    )
+                )
+
+    def _temporals_to_graph(self: InformationModel) -> None:
+        if getattr(self, "temporal", None):
+
+            for temporal in self._temporal:
+
+                _temporal = BNode()
+
+                for _s, p, o in temporal._to_graph().triples((None, None, None)):
+                    self._g.add((_temporal, p, o))
+
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCTERMS.temporal,
+                        _temporal,
                     )
                 )
 
