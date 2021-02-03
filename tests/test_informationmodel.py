@@ -196,7 +196,7 @@ def test_to_graph_should_return_contains_model_element() -> None:
     modelelement.identifier = "http://example.com/modelelements/1"
     modelelement.title = {"nb": "Tittel 1", "en": "Title 1"}
 
-    modelelements: List[ModelElement] = [modelelement]
+    modelelements: List[Union[ModelElement, str]] = [modelelement]
     informationmodel.modelelements = modelelements
 
     src = """
@@ -1060,6 +1060,50 @@ def test_to_graph_should_return_subject_as_uri() -> None:
 
         <https://example.com/subjects/3> a skos:Concept .
 
+        """
+
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_modelelement_as_uri() -> None:
+    """It returns a information model graph isomorphic to spec."""
+    """It returns an modelelement graph isomorphic to spec."""
+
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+
+    modelelements: List[Union[ModelElement, str]] = []
+
+    modelelement1 = "https://example.com/modelelements/1"
+    modelelements.append(modelelement1)
+
+    modelelement2 = "https://example.com/modelelements/2"
+    modelelements.append(modelelement2)
+
+    modelelement3 = ObjectType()
+    modelelement3.identifier = "https://example.com/modelelements/3"
+    modelelements.append(modelelement3)
+
+    informationmodel.modelelements = modelelements
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+        <http://example.com/informationmodels/1>
+            a modelldcatno:InformationModel ;
+            modelldcatno:containsModelElement <https://example.com/modelelements/1> ;
+            modelldcatno:containsModelElement <https://example.com/modelelements/2> ;
+            modelldcatno:containsModelElement <https://example.com/modelelements/3> ;
+        .
+        <https://example.com/modelelements/3> a modelldcatno:ObjectType .
         """
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
