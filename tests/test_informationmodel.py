@@ -1,5 +1,5 @@
 """Test cases for the informationmodel module."""
-from typing import List
+from typing import List, Union
 
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, PeriodOfTime
@@ -1014,6 +1014,53 @@ def test_to_graph_should_return_temporal() -> None:
             dcat:startDate "2019-12-31"^^xsd:date ]
     .
     """
+
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_subject_as_uri() -> None:
+    """It returns a information model graph isomorphic to spec."""
+    """It returns an subject graph isomorphic to spec."""
+
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+
+    subjects: List[Union[Concept, str]] = []
+
+    subject1 = "https://example.com/subjects/1"
+    subjects.append(subject1)
+
+    subject2 = "https://example.com/subjects/2"
+    subjects.append(subject2)
+
+    subject3 = Concept()
+    subject3.identifier = "https://example.com/subjects/3"
+    subjects.append(subject3)
+
+    informationmodel.subject = subjects
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+        <http://example.com/informationmodels/1>
+            a modelldcatno:InformationModel ;
+            dct:subject <https://example.com/subjects/1> ;
+            dct:subject <https://example.com/subjects/2> ;
+            dct:subject <https://example.com/subjects/3> ;
+        .
+
+        <https://example.com/subjects/3> a skos:Concept .
+
+        """
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
