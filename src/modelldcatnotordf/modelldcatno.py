@@ -71,7 +71,7 @@ class InformationModel(Resource):
 
     _title: dict
     _publisher: Agent
-    _subject: List[Concept]
+    _subject: List[Union[Concept, str]]
     _modelelements: List[ModelElement]
     _informationmodelidentifier: str
     _licensedocument: LicenseDocument
@@ -172,12 +172,12 @@ class InformationModel(Resource):
         self._publisher = publisher
 
     @property
-    def subject(self: InformationModel) -> List[Concept]:
+    def subject(self: InformationModel) -> List[Union[Concept, str]]:
         """Get for subject."""
         return self._subject
 
     @subject.setter
-    def subject(self: InformationModel, subject: List[Concept]) -> None:
+    def subject(self: InformationModel, subject: List[Union[Concept, str]]) -> None:
         """Set for subject."""
         self._subject = subject
 
@@ -425,10 +425,15 @@ class InformationModel(Resource):
 
             for subject in self._subject:
 
-                _subject = URIRef(subject.identifier)
+                _subject = (
+                    URIRef(subject.identifier)
+                    if isinstance(subject, Concept)
+                    else URIRef(subject)
+                )
 
-                for _s, p, o in subject._to_graph().triples((None, None, None)):
-                    self._g.add((_subject, p, o))
+                if isinstance(subject, Concept):
+                    for _s, p, o in subject._to_graph().triples((None, None, None)):
+                        self._g.add((_subject, p, o))
 
                 self._g.add(
                     (
