@@ -72,7 +72,7 @@ class InformationModel(Resource):
     _title: dict
     _publisher: Agent
     _subject: List[Union[Concept, str]]
-    _modelelements: List[ModelElement]
+    _modelelements: List[Union[ModelElement, URI]]
     _informationmodelidentifier: str
     _licensedocument: LicenseDocument
     _replaces: List[InformationModel]
@@ -182,13 +182,13 @@ class InformationModel(Resource):
         self._subject = subject
 
     @property
-    def modelelements(self: InformationModel) -> List[ModelElement]:
+    def modelelements(self: InformationModel) -> List[Union[ModelElement, URI]]:
         """Get for modelelements."""
         return self._modelelements
 
     @modelelements.setter
     def modelelements(
-        self: InformationModel, modelelements: List[ModelElement]
+        self: InformationModel, modelelements: List[Union[ModelElement, URI]]
     ) -> None:
         """Set for modelelements."""
         self._modelelements = modelelements
@@ -449,18 +449,24 @@ class InformationModel(Resource):
 
             for modelelement in self._modelelements:
 
-                _modelelement = (
-                    URIRef(modelelement.identifier)
-                    if getattr(modelelement, "identifier", None)
-                    else BNode()
-                )
+                if isinstance(modelelement, ModelElement):
 
-                for _s, p, o in modelelement._to_graph().triples((None, None, None)):
-                    self._g.add(
-                        (_modelelement, p, o)
-                        if isinstance(_modelelement, BNode)
-                        else (_s, p, o)
+                    _modelelement = (
+                        URIRef(modelelement.identifier)
+                        if getattr(modelelement, "identifier", None)
+                        else BNode()
                     )
+                    for _s, p, o in modelelement._to_graph().triples(
+                        (None, None, None)
+                    ):
+                        self._g.add(
+                            (_modelelement, p, o)
+                            if isinstance(_modelelement, BNode)
+                            else (_s, p, o)
+                        )
+
+                elif isinstance(modelelement, str):
+                    _modelelement = URIRef(modelelement)
 
                 self._g.add(
                     (
