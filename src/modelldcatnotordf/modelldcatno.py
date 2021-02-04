@@ -70,7 +70,7 @@ class InformationModel(Resource):
     )
 
     _title: dict
-    _publisher: Agent
+    _publisher: Union[Agent, URI]
     _subject: List[Union[Concept, URI]]
     _modelelements: List[Union[ModelElement, URI]]
     _informationmodelidentifier: str
@@ -162,12 +162,12 @@ class InformationModel(Resource):
         self._theme = value
 
     @property
-    def publisher(self: InformationModel) -> Agent:
+    def publisher(self: InformationModel) -> Union[Agent, URI]:
         """Get for publisher."""
         return self._publisher
 
     @publisher.setter
-    def publisher(self: InformationModel, publisher: Agent) -> None:
+    def publisher(self: InformationModel, publisher: Union[Agent, URI]) -> None:
         """Set for publisher."""
         self._publisher = publisher
 
