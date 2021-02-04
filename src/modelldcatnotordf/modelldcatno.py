@@ -74,7 +74,7 @@ class InformationModel(Resource):
     _subject: List[Union[Concept, URI]]
     _modelelements: List[Union[ModelElement, URI]]
     _informationmodelidentifier: str
-    _licensedocument: LicenseDocument
+    _licensedocument: Union[LicenseDocument, URI]
     _replaces: List[InformationModel]
     _is_replaced_by: List[InformationModel]
     _has_part: List[InformationModel]
@@ -122,12 +122,12 @@ class InformationModel(Resource):
         return self._type
 
     @property
-    def licensedocument(self) -> LicenseDocument:
+    def licensedocument(self) -> Union[LicenseDocument, URI]:
         """Get for license."""
         return self._licensedocument
 
     @licensedocument.setter
-    def licensedocument(self, licensedocument: LicenseDocument) -> None:
+    def licensedocument(self, licensedocument: Union[LicenseDocument, URI]) -> None:
         """Set for license."""
         self._licensedocument = licensedocument
 
@@ -480,20 +480,23 @@ class InformationModel(Resource):
 
         if getattr(self, "licensedocument", None):
 
-            _licensedocument = (
-                URIRef(self.licensedocument.identifier)
-                if getattr(self.licensedocument, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self.licensedocument._to_graph().triples(
-                (None, None, None)
-            ):
-                self._g.add(
-                    (_licensedocument, p, o)
-                    if isinstance(_licensedocument, BNode)
-                    else (_s, p, o)
+            if isinstance(self.licensedocument, LicenseDocument):
+                _licensedocument = (
+                    URIRef(self.licensedocument.identifier)
+                    if getattr(self.licensedocument, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self.licensedocument._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_licensedocument, p, o)
+                        if isinstance(_licensedocument, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self.licensedocument, str):
+                _licensedocument = URIRef(self.licensedocument)
 
             self._g.add((URIRef(self.identifier), DCTERMS.license, _licensedocument))
 
