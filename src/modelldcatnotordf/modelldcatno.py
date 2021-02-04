@@ -75,7 +75,7 @@ class InformationModel(Resource):
     _modelelements: List[Union[ModelElement, URI]]
     _informationmodelidentifier: str
     _licensedocument: Union[LicenseDocument, URI]
-    _replaces: List[InformationModel]
+    _replaces: List[Union[InformationModel, URI]]
     _is_replaced_by: List[InformationModel]
     _has_part: List[InformationModel]
     _is_part_of: List[InformationModel]
@@ -194,12 +194,14 @@ class InformationModel(Resource):
         self._modelelements = modelelements
 
     @property
-    def replaces(self: InformationModel) -> List[InformationModel]:
+    def replaces(self: InformationModel) -> List[Union[InformationModel, URI]]:
         """Get for replaces."""
         return self._replaces
 
     @replaces.setter
-    def replaces(self: InformationModel, replaces: List[InformationModel]) -> None:
+    def replaces(
+        self: InformationModel, replaces: List[Union[InformationModel, URI]]
+    ) -> None:
         """Set for replaces."""
         self._replaces = replaces
 
@@ -505,10 +507,14 @@ class InformationModel(Resource):
 
             for replaces in self._replaces:
 
-                _replaces = URIRef(replaces.identifier)
+                if isinstance(replaces, InformationModel):
+                    _replaces = URIRef(replaces.identifier)
 
-                for _s, p, o in replaces._to_graph().triples((None, None, None)):
-                    self._g.add((_replaces, p, o))
+                    for _s, p, o in replaces._to_graph().triples((None, None, None)):
+                        self._g.add((_replaces, p, o))
+
+                elif isinstance(replaces, str):
+                    _replaces = URIRef(replaces)
 
                 self._g.add(
                     (
