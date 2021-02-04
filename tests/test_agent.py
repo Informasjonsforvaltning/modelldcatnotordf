@@ -168,4 +168,5 @@ def test_to_graph_should_return_sameas() -> None:
 
     assert_isomorphic(g1, g2)
 
+
 # ---------------------------------------------------------------------- #
