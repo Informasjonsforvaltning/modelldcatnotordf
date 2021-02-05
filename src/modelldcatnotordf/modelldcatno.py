@@ -76,7 +76,7 @@ class InformationModel(Resource):
     _informationmodelidentifier: str
     _licensedocument: Union[LicenseDocument, URI]
     _replaces: List[Union[InformationModel, URI]]
-    _is_replaced_by: List[InformationModel]
+    _is_replaced_by: List[Union[InformationModel, URI]]
     _has_part: List[InformationModel]
     _is_part_of: List[InformationModel]
     _homepage: URI
@@ -206,13 +206,13 @@ class InformationModel(Resource):
         self._replaces = replaces
 
     @property
-    def is_replaced_by(self: InformationModel) -> List[InformationModel]:
+    def is_replaced_by(self: InformationModel) -> List[Union[InformationModel, URI]]:
         """Get for is_replaced_by."""
         return self._is_replaced_by
 
     @is_replaced_by.setter
     def is_replaced_by(
-        self: InformationModel, is_replaced_by: List[InformationModel]
+        self: InformationModel, is_replaced_by: List[Union[InformationModel, URI]]
     ) -> None:
         """Set for is_replaced_by."""
         self._is_replaced_by = is_replaced_by
@@ -529,10 +529,16 @@ class InformationModel(Resource):
 
             for is_replaced_by in self._is_replaced_by:
 
-                _is_replaced_by = URIRef(is_replaced_by.identifier)
+                if isinstance(is_replaced_by, InformationModel):
+                    _is_replaced_by = URIRef(is_replaced_by.identifier)
 
-                for _s, p, o in is_replaced_by._to_graph().triples((None, None, None)):
-                    self._g.add((_is_replaced_by, p, o))
+                    for _s, p, o in is_replaced_by._to_graph().triples(
+                        (None, None, None)
+                    ):
+                        self._g.add((_is_replaced_by, p, o))
+
+                elif isinstance(is_replaced_by, str):
+                    _is_replaced_by = URIRef(is_replaced_by)
 
                 self._g.add(
                     (

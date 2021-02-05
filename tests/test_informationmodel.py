@@ -1212,3 +1212,45 @@ def test_to_graph_should_return_replaces_as_uri() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_is_replaced_by_as_uri() -> None:
+    """It returns a information model graph isomorphic to spec."""
+    """It returns an is_replaced_by graph isomorphic to spec."""
+
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+
+    is_replaced_by: List[Union[InformationModel, URI]] = []
+
+    is_replaced_by1 = InformationModel()
+    is_replaced_by1.identifier = "https://example.com/informationmodels/2"
+    is_replaced_by.append(is_replaced_by1)
+
+    is_replaced_by2 = "https://example.com/informationmodels/3"
+    is_replaced_by.append(is_replaced_by2)
+
+    informationmodel.is_replaced_by = is_replaced_by
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+
+        <http://example.com/informationmodels/1>
+            a modelldcatno:InformationModel ;
+            dct:isReplacedBy <https://example.com/informationmodels/2> ;
+            dct:isReplacedBy <https://example.com/informationmodels/3> ;
+        .
+        <https://example.com/informationmodels/2> a modelldcatno:InformationModel .
+
+        """
+
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
