@@ -78,7 +78,7 @@ class InformationModel(Resource):
     _replaces: List[Union[InformationModel, URI]]
     _is_replaced_by: List[Union[InformationModel, URI]]
     _has_part: List[Union[InformationModel, URI]]
-    _is_part_of: List[InformationModel]
+    _is_part_of: List[Union[InformationModel, URI]]
     _homepage: URI
     _contactpoints: List[Contact]
     _locations: List[Location]
@@ -230,12 +230,14 @@ class InformationModel(Resource):
         self._has_part = has_part
 
     @property
-    def is_part_of(self: InformationModel) -> List[InformationModel]:
+    def is_part_of(self: InformationModel) -> List[Union[InformationModel, URI]]:
         """Get for is_part_of."""
         return self._is_part_of
 
     @is_part_of.setter
-    def is_part_of(self: InformationModel, is_part_of: List[InformationModel]) -> None:
+    def is_part_of(
+        self: InformationModel, is_part_of: List[Union[InformationModel, URI]]
+    ) -> None:
         """Set for is_part_of."""
         self._is_part_of = is_part_of
 
@@ -577,10 +579,14 @@ class InformationModel(Resource):
 
             for is_part_of in self._is_part_of:
 
-                _is_part_of = URIRef(is_part_of.identifier)
+                if isinstance(is_part_of, InformationModel):
+                    _is_part_of = URIRef(is_part_of.identifier)
 
-                for _s, p, o in is_part_of._to_graph().triples((None, None, None)):
-                    self._g.add((_is_part_of, p, o))
+                    for _s, p, o in is_part_of._to_graph().triples((None, None, None)):
+                        self._g.add((_is_part_of, p, o))
+
+                elif isinstance(is_part_of, str):
+                    _is_part_of = URIRef(is_part_of)
 
                 self._g.add(
                     (
