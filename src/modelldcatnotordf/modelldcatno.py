@@ -77,7 +77,7 @@ class InformationModel(Resource):
     _licensedocument: Union[LicenseDocument, URI]
     _replaces: List[Union[InformationModel, URI]]
     _is_replaced_by: List[Union[InformationModel, URI]]
-    _has_part: List[InformationModel]
+    _has_part: List[Union[InformationModel, URI]]
     _is_part_of: List[InformationModel]
     _homepage: URI
     _contactpoints: List[Contact]
@@ -218,12 +218,14 @@ class InformationModel(Resource):
         self._is_replaced_by = is_replaced_by
 
     @property
-    def has_part(self: InformationModel) -> List[InformationModel]:
+    def has_part(self: InformationModel) -> List[Union[InformationModel, URI]]:
         """Get for has_part."""
         return self._has_part
 
     @has_part.setter
-    def has_part(self: InformationModel, has_part: List[InformationModel]) -> None:
+    def has_part(
+        self: InformationModel, has_part: List[Union[InformationModel, URI]]
+    ) -> None:
         """Set for has_part."""
         self._has_part = has_part
 
@@ -553,10 +555,14 @@ class InformationModel(Resource):
 
             for has_part in self._has_part:
 
-                _has_part = URIRef(has_part.identifier)
+                if isinstance(has_part, InformationModel):
+                    _has_part = URIRef(has_part.identifier)
 
-                for _s, p, o in has_part._to_graph().triples((None, None, None)):
-                    self._g.add((_has_part, p, o))
+                    for _s, p, o in has_part._to_graph().triples((None, None, None)):
+                        self._g.add((_has_part, p, o))
+
+                elif isinstance(has_part, str):
+                    _has_part = URIRef(has_part)
 
                 self._g.add(
                     (
