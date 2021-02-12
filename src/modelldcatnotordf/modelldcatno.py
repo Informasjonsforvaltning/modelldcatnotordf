@@ -87,7 +87,7 @@ class InformationModel(Resource):
     _version_info: str
     _version_note: dict
     _status: Union[Concept, URI]
-    _creator: Agent
+    _creator: str
     _has_format: List[FoafDocument]
     _temporal: List[PeriodOfTime]
 
@@ -322,12 +322,12 @@ class InformationModel(Resource):
         self._status = status
 
     @property
-    def creator(self: InformationModel) -> Agent:
+    def creator(self: InformationModel) -> str:
         """Get for creator."""
         return self._creator
 
     @creator.setter
-    def creator(self: InformationModel, creator: Agent) -> None:
+    def creator(self: InformationModel, creator: str) -> None:
         """Set for creator."""
         self._creator = creator
 
