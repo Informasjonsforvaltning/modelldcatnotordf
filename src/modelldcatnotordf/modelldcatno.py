@@ -86,7 +86,7 @@ class InformationModel(Resource):
     _dct_type: Union[Concept, URI]
     _version_info: str
     _version_note: dict
-    _status: Concept
+    _status: Union[Concept, URI]
     _creator: Agent
     _has_format: List[FoafDocument]
     _temporal: List[PeriodOfTime]
@@ -312,12 +312,12 @@ class InformationModel(Resource):
         self._version_note = version_note
 
     @property
-    def status(self) -> Concept:
+    def status(self) -> Union[Concept, URI]:
         """Get for status."""
         return self._status
 
     @status.setter
-    def status(self, status: Concept) -> None:
+    def status(self, status: Union[Concept, URI]) -> None:
         """Set for status."""
         self._status = status
 
@@ -394,6 +394,7 @@ class InformationModel(Resource):
         self._modified_to_graph()
         self._dct_type_to_graph()
         self._version_note_to_graph()
+        self._status_to_graph()
         self._has_formats_to_graph()
         self._temporals_to_graph()
 
@@ -414,15 +415,6 @@ class InformationModel(Resource):
                     Literal(self._version_info),
                 )
             )
-
-        if getattr(self, "status", None):
-
-            _status = URIRef(self.status.identifier)
-
-            for _s, p, o in self.status._to_graph().triples((None, None, None)):
-                self._g.add((_status, p, o))
-
-            self._g.add((URIRef(self.identifier), ADMS.status, _status))
 
         return self._g
 
@@ -677,6 +669,21 @@ class InformationModel(Resource):
                         Literal(self.version_note[key], lang=key),
                     )
                 )
+
+    def _status_to_graph(self: InformationModel) -> None:
+
+        if getattr(self, "status", None):
+
+            if isinstance(self.status, Concept):
+                _status = URIRef(self.status.identifier)
+
+                for _s, p, o in self.status._to_graph().triples((None, None, None)):
+                    self._g.add((_status, p, o))
+
+            elif isinstance(self.status, str):
+                _status = URIRef(self.status)
+
+            self._g.add((URIRef(self.identifier), ADMS.status, _status))
 
     def _has_formats_to_graph(self: InformationModel) -> None:
 
