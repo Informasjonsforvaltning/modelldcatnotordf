@@ -83,7 +83,7 @@ class InformationModel(Resource):
     _contactpoints: List[Contact]
     _locations: List[Location]
     _modified: Date
-    _dct_type: Concept
+    _dct_type: Union[Concept, URI]
     _version_info: str
     _version_note: dict
     _status: Concept
@@ -282,12 +282,12 @@ class InformationModel(Resource):
         self._modified = Date(modified)
 
     @property
-    def dct_type(self: InformationModel) -> Concept:
+    def dct_type(self: InformationModel) -> Union[Concept, URI]:
         """Get for dct_type."""
         return self._dct_type
 
     @dct_type.setter
-    def dct_type(self: InformationModel, dct_type: Concept) -> None:
+    def dct_type(self: InformationModel, dct_type: Union[Concept, URI]) -> None:
         """Set for dct_type."""
         self._dct_type = dct_type
 
@@ -649,10 +649,14 @@ class InformationModel(Resource):
     def _dct_type_to_graph(self: InformationModel) -> None:
         if getattr(self, "dct_type", None):
 
-            _dct_type = URIRef(self.dct_type.identifier)
+            if isinstance(self.dct_type, Concept):
+                _dct_type = URIRef(self.dct_type.identifier)
 
-            for _s, p, o in self.dct_type._to_graph().triples((None, None, None)):
-                self._g.add((_dct_type, p, o))
+                for _s, p, o in self.dct_type._to_graph().triples((None, None, None)):
+                    self._g.add((_dct_type, p, o))
+
+            elif isinstance(self.dct_type, str):
+                _dct_type = URIRef(self.dct_type)
 
             self._g.add(
                 (

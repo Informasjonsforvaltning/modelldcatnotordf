@@ -1332,3 +1332,35 @@ def test_to_graph_should_return_is_part_of_as_uri() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_dct_type_as_uri() -> None:
+    """It returns a information model graph isomorphic to spec."""
+    """It returns an subject graph isomorphic to spec."""
+
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+
+    type = "https://example.com/types/1"
+    informationmodel.dct_type = type
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+        <http://example.com/informationmodels/1>
+            a modelldcatno:InformationModel ;
+            dct:type <https://example.com/types/1> ;
+        .
+
+        """
+
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
