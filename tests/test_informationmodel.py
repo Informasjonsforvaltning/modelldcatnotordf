@@ -934,7 +934,7 @@ def test_to_graph_should_return_has_format() -> None:
     document.identifier = "http://example.com/documents/1"
     document.title = {"nb": "Tittel 1", "en": "Title 1"}
 
-    documents: List[FoafDocument] = [document]
+    documents: List[Union[FoafDocument, str]] = [document]
     informationmodel.has_format = documents
 
     src = """
@@ -1394,6 +1394,45 @@ def test_to_graph_should_return_status_as_uri() -> None:
 
         """
 
+    g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_has_format_as_uri() -> None:
+    """It returns a subject graph isomorphic to spec."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = "http://example.com/informationmodels/1"
+    document1 = FoafDocument()
+    document1.identifier = "http://example.com/documents/1"
+    document1.title = {"nb": "Tittel 1", "en": "Title 1"}
+
+    document2 = "http://example.com/documents/2"
+
+    documents: List[Union[FoafDocument, str]] = []
+    informationmodel.has_format = documents
+    documents.append(document1)
+    documents.append(document2)
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+
+
+    <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
+        dct:hasFormat <http://example.com/documents/1> ;
+        dct:hasFormat <http://example.com/documents/2> .
+
+    <http://example.com/documents/1> a foaf:Document ;
+        dct:title   "Title 1"@en, "Tittel 1"@nb
+    .
+    """
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
