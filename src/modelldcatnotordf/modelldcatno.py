@@ -88,7 +88,7 @@ class InformationModel(Resource):
     _version_note: dict
     _status: Union[Concept, URI]
     _creator: str
-    _has_format: List[FoafDocument]
+    _has_format: List[Union[FoafDocument, str]]
     _temporal: List[PeriodOfTime]
 
     def __init__(self) -> None:
@@ -332,12 +332,14 @@ class InformationModel(Resource):
         self._creator = creator
 
     @property
-    def has_format(self: InformationModel) -> List[FoafDocument]:
+    def has_format(self: InformationModel) -> List[Union[FoafDocument, str]]:
         """Get for has_format."""
         return self._has_format
 
     @has_format.setter
-    def has_format(self: InformationModel, has_format: List[FoafDocument]) -> None:
+    def has_format(
+        self: InformationModel, has_format: List[Union[FoafDocument, str]]
+    ) -> None:
         """Set for has_format."""
         self._has_format = has_format
 
@@ -691,18 +693,21 @@ class InformationModel(Resource):
 
             for has_format in self._has_format:
 
-                _has_format = (
-                    URIRef(has_format.identifier)
-                    if getattr(has_format, "identifier", None)
-                    else BNode()
-                )
-
-                for _s, p, o in has_format._to_graph().triples((None, None, None)):
-                    self._g.add(
-                        (_has_format, p, o)
-                        if isinstance(_has_format, BNode)
-                        else (_s, p, o)
+                if isinstance(has_format, FoafDocument):
+                    _has_format = (
+                        URIRef(has_format.identifier)
+                        if getattr(has_format, "identifier", None)
+                        else BNode()
                     )
+
+                    for _s, p, o in has_format._to_graph().triples((None, None, None)):
+                        self._g.add(
+                            (_has_format, p, o)
+                            if isinstance(_has_format, BNode)
+                            else (_s, p, o)
+                        )
+                elif isinstance(has_format, str):
+                    _has_format = URIRef(has_format)
 
                 self._g.add(
                     (
