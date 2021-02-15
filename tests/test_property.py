@@ -170,7 +170,7 @@ def test_to_graph_should_return_has_type_blank_nodes() -> None:
 
 
 def test_to_graph_should_return_min_occurs() -> None:
-    """It returns a has_type graph isomorphic to spec."""
+    """It returns a min_occurs graph isomorphic to spec."""
     property = Role()
     property.identifier = "http://example.com/properties/1"
     property.min_occurs = 1
@@ -194,7 +194,7 @@ def test_to_graph_should_return_min_occurs() -> None:
 
 
 def test_to_graph_should_return_max_occurs() -> None:
-    """It returns a has_type graph isomorphic to spec."""
+    """It returns a max_occurs graph isomorphic to spec."""
     property = Role()
     property.identifier = "http://example.com/properties/1"
     property.max_occurs = 1
@@ -442,7 +442,7 @@ def test_to_graph_should_return_relation_property_label() -> None:
 
 
 def test_to_graph_should_return_sequence_number() -> None:
-    """It returns a has_type graph isomorphic to spec."""
+    """It returns a sequence_number graph isomorphic to spec."""
     property = Role()
     property.identifier = "http://example.com/properties/1"
     property.sequence_number = 1
