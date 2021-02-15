@@ -755,7 +755,7 @@ class ModelElement(ABC):
     _title: dict
     _identifier: URI
     _dct_identifier: str
-    _has_property: List[ModelProperty]
+    _has_property: List[Union[ModelProperty, URI]]
     _subject: Concept
     _belongs_to_module: List[str]
     _description: dict
@@ -807,12 +807,12 @@ class ModelElement(ABC):
         self._subject = subject
 
     @property
-    def has_property(self) -> List[ModelProperty]:
+    def has_property(self) -> List[Union[ModelProperty, URI]]:
         """Get for has_property."""
         return self._has_property
 
     @has_property.setter
-    def has_property(self, has_property: List[ModelProperty]) -> None:
+    def has_property(self, has_property: List[Union[ModelProperty, URI]]) -> None:
         """Set for has_property."""
         self._has_property = has_property
 
@@ -934,18 +934,24 @@ class ModelElement(ABC):
         if getattr(self, "has_property", None):
             for has_property in self._has_property:
 
-                _has_property = (
-                    URIRef(has_property.identifier)
-                    if getattr(has_property, "identifier", None)
-                    else BNode()
-                )
-
-                for _s, p, o in has_property._to_graph().triples((None, None, None)):
-                    self._g.add(
-                        (_has_property, p, o)
-                        if isinstance(_has_property, BNode)
-                        else (_s, p, o)
+                if isinstance(has_property, ModelProperty):
+                    _has_property = (
+                        URIRef(has_property.identifier)
+                        if getattr(has_property, "identifier", None)
+                        else BNode()
                     )
+
+                    for _s, p, o in has_property._to_graph().triples(
+                        (None, None, None)
+                    ):
+                        self._g.add(
+                            (_has_property, p, o)
+                            if isinstance(_has_property, BNode)
+                            else (_s, p, o)
+                        )
+
+                elif isinstance(has_property, str):
+                    _has_property = URIRef(has_property)
 
                 self._g.add(
                     (
