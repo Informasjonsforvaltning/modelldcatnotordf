@@ -1,7 +1,8 @@
 """Test cases for the model element module."""
-from typing import List
+from typing import List, Union
 
 from concepttordf import Concept
+from datacatalogtordf import URI
 import pytest
 from rdflib import Graph
 
@@ -127,8 +128,7 @@ def test_to_graph_should_return_has_property_both_identifiers() -> None:
     modelproperty = Role()
     modelproperty.identifier = "http://example.com/properties/1"
 
-    has_properties: List[ModelProperty] = []
-    has_properties.append(modelproperty)
+    has_properties: List[Union[ModelProperty, URI]] = [modelproperty]
     modelelement.has_property = has_properties
 
     src = """
@@ -296,6 +296,34 @@ def test_to_graph_should_return_belongs_to_module_any_uri_graph() -> None:
         modelldcatno:belongsToModule "http://www.example.org/core"^^xsd:anyURI ;
     .
     """
+    g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_has_property_as_uri() -> None:
+    """It returns a has_property graph isomorphic to spec."""
+    modelelement = ObjectType()
+    modelelement.identifier = "http://example.com/modelelements/1"
+
+    modelproperty = "http://example.com/properties/1"
+
+    has_properties: List[Union[ModelProperty, URI]] = [modelproperty]
+    modelelement.has_property = has_properties
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
+        modelldcatno:hasProperty <http://example.com/properties/1>
+
+        .
+        """
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
