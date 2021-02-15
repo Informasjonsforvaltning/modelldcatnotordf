@@ -756,7 +756,7 @@ class ModelElement(ABC):
     _identifier: URI
     _dct_identifier: str
     _has_property: List[Union[ModelProperty, URI]]
-    _subject: Concept
+    _subject: Union[Concept, URI]
     _belongs_to_module: List[str]
     _description: dict
 
@@ -797,12 +797,12 @@ class ModelElement(ABC):
         self._title = title
 
     @property
-    def subject(self) -> Concept:
+    def subject(self) -> Union[Concept, str]:
         """Get for subject."""
         return self._subject
 
     @subject.setter
-    def subject(self, subject: Concept) -> None:
+    def subject(self, subject: Union[Concept, str]) -> None:
         """Set for subject."""
         self._subject = subject
 
@@ -883,23 +883,29 @@ class ModelElement(ABC):
         if getattr(self, "dct_identifier", None):
             self._g.add((selfobject, DCTERMS.identifier, Literal(self._dct_identifier)))
 
-        if getattr(self, "subject", None):
-
-            _subject = URIRef(self.subject.identifier)
-
-            for _s, p, o in self.subject._to_graph().triples((None, None, None)):
-                self._g.add((_subject, p, o))
-
-            self._g.add((selfobject, DCTERMS.subject, _subject))
-
         if getattr(self, "has_property", None):
             self._has_property_to_graph(selfobject)
 
         self._belongs_to_module_to_graph(selfobject)
-
         self._description_to_graph(selfobject)
+        self._subjet_to_graph(selfobject)
 
         return self._g
+
+    def _subjet_to_graph(self: ModelElement, selfobject: Union[URIRef, BNode]) -> None:
+
+        if getattr(self, "subject", None):
+
+            if isinstance(self.subject, Concept):
+                _subject = URIRef(self.subject.identifier)
+
+                for _s, p, o in self.subject._to_graph().triples((None, None, None)):
+                    self._g.add((_subject, p, o))
+
+            elif isinstance(self.subject, str):
+                _subject = URIRef(self.subject)
+
+            self._g.add((selfobject, DCTERMS.subject, _subject))
 
     def _belongs_to_module_to_graph(
         self: ModelElement, selfobject: Union[URIRef, BNode]
