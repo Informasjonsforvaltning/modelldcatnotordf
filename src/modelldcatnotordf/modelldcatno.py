@@ -797,12 +797,12 @@ class ModelElement(ABC):
         self._title = title
 
     @property
-    def subject(self) -> Union[Concept, str]:
+    def subject(self) -> Union[Concept, URI]:
         """Get for subject."""
         return self._subject
 
     @subject.setter
-    def subject(self, subject: Union[Concept, str]) -> None:
+    def subject(self, subject: Union[Concept, URI]) -> None:
         """Set for subject."""
         self._subject = subject
 
@@ -990,7 +990,7 @@ class ModelProperty(ABC):
 
     _g: Graph
     _identifier: URI
-    _has_type: List[ModelElement]
+    _has_type: List[Union[ModelElement, URI]]
     _min_occurs: int
     _max_occurs: int
     _title: dict
@@ -1028,12 +1028,12 @@ class ModelProperty(ABC):
         self._title = title
 
     @property
-    def has_type(self) -> List[ModelElement]:
+    def has_type(self) -> List[Union[ModelElement, URI]]:
         """Get for has_type."""
         return self._has_type
 
     @has_type.setter
-    def has_type(self, has_type: List[ModelElement]) -> None:
+    def has_type(self, has_type: List[Union[ModelElement, URI]]) -> None:
         """Set for has_type."""
         self._has_type = has_type
 
@@ -1200,18 +1200,23 @@ class ModelProperty(ABC):
 
             for has_type in self._has_type:
 
-                _has_type = (
-                    URIRef(has_type.identifier)
-                    if getattr(has_type, "identifier", None)
-                    else BNode()
-                )
+                if isinstance(has_type, ModelElement):
 
-                for _s, p, o in has_type._to_graph().triples((None, None, None)):
-                    self._g.add(
-                        (_has_type, p, o)
-                        if isinstance(_has_type, BNode)
-                        else (_s, p, o)
+                    _has_type = (
+                        URIRef(has_type.identifier)
+                        if getattr(has_type, "identifier", None)
+                        else BNode()
                     )
+
+                    for _s, p, o in has_type._to_graph().triples((None, None, None)):
+                        self._g.add(
+                            (_has_type, p, o)
+                            if isinstance(_has_type, BNode)
+                            else (_s, p, o)
+                        )
+
+                elif isinstance(has_type, str):
+                    _has_type = URIRef(has_type)
 
                 self._g.add(
                     (

@@ -1,7 +1,8 @@
 """Test cases for the property module."""
-from typing import List
+from typing import List, Union
 
 from concepttordf import Concept
+from datacatalogtordf import URI
 import pytest
 from rdflib import Graph
 
@@ -69,7 +70,7 @@ def test_to_graph_should_return_has_type_both_identifiers() -> None:
     modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
 
-    has_types: List[ModelElement] = [modelelement]
+    has_types: List[Union[ModelElement, URI]] = [modelelement]
     property.has_type = has_types
 
     src = """
@@ -457,6 +458,33 @@ def test_to_graph_should_return_sequence_number() -> None:
 
         <http://example.com/properties/1> a modelldcatno:Role ;
             modelldcatno:sequenceNumber "1"^^xsd:positiveInteger .
+
+        """
+    g1 = Graph().parse(data=property.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_has_type_as_uri() -> None:
+    """It returns a has_type graph isomorphic to spec."""
+    property = Role()
+    property.identifier = "http://example.com/properties/1"
+
+    modelelement = "http://example.com/modelelements/1"
+
+    has_types: List[Union[ModelElement, URI]] = [modelelement]
+    property.has_type = has_types
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        <http://example.com/properties/1> a modelldcatno:Role ;
+        modelldcatno:hasType <http://example.com/modelelements/1> .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
