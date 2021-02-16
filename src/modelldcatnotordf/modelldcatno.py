@@ -8,7 +8,7 @@ Refer to sub-class for typical usage examples.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional, Union
+from typing import List, Optional, Union
 
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, Resource, URI
@@ -1313,7 +1313,7 @@ class Role(ModelProperty):
     )
 
     _identifier: URI
-    _has_object_type: ObjectType
+    _has_object_type: Union[ObjectType, URI]
     _g: Graph
 
     def __init__(self) -> None:
@@ -1321,12 +1321,12 @@ class Role(ModelProperty):
         super().__init__()
 
     @property
-    def has_object_type(self: Role) -> ObjectType:
+    def has_object_type(self: Role) -> Union[ObjectType, URI]:
         """Get for has_object_type."""
         return self._has_object_type
 
     @has_object_type.setter
-    def has_object_type(self: Role, has_object_type: Any) -> None:
+    def has_object_type(self: Role, has_object_type: Union[ObjectType, URI]) -> None:
         """Set for has_object_type."""
         self._has_object_type = has_object_type
 
@@ -1372,20 +1372,24 @@ class Role(ModelProperty):
 
         if getattr(self, "has_object_type", None):
 
-            _has_object_type = (
-                URIRef(self._has_object_type.identifier)
-                if getattr(self._has_object_type, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self._has_object_type._to_graph().triples(
-                (None, None, None)
-            ):
-                self._g.add(
-                    (_has_object_type, p, o)
-                    if isinstance(_has_object_type, BNode)
-                    else (_s, p, o)
+            if isinstance(self.has_object_type, ObjectType):
+                _has_object_type = (
+                    URIRef(self._has_object_type.identifier)
+                    if getattr(self._has_object_type, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._has_object_type._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_has_object_type, p, o)
+                        if isinstance(_has_object_type, BNode)
+                        else (_s, p, o)
+                    )
+
+            elif isinstance(self.has_object_type, str):
+                _has_object_type = URIRef(self.has_object_type)
 
             self._g.add((_self, MODELLDCATNO.hasObjectType, _has_object_type))
 
