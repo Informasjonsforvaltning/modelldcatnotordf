@@ -994,7 +994,7 @@ class ModelProperty(ABC):
     _min_occurs: int
     _max_occurs: int
     _title: dict
-    _subject: Concept
+    _subject: Union[Concept, URI]
     _description: dict
     _belongs_to_module: List[str]
     _forms_symmetry_with: ModelProperty
@@ -1008,12 +1008,12 @@ class ModelProperty(ABC):
         self._has_type = []
 
     @property
-    def subject(self) -> Concept:
+    def subject(self) -> Union[Concept, URI]:
         """Get for subject."""
         return self._subject
 
     @subject.setter
-    def subject(self, subject: Concept) -> None:
+    def subject(self, subject: Union[Concept, URI]) -> None:
         """Set for subject."""
         self._subject = subject
 
@@ -1179,21 +1179,30 @@ class ModelProperty(ABC):
                     )
                 )
 
-        if getattr(self, "subject", None):
-
-            _subject = URIRef(self.subject.identifier)
-
-            for _s, p, o in self.subject._to_graph().triples((None, None, None)):
-                self._g.add((_subject, p, o))
-
-            self._g.add((selfobject, DCTERMS.subject, _subject))
-
+        self._subject_to_graph(selfobject)
         self._description_to_graph(selfobject)
         self._belongs_to_module_to_graph(selfobject)
         self._forms_symmetry_with_to_graph(selfobject)
         self._relation_property_label_to_graph(selfobject)
 
         return self._g
+
+    def _subject_to_graph(
+        self: ModelProperty, selfobject: Union[URIRef, BNode]
+    ) -> None:
+
+        if getattr(self, "subject", None):
+
+            if isinstance(self.subject, Concept):
+                _subject = URIRef(self.subject.identifier)
+
+                for _s, p, o in self.subject._to_graph().triples((None, None, None)):
+                    self._g.add((_subject, p, o))
+
+            elif isinstance(self.subject, str):
+                _subject = URIRef(self.subject)
+
+            self._g.add((selfobject, DCTERMS.subject, _subject))
 
     def _has_type_to_graph(self, _self: Union[URIRef, BNode]) -> None:
         if getattr(self, "has_type", None):
