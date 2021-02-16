@@ -997,7 +997,7 @@ class ModelProperty(ABC):
     _subject: Union[Concept, URI]
     _description: dict
     _belongs_to_module: List[str]
-    _forms_symmetry_with: ModelProperty
+    _forms_symmetry_with: Union[ModelProperty, URI]
     _relation_property_label: dict
     _sequence_number: int
 
@@ -1088,13 +1088,13 @@ class ModelProperty(ABC):
         self._belongs_to_module = belongs_to_module
 
     @property
-    def forms_symmetry_with(self: ModelProperty) -> ModelProperty:
+    def forms_symmetry_with(self: ModelProperty) -> Union[ModelProperty, URI]:
         """Get for forms_symmetry_with."""
         return self._forms_symmetry_with
 
     @forms_symmetry_with.setter
     def forms_symmetry_with(
-        self: ModelProperty, forms_symmetry_with: ModelProperty
+        self: ModelProperty, forms_symmetry_with: Union[ModelProperty, URI]
     ) -> None:
         """Set for forms_symmetry_with."""
         self._forms_symmetry_with = forms_symmetry_with
@@ -1268,21 +1268,25 @@ class ModelProperty(ABC):
 
         if getattr(self, "forms_symmetry_with", None):
 
-            _forms_symmetry_with = (
-                URIRef(self.forms_symmetry_with.identifier)
-                if getattr(self.forms_symmetry_with, "identifier", None)
-                else BNode()
-            )
+            if isinstance(self.forms_symmetry_with, ModelProperty):
+                _forms_symmetry_with = (
+                    URIRef(self.forms_symmetry_with.identifier)
+                    if getattr(self.forms_symmetry_with, "identifier", None)
+                    else BNode()
+                )
 
-            if isinstance(_forms_symmetry_with, BNode):
-                for _s, p, o in self.forms_symmetry_with._to_graph().triples(
-                    (None, None, None)
-                ):
-                    self._g.add(
-                        (_forms_symmetry_with, p, o)
-                        if isinstance(_forms_symmetry_with, BNode)
-                        else (_s, p, o)
-                    )
+                if isinstance(_forms_symmetry_with, BNode):
+                    for _s, p, o in self.forms_symmetry_with._to_graph().triples(
+                        (None, None, None)
+                    ):
+                        self._g.add(
+                            (_forms_symmetry_with, p, o)
+                            if isinstance(_forms_symmetry_with, BNode)
+                            else (_s, p, o)
+                        )
+
+            elif isinstance(self.forms_symmetry_with, str):
+                _forms_symmetry_with = URIRef(self.forms_symmetry_with)
 
             self._g.add((_self, MODELLDCATNO.formsSymmetryWith, _forms_symmetry_with))
 
