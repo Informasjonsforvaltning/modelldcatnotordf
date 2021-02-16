@@ -1641,17 +1641,17 @@ class Composition(ModelProperty):
 
     __slots__ = "_contains"
 
-    _contains: ModelElement
+    _contains: Union[ModelElement, URI]
     _identifier: URI
     _g: Graph
 
     @property
-    def contains(self: Composition) -> ModelElement:
+    def contains(self: Composition) -> Union[ModelElement, URI]:
         """Get for contains."""
         return self._contains
 
     @contains.setter
-    def contains(self: Composition, contains: ModelElement) -> None:
+    def contains(self: Composition, contains: Union[ModelElement, URI]) -> None:
         """Set for contains."""
         self._contains = contains
 
@@ -1701,16 +1701,22 @@ class Composition(ModelProperty):
 
         if getattr(self, "contains", None):
 
-            _contains = (
-                URIRef(self._contains.identifier)
-                if getattr(self._contains, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self._contains._to_graph().triples((None, None, None)):
-                self._g.add(
-                    (_contains, p, o) if isinstance(_contains, BNode) else (_s, p, o)
+            if isinstance(self.contains, ModelElement):
+                _contains = (
+                    URIRef(self._contains.identifier)
+                    if getattr(self._contains, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._contains._to_graph().triples((None, None, None)):
+                    self._g.add(
+                        (_contains, p, o)
+                        if isinstance(_contains, BNode)
+                        else (_s, p, o)
+                    )
+
+            elif isinstance(self.contains, str):
+                _contains = URIRef(self.contains)
 
             self._g.add((_self, MODELLDCATNO.contains, _contains))
 
