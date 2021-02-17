@@ -1995,7 +1995,7 @@ class Attribute(ModelProperty):
     _identifier: URI
     _contains_object_type: Union[ObjectType, URI]
     _g: Graph
-    _has_simple_type: SimpleType
+    _has_simple_type: Union[SimpleType, URI]
     _has_data_type: DataType
     _has_value_from: CodeList
 
@@ -2016,12 +2016,14 @@ class Attribute(ModelProperty):
         self._contains_object_type = contains_object_type
 
     @property
-    def has_simple_type(self: Attribute) -> SimpleType:
+    def has_simple_type(self: Attribute) -> Union[SimpleType, URI]:
         """Get for has_simple_type."""
         return self._has_simple_type
 
     @has_simple_type.setter
-    def has_simple_type(self: Attribute, has_simple_type: SimpleType) -> None:
+    def has_simple_type(
+        self: Attribute, has_simple_type: Union[SimpleType, URI]
+    ) -> None:
         """Set for has_simple_type."""
         self._has_simple_type = has_simple_type
 
@@ -2114,20 +2116,23 @@ class Attribute(ModelProperty):
 
         if getattr(self, "has_simple_type", None):
 
-            _has_simple_type = (
-                URIRef(self._has_simple_type.identifier)
-                if getattr(self._has_simple_type, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self._has_simple_type._to_graph().triples(
-                (None, None, None)
-            ):
-                self._g.add(
-                    (_has_simple_type, p, o)
-                    if isinstance(_has_simple_type, BNode)
-                    else (_s, p, o)
+            if isinstance(self.has_simple_type, SimpleType):
+                _has_simple_type = (
+                    URIRef(self._has_simple_type.identifier)
+                    if getattr(self._has_simple_type, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._has_simple_type._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_has_simple_type, p, o)
+                        if isinstance(_has_simple_type, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self.has_simple_type, str):
+                _has_simple_type = URIRef(self.has_simple_type)
 
             self._g.add((_self, MODELLDCATNO.hasSimpleType, _has_simple_type))
 
