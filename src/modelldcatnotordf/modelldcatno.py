@@ -1812,17 +1812,17 @@ class Association(ModelProperty):
 
     __slots__ = "_refers_to"
 
-    _refers_to: ModelElement
+    _refers_to: Union[ModelElement, URI]
     _identifier: URI
     _g: Graph
 
     @property
-    def refers_to(self: Association) -> ModelElement:
+    def refers_to(self: Association) -> Union[ModelElement, URI]:
         """Get for refers_to."""
         return self._refers_to
 
     @refers_to.setter
-    def refers_to(self: Association, refers_to: ModelElement) -> None:
+    def refers_to(self: Association, refers_to: Union[ModelElement, URI]) -> None:
         """Set for refers_to."""
         self._refers_to = refers_to
 
@@ -1872,16 +1872,21 @@ class Association(ModelProperty):
 
         if getattr(self, "refers_to", None):
 
-            _refers_to = (
-                URIRef(self._refers_to.identifier)
-                if getattr(self._refers_to, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self._refers_to._to_graph().triples((None, None, None)):
-                self._g.add(
-                    (_refers_to, p, o) if isinstance(_refers_to, BNode) else (_s, p, o)
+            if isinstance(self._refers_to, ModelElement):
+                _refers_to = (
+                    URIRef(self._refers_to.identifier)
+                    if getattr(self._refers_to, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._refers_to._to_graph().triples((None, None, None)):
+                    self._g.add(
+                        (_refers_to, p, o)
+                        if isinstance(_refers_to, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self._refers_to, str):
+                _refers_to = URIRef(self._refers_to)
 
             self._g.add((_self, MODELLDCATNO.refersTo, _refers_to))
 
