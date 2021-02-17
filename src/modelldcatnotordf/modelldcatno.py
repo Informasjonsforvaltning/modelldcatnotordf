@@ -1993,7 +1993,7 @@ class Attribute(ModelProperty):
     )
 
     _identifier: URI
-    _contains_object_type: ObjectType
+    _contains_object_type: Union[ObjectType, URI]
     _g: Graph
     _has_simple_type: SimpleType
     _has_data_type: DataType
@@ -2004,12 +2004,14 @@ class Attribute(ModelProperty):
         super().__init__()
 
     @property
-    def contains_object_type(self: Attribute) -> ObjectType:
+    def contains_object_type(self: Attribute) -> Union[ObjectType, URI]:
         """Get for contains_object_type."""
         return self._contains_object_type
 
     @contains_object_type.setter
-    def contains_object_type(self: Attribute, contains_object_type: ObjectType) -> None:
+    def contains_object_type(
+        self: Attribute, contains_object_type: Union[ObjectType, URI]
+    ) -> None:
         """Set for contains_object_type."""
         self._contains_object_type = contains_object_type
 
@@ -2088,20 +2090,23 @@ class Attribute(ModelProperty):
 
         if getattr(self, "contains_object_type", None):
 
-            _contains_object_type = (
-                URIRef(self._contains_object_type.identifier)
-                if getattr(self._contains_object_type, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self._contains_object_type._to_graph().triples(
-                (None, None, None)
-            ):
-                self._g.add(
-                    (_contains_object_type, p, o)
-                    if isinstance(_contains_object_type, BNode)
-                    else (_s, p, o)
+            if isinstance(self.contains_object_type, ObjectType):
+                _contains_object_type = (
+                    URIRef(self._contains_object_type.identifier)
+                    if getattr(self._contains_object_type, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._contains_object_type._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_contains_object_type, p, o)
+                        if isinstance(_contains_object_type, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self.contains_object_type, str):
+                _contains_object_type = URIRef(self.contains_object_type)
 
             self._g.add((_self, MODELLDCATNO.containsObjectType, _contains_object_type))
 
