@@ -1898,17 +1898,17 @@ class Choice(ModelProperty):
 
     __slots__ = "_has_some"
 
-    _has_some: List[ModelElement]
+    _has_some: List[Union[ModelElement, URI]]
     _identifier: URI
     _g: Graph
 
     @property
-    def has_some(self: Choice) -> List[ModelElement]:
+    def has_some(self: Choice) -> List[Union[ModelElement, URI]]:
         """Get for has_some."""
         return self._has_some
 
     @has_some.setter
-    def has_some(self: Choice, has_some: List[ModelElement]) -> None:
+    def has_some(self: Choice, has_some: List[Union[ModelElement, URI]]) -> None:
         """Set for has_some."""
         self._has_some = has_some
 
@@ -1961,18 +1961,22 @@ class Choice(ModelProperty):
 
             for has_some in self._has_some:
 
-                _has_some = (
-                    URIRef(has_some.identifier)
-                    if getattr(has_some, "identifier", None)
-                    else BNode()
-                )
+                if isinstance(has_some, ModelElement):
 
-                for _s, p, o in has_some._to_graph().triples((None, None, None)):
-                    self._g.add(
-                        (_has_some, p, o)
-                        if isinstance(_has_some, BNode)
-                        else (_s, p, o)
+                    _has_some = (
+                        URIRef(has_some.identifier)
+                        if getattr(has_some, "identifier", None)
+                        else BNode()
                     )
+
+                    for _s, p, o in has_some._to_graph().triples((None, None, None)):
+                        self._g.add(
+                            (_has_some, p, o)
+                            if isinstance(_has_some, BNode)
+                            else (_s, p, o)
+                        )
+                elif isinstance(has_some, str):
+                    _has_some = URIRef(has_some)
 
                 self._g.add((_self, MODELLDCATNO.hasSome, _has_some))
 
