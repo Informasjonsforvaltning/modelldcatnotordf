@@ -1726,17 +1726,17 @@ class Collection(ModelProperty):
 
     __slots__ = "_has_member"
 
-    _has_member: ModelElement
+    _has_member: Union[ModelElement, URI]
     _identifier: URI
     _g: Graph
 
     @property
-    def has_member(self: Collection) -> ModelElement:
+    def has_member(self: Collection) -> Union[ModelElement, URI]:
         """Get for has_member."""
         return self._has_member
 
     @has_member.setter
-    def has_member(self: Collection, has_member: ModelElement) -> None:
+    def has_member(self: Collection, has_member: Union[ModelElement, URI]) -> None:
         """Set for has_member."""
         self._has_member = has_member
 
@@ -1786,18 +1786,23 @@ class Collection(ModelProperty):
 
         if getattr(self, "has_member", None):
 
-            _has_member = (
-                URIRef(self._has_member.identifier)
-                if getattr(self._has_member, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self._has_member._to_graph().triples((None, None, None)):
-                self._g.add(
-                    (_has_member, p, o)
-                    if isinstance(_has_member, BNode)
-                    else (_s, p, o)
+            if isinstance(self.has_member, ModelElement):
+                _has_member = (
+                    URIRef(self._has_member.identifier)
+                    if getattr(self._has_member, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._has_member._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_has_member, p, o)
+                        if isinstance(_has_member, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self.has_member, str):
+                _has_member = URIRef(self.has_member)
 
             self._g.add((_self, MODELLDCATNO.hasMember, _has_member))
 
