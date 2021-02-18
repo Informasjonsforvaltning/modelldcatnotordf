@@ -1996,7 +1996,7 @@ class Attribute(ModelProperty):
     _contains_object_type: Union[ObjectType, URI]
     _g: Graph
     _has_simple_type: Union[SimpleType, URI]
-    _has_data_type: DataType
+    _has_data_type: Union[DataType, URI]
     _has_value_from: CodeList
 
     def __init__(self) -> None:
@@ -2028,12 +2028,12 @@ class Attribute(ModelProperty):
         self._has_simple_type = has_simple_type
 
     @property
-    def has_data_type(self: Attribute) -> DataType:
+    def has_data_type(self: Attribute) -> Union[DataType, URI]:
         """Get for has_data_type."""
         return self._has_data_type
 
     @has_data_type.setter
-    def has_data_type(self: Attribute, has_data_type: DataType) -> None:
+    def has_data_type(self: Attribute, has_data_type: Union[DataType, URI]) -> None:
         """Set for has_data_type."""
         self._has_data_type = has_data_type
 
@@ -2140,18 +2140,23 @@ class Attribute(ModelProperty):
 
         if getattr(self, "has_data_type", None):
 
-            _has_data_type = (
-                URIRef(self._has_data_type.identifier)
-                if getattr(self._has_data_type, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self._has_data_type._to_graph().triples((None, None, None)):
-                self._g.add(
-                    (_has_data_type, p, o)
-                    if isinstance(_has_data_type, BNode)
-                    else (_s, p, o)
+            if isinstance(self.has_data_type, DataType):
+                _has_data_type = (
+                    URIRef(self._has_data_type.identifier)
+                    if getattr(self._has_data_type, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._has_data_type._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_has_data_type, p, o)
+                        if isinstance(_has_data_type, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self.has_data_type, str):
+                _has_data_type = URIRef(self.has_data_type)
 
             self._g.add((_self, MODELLDCATNO.hasDataType, _has_data_type))
 
