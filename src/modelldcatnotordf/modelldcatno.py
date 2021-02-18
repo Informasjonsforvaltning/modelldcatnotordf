@@ -1997,7 +1997,7 @@ class Attribute(ModelProperty):
     _g: Graph
     _has_simple_type: Union[SimpleType, URI]
     _has_data_type: Union[DataType, URI]
-    _has_value_from: CodeList
+    _has_value_from: Union[CodeList, URI]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -2038,12 +2038,12 @@ class Attribute(ModelProperty):
         self._has_data_type = has_data_type
 
     @property
-    def has_value_from(self: Attribute) -> CodeList:
+    def has_value_from(self: Attribute) -> Union[CodeList, URI]:
         """Get for has_value_from."""
         return self._has_value_from
 
     @has_value_from.setter
-    def has_value_from(self: Attribute, has_value_from: CodeList) -> None:
+    def has_value_from(self: Attribute, has_value_from: Union[CodeList, URI]) -> None:
         """Set for has_value_from."""
         self._has_value_from = has_value_from
 
@@ -2164,20 +2164,23 @@ class Attribute(ModelProperty):
 
         if getattr(self, "has_value_from", None):
 
-            _has_value_from = (
-                URIRef(self._has_value_from.identifier)
-                if getattr(self._has_value_from, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self._has_value_from._to_graph().triples(
-                (None, None, None)
-            ):
-                self._g.add(
-                    (_has_value_from, p, o)
-                    if isinstance(_has_value_from, BNode)
-                    else (_s, p, o)
+            if isinstance(self.has_value_from, CodeList):
+                _has_value_from = (
+                    URIRef(self._has_value_from.identifier)
+                    if getattr(self._has_value_from, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._has_value_from._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_has_value_from, p, o)
+                        if isinstance(_has_value_from, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self.has_value_from, str):
+                _has_value_from = URIRef(self.has_value_from)
 
             self._g.add((_self, MODELLDCATNO.hasValueFrom, _has_value_from))
 
@@ -2187,18 +2190,18 @@ class Specialization(ModelProperty):
 
     __slots__ = "_has_general_concept"
 
-    _has_general_concept: ModelElement
+    _has_general_concept: Union[ModelElement, URI]
     _identifier: URI
     _g: Graph
 
     @property
-    def has_general_concept(self: Specialization) -> ModelElement:
+    def has_general_concept(self: Specialization) -> Union[ModelElement, URI]:
         """Get for has_general_concept."""
         return self._has_general_concept
 
     @has_general_concept.setter
     def has_general_concept(
-        self: Specialization, has_general_concept: ModelElement
+        self: Specialization, has_general_concept: Union[ModelElement, URI]
     ) -> None:
         """Set for has_general_concept."""
         self._has_general_concept = has_general_concept
@@ -2249,20 +2252,25 @@ class Specialization(ModelProperty):
 
         if getattr(self, "has_general_concept", None):
 
-            _has_general_concept = (
-                URIRef(self.has_general_concept.identifier)
-                if getattr(self._has_general_concept, "identifier", None)
-                else BNode()
-            )
+            if isinstance(self.has_general_concept, ModelElement):
 
-            for _s, p, o in self._has_general_concept._to_graph().triples(
-                (None, None, None)
-            ):
-                self._g.add(
-                    (_has_general_concept, p, o)
-                    if isinstance(_has_general_concept, BNode)
-                    else (_s, p, o)
+                _has_general_concept = (
+                    URIRef(self.has_general_concept.identifier)
+                    if getattr(self._has_general_concept, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._has_general_concept._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_has_general_concept, p, o)
+                        if isinstance(_has_general_concept, BNode)
+                        else (_s, p, o)
+                    )
+
+            elif isinstance(self.has_general_concept, str):
+                _has_general_concept = URIRef(self.has_general_concept)
 
             self._g.add((_self, MODELLDCATNO.hasGeneralConcept, _has_general_concept))
 
