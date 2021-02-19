@@ -2280,17 +2280,17 @@ class Realization(ModelProperty):
 
     __slots__ = "_has_supplier"
 
-    _has_supplier: ModelElement
+    _has_supplier: Union[ModelElement, URI]
     _identifier: URI
     _g: Graph
 
     @property
-    def has_supplier(self: Realization) -> ModelElement:
+    def has_supplier(self: Realization) -> Union[ModelElement, URI]:
         """Get for has_supplier."""
         return self._has_supplier
 
     @has_supplier.setter
-    def has_supplier(self: Realization, has_supplier: ModelElement) -> None:
+    def has_supplier(self: Realization, has_supplier: Union[ModelElement, URI]) -> None:
         """Set for has_supplier."""
         self._has_supplier = has_supplier
 
@@ -2340,18 +2340,23 @@ class Realization(ModelProperty):
 
         if getattr(self, "has_supplier", None):
 
-            _has_supplier = (
-                URIRef(self._has_supplier.identifier)
-                if getattr(self._has_supplier, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self._has_supplier._to_graph().triples((None, None, None)):
-                self._g.add(
-                    (_has_supplier, p, o)
-                    if isinstance(_has_supplier, BNode)
-                    else (_s, p, o)
+            if isinstance(self.has_supplier, ModelElement):
+                _has_supplier = (
+                    URIRef(self._has_supplier.identifier)
+                    if getattr(self._has_supplier, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._has_supplier._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_has_supplier, p, o)
+                        if isinstance(_has_supplier, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self.has_supplier, str):
+                _has_supplier = URIRef(self.has_supplier)
 
             self._g.add((_self, MODELLDCATNO.hasSupplier, _has_supplier))
 
