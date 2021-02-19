@@ -2673,7 +2673,7 @@ class CodeElement:
     _dct_identifier: str
     _g: Graph
     _type: str
-    _subject: Concept
+    _subject: Union[Concept, URI]
     _preflabel: dict
     _notation: str
     _in_scheme: List[CodeList]
@@ -2714,12 +2714,12 @@ class CodeElement:
         self._dct_identifier = dct_identifier
 
     @property
-    def subject(self: CodeElement) -> Concept:
+    def subject(self: CodeElement) -> Union[Concept, URI]:
         """Get for subject."""
         return self._subject
 
     @subject.setter
-    def subject(self: CodeElement, subject: Concept) -> None:
+    def subject(self: CodeElement, subject: Union[Concept, URI]) -> None:
         """Set for subject."""
         self._subject = subject
 
@@ -2922,10 +2922,15 @@ class CodeElement:
 
         if getattr(self, "subject", None):
 
-            _subject = URIRef(self.subject.identifier)
+            if isinstance(self.subject, Concept):
 
-            for _s, p, o in self.subject._to_graph().triples((None, None, None)):
-                self._g.add((_subject, p, o))
+                _subject = URIRef(self.subject.identifier)
+
+                for _s, p, o in self.subject._to_graph().triples((None, None, None)):
+                    self._g.add((_subject, p, o))
+
+            elif isinstance(self.subject, str):
+                _subject = URIRef(self.subject)
 
             self._g.add((_self, DCTERMS.subject, _subject))
 
