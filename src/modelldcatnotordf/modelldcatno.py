@@ -2560,7 +2560,7 @@ class CodeList(ModelElement):
     _identifier: URI
     _dct_identifier: str
     _g: Graph
-    _code_list_reference: CodeList
+    _code_list_reference: Union[CodeList, URI]
     _belongs_to_module: List[str]
 
     def __init__(self) -> None:
@@ -2568,12 +2568,14 @@ class CodeList(ModelElement):
         super().__init__()
 
     @property
-    def code_list_reference(self: CodeList) -> CodeList:
+    def code_list_reference(self: CodeList) -> Union[CodeList, URI]:
         """Get for code_list_reference."""
         return self._code_list_reference
 
     @code_list_reference.setter
-    def code_list_reference(self: CodeList, code_list_reference: CodeList) -> None:
+    def code_list_reference(
+        self: CodeList, code_list_reference: Union[CodeList, URI]
+    ) -> None:
         """Set for code_list_reference."""
         self._code_list_reference = code_list_reference
 
@@ -2619,21 +2621,25 @@ class CodeList(ModelElement):
 
         if getattr(self, "code_list_reference", None):
 
-            _code_list_reference = (
-                URIRef(self.code_list_reference.identifier)
-                if getattr(self.code_list_reference, "identifier", None)
-                else BNode()
-            )
+            if isinstance(self.code_list_reference, CodeList):
 
-            if isinstance(_code_list_reference, BNode):
-                for _s, p, o in self.code_list_reference._to_graph().triples(
-                    (None, None, None)
-                ):
-                    self._g.add(
-                        (_code_list_reference, p, o)
-                        if isinstance(_code_list_reference, BNode)
-                        else (_s, p, o)
-                    )
+                _code_list_reference = (
+                    URIRef(self.code_list_reference.identifier)
+                    if getattr(self.code_list_reference, "identifier", None)
+                    else BNode()
+                )
+
+                if isinstance(_code_list_reference, BNode):
+                    for _s, p, o in self.code_list_reference._to_graph().triples(
+                        (None, None, None)
+                    ):
+                        self._g.add(
+                            (_code_list_reference, p, o)
+                            if isinstance(_code_list_reference, BNode)
+                            else (_s, p, o)
+                        )
+            elif isinstance(self.code_list_reference, str):
+                _code_list_reference = URIRef(self.code_list_reference)
 
             self._g.add((_self, MODELLDCATNO.codeListReference, _code_list_reference))
 
