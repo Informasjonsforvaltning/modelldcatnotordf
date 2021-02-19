@@ -2366,17 +2366,19 @@ class Abstraction(ModelProperty):
 
     __slots__ = "_is_abstraction_of"
 
-    _is_abstraction_of: ModelElement
+    _is_abstraction_of: Union[ModelElement, URI]
     _identifier: URI
     _g: Graph
 
     @property
-    def is_abstraction_of(self: Abstraction) -> ModelElement:
+    def is_abstraction_of(self: Abstraction) -> Union[ModelElement, URI]:
         """Get for is_abstraction_of."""
         return self._is_abstraction_of
 
     @is_abstraction_of.setter
-    def is_abstraction_of(self: Abstraction, is_abstraction_of: ModelElement) -> None:
+    def is_abstraction_of(
+        self: Abstraction, is_abstraction_of: Union[ModelElement, URI]
+    ) -> None:
         """Set for is_abstraction_of."""
         self._is_abstraction_of = is_abstraction_of
 
@@ -2426,20 +2428,23 @@ class Abstraction(ModelProperty):
 
         if getattr(self, "is_abstraction_of", None):
 
-            _is_abstraction_of = (
-                URIRef(self._is_abstraction_of.identifier)
-                if getattr(self._is_abstraction_of, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self._is_abstraction_of._to_graph().triples(
-                (None, None, None)
-            ):
-                self._g.add(
-                    (_is_abstraction_of, p, o)
-                    if isinstance(_is_abstraction_of, BNode)
-                    else (_s, p, o)
+            if isinstance(self.is_abstraction_of, ModelElement):
+                _is_abstraction_of = (
+                    URIRef(self._is_abstraction_of.identifier)
+                    if getattr(self._is_abstraction_of, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self._is_abstraction_of._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_is_abstraction_of, p, o)
+                        if isinstance(_is_abstraction_of, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self.is_abstraction_of, str):
+                _is_abstraction_of = URIRef(self.is_abstraction_of)
 
             self._g.add((_self, MODELLDCATNO.isAbstractionOf, _is_abstraction_of))
 
