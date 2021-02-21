@@ -7,7 +7,7 @@ Refer to sub-class for typical usage examples.
 """
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from concepttordf import Concept
 from datacatalogtordf import URI
@@ -23,14 +23,14 @@ class LicenseDocument:
 
     _g: Graph
     _identifier: URI
-    _type: List[Concept]
+    _type: List[Union[Concept, URI]]
 
     def __init__(self) -> None:
         """Inits LicenseDocument object with default values."""
         self._type = []
 
     @property
-    def type(self: LicenseDocument) -> List[Concept]:
+    def type(self: LicenseDocument) -> List[Union[Concept, URI]]:
         """Get for type."""
         return self._type
 
@@ -74,10 +74,14 @@ class LicenseDocument:
 
             for type in self._type:
 
-                _type = URIRef(type.identifier)
+                if isinstance(type, Concept):
+                    _type = URIRef(type.identifier)
 
-                for _s, p, o in type._to_graph().triples((None, None, None)):
-                    self._g.add((_type, p, o))
+                    for _s, p, o in type._to_graph().triples((None, None, None)):
+                        self._g.add((_type, p, o))
+
+                elif isinstance(type, str):
+                    _type = URIRef(type)
 
                 self._g.add(
                     (
