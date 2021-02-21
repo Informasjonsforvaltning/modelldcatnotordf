@@ -2676,7 +2676,7 @@ class CodeElement:
     _subject: Union[Concept, URI]
     _preflabel: dict
     _notation: str
-    _in_scheme: List[CodeList]
+    _in_scheme: List[Union[CodeList, URI]]
     _top_concept_of: List[CodeList]
     _altlabel: dict
     _definition: dict
@@ -2744,12 +2744,12 @@ class CodeElement:
         self._notation = notation
 
     @property
-    def in_scheme(self: CodeElement) -> List[CodeList]:
+    def in_scheme(self: CodeElement) -> List[Union[CodeList, URI]]:
         """Get for in_scheme."""
         return self._in_scheme
 
     @in_scheme.setter
-    def in_scheme(self: CodeElement, in_scheme: List[CodeList]) -> None:
+    def in_scheme(self: CodeElement, in_scheme: List[Union[CodeList, URI]]) -> None:
         """Set for in_scheme."""
         self._in_scheme = in_scheme
 
@@ -2953,18 +2953,21 @@ class CodeElement:
 
             for in_scheme in self._in_scheme:
 
-                _in_scheme = (
-                    URIRef(in_scheme.identifier)
-                    if getattr(in_scheme, "identifier", None)
-                    else BNode()
-                )
-
-                for _s, p, o in in_scheme._to_graph().triples((None, None, None)):
-                    self._g.add(
-                        (_in_scheme, p, o)
-                        if isinstance(_in_scheme, BNode)
-                        else (_s, p, o)
+                if isinstance(in_scheme, CodeList):
+                    _in_scheme = (
+                        URIRef(in_scheme.identifier)
+                        if getattr(in_scheme, "identifier", None)
+                        else BNode()
                     )
+
+                    for _s, p, o in in_scheme._to_graph().triples((None, None, None)):
+                        self._g.add(
+                            (_in_scheme, p, o)
+                            if isinstance(_in_scheme, BNode)
+                            else (_s, p, o)
+                        )
+                elif isinstance(in_scheme, str):
+                    _in_scheme = URIRef(in_scheme)
 
                 self._g.add((_self, SKOS.inScheme, _in_scheme))
 
