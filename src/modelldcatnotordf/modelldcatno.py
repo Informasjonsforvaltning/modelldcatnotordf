@@ -2686,7 +2686,7 @@ class CodeElement:
     _scopenote: dict
     _exclusion_note: dict
     _inclusion_note: dict
-    _next_element: CodeElement
+    _next_element: Union[CodeElement, URI]
     _previous_element: CodeElement
 
     def __init__(self) -> None:
@@ -2846,12 +2846,12 @@ class CodeElement:
         self._inclusion_note = inclusion_note
 
     @property
-    def next_element(self: CodeElement) -> CodeElement:
+    def next_element(self: CodeElement) -> Union[CodeElement, URI]:
         """Get for next_element."""
         return self._next_element
 
     @next_element.setter
-    def next_element(self: CodeElement, next_element: CodeElement) -> None:
+    def next_element(self: CodeElement, next_element: Union[CodeElement, URI]) -> None:
         """Set for next_element."""
         self._next_element = next_element
 
@@ -3099,18 +3099,23 @@ class CodeElement:
 
         if getattr(self, "next_element", None):
 
-            _next_element = (
-                URIRef(self.next_element.identifier)
-                if getattr(self.next_element, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self.next_element._to_graph().triples((None, None, None)):
-                self._g.add(
-                    (_next_element, p, o)
-                    if isinstance(_next_element, BNode)
-                    else (_s, p, o)
+            if isinstance(self.next_element, CodeElement):
+                _next_element = (
+                    URIRef(self.next_element.identifier)
+                    if getattr(self.next_element, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self.next_element._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_next_element, p, o)
+                        if isinstance(_next_element, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self.next_element, str):
+                _next_element = URIRef(self.next_element)
 
             self._g.add((_self, XKOS.next, _next_element))
 
