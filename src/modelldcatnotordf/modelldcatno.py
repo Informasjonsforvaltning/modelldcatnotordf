@@ -2687,7 +2687,7 @@ class CodeElement:
     _exclusion_note: dict
     _inclusion_note: dict
     _next_element: Union[CodeElement, URI]
-    _previous_element: CodeElement
+    _previous_element: Union[CodeElement, URI]
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -2856,12 +2856,14 @@ class CodeElement:
         self._next_element = next_element
 
     @property
-    def previous_element(self: CodeElement) -> CodeElement:
+    def previous_element(self: CodeElement) -> Union[CodeElement, URI]:
         """Get for previous_element."""
         return self._previous_element
 
     @previous_element.setter
-    def previous_element(self: CodeElement, previous_element: CodeElement) -> None:
+    def previous_element(
+        self: CodeElement, previous_element: Union[CodeElement, URI]
+    ) -> None:
         """Set for previous_element."""
         self._previous_element = previous_element
 
@@ -3123,20 +3125,23 @@ class CodeElement:
 
         if getattr(self, "previous_element", None):
 
-            _previous_element = (
-                URIRef(self.previous_element.identifier)
-                if getattr(self.previous_element, "identifier", None)
-                else BNode()
-            )
-
-            for _s, p, o in self.previous_element._to_graph().triples(
-                (None, None, None)
-            ):
-                self._g.add(
-                    (_previous_element, p, o)
-                    if isinstance(_previous_element, BNode)
-                    else (_s, p, o)
+            if isinstance(self.previous_element, CodeElement):
+                _previous_element = (
+                    URIRef(self.previous_element.identifier)
+                    if getattr(self.previous_element, "identifier", None)
+                    else BNode()
                 )
+
+                for _s, p, o in self.previous_element._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add(
+                        (_previous_element, p, o)
+                        if isinstance(_previous_element, BNode)
+                        else (_s, p, o)
+                    )
+            elif isinstance(self.previous_element, str):
+                _previous_element = URIRef(self.previous_element)
 
             self._g.add((_self, XKOS.previous, _previous_element))
 
