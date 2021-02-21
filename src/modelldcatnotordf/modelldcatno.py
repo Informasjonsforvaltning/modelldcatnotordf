@@ -2677,7 +2677,7 @@ class CodeElement:
     _preflabel: dict
     _notation: str
     _in_scheme: List[Union[CodeList, URI]]
-    _top_concept_of: List[CodeList]
+    _top_concept_of: List[Union[CodeList, URI]]
     _altlabel: dict
     _definition: dict
     _example: List[str]
@@ -2754,12 +2754,14 @@ class CodeElement:
         self._in_scheme = in_scheme
 
     @property
-    def top_concept_of(self: CodeElement) -> List[CodeList]:
+    def top_concept_of(self: CodeElement) -> List[Union[CodeList, URI]]:
         """Get for top_concept_of."""
         return self._top_concept_of
 
     @top_concept_of.setter
-    def top_concept_of(self: CodeElement, top_concept_of: List[CodeList]) -> None:
+    def top_concept_of(
+        self: CodeElement, top_concept_of: List[Union[CodeList, URI]]
+    ) -> None:
         """Set for top_concept_of."""
         self._top_concept_of = top_concept_of
 
@@ -2977,18 +2979,23 @@ class CodeElement:
 
             for top_concept_of in self._top_concept_of:
 
-                _top_concept_of = (
-                    URIRef(top_concept_of.identifier)
-                    if getattr(top_concept_of, "identifier", None)
-                    else BNode()
-                )
-
-                for _s, p, o in top_concept_of._to_graph().triples((None, None, None)):
-                    self._g.add(
-                        (_top_concept_of, p, o)
-                        if isinstance(_top_concept_of, BNode)
-                        else (_s, p, o)
+                if isinstance(top_concept_of, CodeList):
+                    _top_concept_of = (
+                        URIRef(top_concept_of.identifier)
+                        if getattr(top_concept_of, "identifier", None)
+                        else BNode()
                     )
+
+                    for _s, p, o in top_concept_of._to_graph().triples(
+                        (None, None, None)
+                    ):
+                        self._g.add(
+                            (_top_concept_of, p, o)
+                            if isinstance(_top_concept_of, BNode)
+                            else (_s, p, o)
+                        )
+                elif isinstance(top_concept_of, str):
+                    _top_concept_of = URIRef(top_concept_of)
 
                 self._g.add((_self, SKOS.topConceptOf, _top_concept_of))
 
