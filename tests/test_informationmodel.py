@@ -1437,3 +1437,28 @@ def test_to_graph_should_return_has_format_as_uri() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_add_skolemization() -> None:
+    """Tests skolemization."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = (
+        "https://altinn-model-publisher.digdir.no/models/4985-5704/"
+    )
+
+    modelelement = ObjectType()
+
+    skolemization1 = (
+        "https://altinn-model-publisher.digdir.no/models/4985-5704/ObjectType/1"
+    )
+
+    skolemization2 = (
+        "https://altinn-model-publisher.digdir.no/models/4985-5704/ObjectType/2"
+    )
+
+    assert not informationmodel.is_skolemization(skolemization1)
+    assert skolemization1 == informationmodel.add_skolemization(modelelement)
+    assert informationmodel.is_skolemization(skolemization1)
+    assert not informationmodel.is_skolemization(skolemization2)
+    assert skolemization2 == informationmodel.add_skolemization(modelelement)
+    assert informationmodel.is_skolemization(skolemization2)

@@ -8,7 +8,7 @@ Refer to sub-class for typical usage examples.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, Resource, URI
@@ -67,6 +67,8 @@ class InformationModel(Resource):
         "_creator",
         "_has_format",
         "_temporal",
+        "_classmap",
+        "_skolemization",
     )
 
     _title: dict
@@ -90,6 +92,8 @@ class InformationModel(Resource):
     _creator: str
     _has_format: List[Union[FoafDocument, str]]
     _temporal: List[PeriodOfTime]
+    _classmap: dict
+    _skolemization: dict
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -105,6 +109,8 @@ class InformationModel(Resource):
         self._locations = []
         self._has_format = []
         self._temporal = []
+        self._classmap = {}
+        self._skolemization = {}
 
     @property
     def informationmodelidentifier(self) -> str:
@@ -352,6 +358,26 @@ class InformationModel(Resource):
     def temporal(self: InformationModel, temporal: List[PeriodOfTime]) -> None:
         """Set for temporal."""
         self._temporal = temporal
+
+    def is_skolemization(self: InformationModel, skolemization: URI) -> bool:
+        """Returns true if the URI is a skolemization in the model."""
+        return skolemization in self._skolemization
+
+    def add_skolemization(self: InformationModel, classtype: Any) -> URI:
+        """Creates a skolemization for the given classtype."""
+        classname = classtype.__class__.__name__
+        _identifier = self.identifier
+        _counter = (
+            self._classmap[classname] if classname in self._classmap.keys() else 0
+        )
+        _counter = _counter + 1
+
+        _skolemization = str(_identifier) + str(classname) + "/" + str(_counter)
+
+        self._skolemization[_skolemization] = True
+        self._classmap[classname] = _counter
+
+        return _skolemization
 
     def to_rdf(
         self: InformationModel,
