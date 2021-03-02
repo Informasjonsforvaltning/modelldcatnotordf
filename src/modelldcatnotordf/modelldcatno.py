@@ -8,7 +8,12 @@ Refer to sub-class for typical usage examples.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from functools import reduce
+import inspect
+import re
+import sys
 from typing import Any, List, Optional, Union
+
 
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, Resource, URI
@@ -69,6 +74,7 @@ class InformationModel(Resource):
         "_temporal",
         "_classmap",
         "_skolemization",
+        "_classes",
     )
 
     _title: dict
@@ -94,6 +100,7 @@ class InformationModel(Resource):
     _temporal: List[PeriodOfTime]
     _classmap: dict
     _skolemization: dict
+    _classes: str
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -111,6 +118,14 @@ class InformationModel(Resource):
         self._temporal = []
         self._classmap = {}
         self._skolemization = {}
+
+        _classes = []
+
+        for tuppel in inspect.getmembers(sys.modules[__name__], inspect.isclass):
+            name, string = tuppel
+            _classes.append(name)
+
+        self._classes = reduce(lambda x, y: x + "|" + y, _classes)
 
     @property
     def informationmodelidentifier(self) -> str:
@@ -359,23 +374,45 @@ class InformationModel(Resource):
         """Set for temporal."""
         self._temporal = temporal
 
-    def is_skolemization(self: InformationModel, skolemization: URI) -> bool:
-        """Returns true if the URI is a skolemization in the model."""
+    def is_exact_skolemization(self: InformationModel, skolemization: URI) -> bool:
+        """Returns true if the URI is a skolemization that exists in the model."""
         return skolemization in self._skolemization
+
+    def has_skolemization_morfologi(self: InformationModel, skolemization: URI) -> bool:
+        """Checks if the URI complies to a skolemized form.
+
+        Args:
+            skolemization (URI): the URI to check.
+
+        Returns:
+            True if URI complies to skolemized form.
+        """
+        match = re.search(r"" + self.identifier, skolemization)
+        if not match:
+            return False
+        match = re.search(r"[\d]*$", skolemization)
+        if not match or match.group() == "":
+            return False
+
+        _counter = int(match.group())
+        match = re.search(r"/" + self._classes + "/" + str(_counter), skolemization)
+        if not match:
+            return False
+        return True
 
     def add_skolemization(self: InformationModel, classtype: Any) -> URI:
         """Creates a skolemization for the given classtype."""
-        classname = classtype.__class__.__name__
-        _identifier = self.identifier
+        _classname = classtype.__class__.__name__
+
         _counter = (
-            self._classmap[classname] if classname in self._classmap.keys() else 0
+            self._classmap[_classname] if _classname in self._classmap.keys() else 0
         )
         _counter = _counter + 1
 
-        _skolemization = str(_identifier) + str(classname) + "/" + str(_counter)
+        _skolemization = str(self.identifier) + str(_classname) + "/" + str(_counter)
 
         self._skolemization[_skolemization] = True
-        self._classmap[classname] = _counter
+        self._classmap[_classname] = _counter
 
         return _skolemization
 

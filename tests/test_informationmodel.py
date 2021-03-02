@@ -1456,9 +1456,61 @@ def test_add_skolemization() -> None:
         "https://altinn-model-publisher.digdir.no/models/4985-5704/ObjectType/2"
     )
 
-    assert not informationmodel.is_skolemization(skolemization1)
+    assert not informationmodel.is_exact_skolemization(skolemization1)
     assert skolemization1 == informationmodel.add_skolemization(modelelement)
-    assert informationmodel.is_skolemization(skolemization1)
-    assert not informationmodel.is_skolemization(skolemization2)
+    assert informationmodel.is_exact_skolemization(skolemization1)
+    assert not informationmodel.is_exact_skolemization(skolemization2)
     assert skolemization2 == informationmodel.add_skolemization(modelelement)
-    assert informationmodel.is_skolemization(skolemization2)
+    assert informationmodel.is_exact_skolemization(skolemization2)
+
+
+def test_has_skolemization_morfologi_success() -> None:
+    """Tests skolemization morfologi."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = (
+        "https://altinn-model-publisher.digdir.no/models/4985-5704/"
+    )
+
+    _skolemization = (
+        "https://altinn-model-publisher.digdir.no/models/4985-5704/ObjectType/2"
+    )
+
+    assert informationmodel.has_skolemization_morfologi(_skolemization)
+
+
+def test_has_skolemization_morfologi_incorrect_identifier() -> None:
+    """Tests skolemization morfologi."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = (
+        "https://altinn-model-publisher.digdir.no/models/4985-5704/"
+    )
+
+    _skolemization = "https://someWrongIdentifier/ObjectType/2"
+
+    assert not informationmodel.has_skolemization_morfologi(_skolemization)
+
+
+def test_has_skolemization_morfologi_incorrect_counter() -> None:
+    """Tests skolemization morfologi."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = (
+        "https://altinn-model-publisher.digdir.no/models/4985-5704/"
+    )
+
+    _skolemization = (
+        "https://altinn-model-publisher.digdir.no/models/4985-5704/ObjectType/X"
+    )
+
+    assert not informationmodel.has_skolemization_morfologi(_skolemization)
+
+
+def test_has_skolemization_morfologi_incorrect_class() -> None:
+    """Tests skolemization morfologi."""
+    informationmodel = InformationModel()
+    informationmodel.identifier = (
+        "https://altinn-model-publisher.digdir.no/models/4985-5704/"
+    )
+
+    _skolemization = "https://altinn-model-publisher.digdir.no/models/4985-5704/Foo/1"
+
+    assert not informationmodel.has_skolemization_morfologi(_skolemization)
