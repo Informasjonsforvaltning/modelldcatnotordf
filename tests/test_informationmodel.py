@@ -1,4 +1,5 @@
 """Test cases for the informationmodel module."""
+import os
 from typing import List, Union
 
 from concepttordf import Concept, Contact
@@ -8,7 +9,13 @@ from rdflib import Graph, Namespace
 
 from modelldcatnotordf.document import FoafDocument
 from modelldcatnotordf.licensedocument import LicenseDocument
-from modelldcatnotordf.modelldcatno import InformationModel, ModelElement, ObjectType
+from modelldcatnotordf.modelldcatno import (
+    baseurl_default_value,
+    baseurl_key,
+    InformationModel,
+    ModelElement,
+    ObjectType,
+)
 from tests.testutils import assert_isomorphic
 
 """
@@ -1442,9 +1449,9 @@ def test_to_graph_should_return_has_format_as_uri() -> None:
 def test_add_skolemization() -> None:
     """Tests skolemization."""
     informationmodel = InformationModel()
-    informationmodel.identifier = (
-        "https://altinn-model-publisher.digdir.no/models/4985-5704/"
-    )
+    os.environ[
+        baseurl_key
+    ] = "https://altinn-model-publisher.digdir.no/models/4985-5704/"
 
     modelelement = ObjectType()
 
@@ -1467,9 +1474,9 @@ def test_add_skolemization() -> None:
 def test_has_skolemization_morfologi_success() -> None:
     """Tests skolemization morfologi."""
     informationmodel = InformationModel()
-    informationmodel.identifier = (
-        "https://altinn-model-publisher.digdir.no/models/4985-5704/"
-    )
+    os.environ[
+        baseurl_key
+    ] = "https://altinn-model-publisher.digdir.no/models/4985-5704/"
 
     _skolemization = (
         "https://altinn-model-publisher.digdir.no/models/4985-5704/ObjectType/2"
@@ -1481,9 +1488,9 @@ def test_has_skolemization_morfologi_success() -> None:
 def test_has_skolemization_morfologi_incorrect_identifier() -> None:
     """Tests skolemization morfologi."""
     informationmodel = InformationModel()
-    informationmodel.identifier = (
-        "https://altinn-model-publisher.digdir.no/models/4985-5704/"
-    )
+    os.environ[
+        baseurl_key
+    ] = "https://altinn-model-publisher.digdir.no/models/4985-5704/"
 
     _skolemization = "https://someWrongIdentifier/ObjectType/2"
 
@@ -1493,9 +1500,9 @@ def test_has_skolemization_morfologi_incorrect_identifier() -> None:
 def test_has_skolemization_morfologi_incorrect_counter() -> None:
     """Tests skolemization morfologi."""
     informationmodel = InformationModel()
-    informationmodel.identifier = (
-        "https://altinn-model-publisher.digdir.no/models/4985-5704/"
-    )
+    os.environ[
+        baseurl_key
+    ] = "https://altinn-model-publisher.digdir.no/models/4985-5704/"
 
     _skolemization = (
         "https://altinn-model-publisher.digdir.no/models/4985-5704/ObjectType/X"
@@ -1507,10 +1514,23 @@ def test_has_skolemization_morfologi_incorrect_counter() -> None:
 def test_has_skolemization_morfologi_incorrect_class() -> None:
     """Tests skolemization morfologi."""
     informationmodel = InformationModel()
-    informationmodel.identifier = (
-        "https://altinn-model-publisher.digdir.no/models/4985-5704/"
-    )
+    os.environ[
+        baseurl_key
+    ] = "https://altinn-model-publisher.digdir.no/models/4985-5704/"
 
     _skolemization = "https://altinn-model-publisher.digdir.no/models/4985-5704/Foo/1"
 
     assert not informationmodel.has_skolemization_morfologi(_skolemization)
+
+
+def test_get_baseurl() -> None:
+    """Tests the retrieving of the baseurl for skolemization."""
+    if baseurl_key in os.environ.keys():
+        del os.environ[baseurl_key]
+
+    assert InformationModel.get_baseurl() == baseurl_default_value
+
+    os.environ[baseurl_key] = baseurl_default_value
+
+    assert baseurl_key in os.environ
+    assert os.environ[baseurl_key] == baseurl_default_value
