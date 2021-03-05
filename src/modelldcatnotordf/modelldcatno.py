@@ -10,10 +10,10 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from functools import reduce
 import inspect
+import os
 import re
 import sys
 from typing import Any, List, Optional, Union
-
 
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, Resource, URI
@@ -42,6 +42,9 @@ PROV = Namespace("http://www.w3.org/ns/prov#")
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
 ADMS = Namespace("http://www.w3.org/ns/adms#")
+
+baseurl_key = "modelldcatno_baseurl"
+baseurl_default_value = "http://wwww.digdir.no/"
 
 
 class InformationModel(Resource):
@@ -387,7 +390,7 @@ class InformationModel(Resource):
         Returns:
             True if URI complies to skolemized form.
         """
-        match = re.search(r"" + self.identifier, skolemization)
+        match = re.search(r"" + InformationModel.get_baseurl(), skolemization)
         if not match:
             return False
         match = re.search(r"[\d]*$", skolemization)
@@ -409,12 +412,23 @@ class InformationModel(Resource):
         )
         _counter = _counter + 1
 
-        _skolemization = str(self.identifier) + str(_classname) + "/" + str(_counter)
+        _skolemization = (
+            InformationModel.get_baseurl() + str(_classname) + "/" + str(_counter)
+        )
 
         self._skolemization[_skolemization] = True
         self._classmap[_classname] = _counter
 
         return _skolemization
+
+    @staticmethod
+    def get_baseurl() -> str:
+        """Returns baseurl for skolemization."""
+        return (
+            os.environ[baseurl_key]
+            if baseurl_key in os.environ.keys()
+            else baseurl_default_value
+        )
 
     def to_rdf(
         self: InformationModel,
