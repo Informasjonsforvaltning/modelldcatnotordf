@@ -7,13 +7,14 @@ Refer to sub-class for typical usage examples.
 """
 from __future__ import annotations
 
+
 from abc import ABC, abstractmethod
 from functools import reduce
 import inspect
 import os
 import re
 import sys
-from typing import Any, List, Optional, Union
+from typing import List, Optional, Union
 
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, Resource, URI
@@ -75,9 +76,6 @@ class InformationModel(Resource):
         "_creator",
         "_has_format",
         "_temporal",
-        "_classmap",
-        "_skolemization",
-        "_classes",
     )
 
     _title: dict
@@ -101,9 +99,6 @@ class InformationModel(Resource):
     _creator: str
     _has_format: List[Union[FoafDocument, str]]
     _temporal: List[PeriodOfTime]
-    _classmap: dict
-    _skolemization: dict
-    _classes: str
 
     def __init__(self) -> None:
         """Inits InformationModel object with default values."""
@@ -119,16 +114,6 @@ class InformationModel(Resource):
         self._locations = []
         self._has_format = []
         self._temporal = []
-        self._classmap = {}
-        self._skolemization = {}
-
-        _classes = []
-
-        for tuppel in inspect.getmembers(sys.modules[__name__], inspect.isclass):
-            name, string = tuppel
-            _classes.append(name)
-
-        self._classes = reduce(lambda x, y: x + "|" + y, _classes)
 
     @property
     def informationmodelidentifier(self) -> str:
@@ -376,59 +361,6 @@ class InformationModel(Resource):
     def temporal(self: InformationModel, temporal: List[PeriodOfTime]) -> None:
         """Set for temporal."""
         self._temporal = temporal
-
-    def is_exact_skolemization(self: InformationModel, skolemization: URI) -> bool:
-        """Returns true if the URI is a skolemization that exists in the model."""
-        return skolemization in self._skolemization
-
-    def has_skolemization_morfologi(self: InformationModel, skolemization: URI) -> bool:
-        """Checks if the URI complies to a skolemized form.
-
-        Args:
-            skolemization (URI): the URI to check.
-
-        Returns:
-            True if URI complies to skolemized form.
-        """
-        match = re.search(r"" + InformationModel.get_baseurl(), skolemization)
-        if not match:
-            return False
-        match = re.search(r"[\d]*$", skolemization)
-        if not match or match.group() == "":
-            return False
-
-        _counter = int(match.group())
-        match = re.search(r"/" + self._classes + "/" + str(_counter), skolemization)
-        if not match:
-            return False
-        return True
-
-    def add_skolemization(self: InformationModel, classtype: Any) -> URI:
-        """Creates a skolemization for the given classtype."""
-        _classname = classtype.__class__.__name__
-
-        _counter = (
-            self._classmap[_classname] if _classname in self._classmap.keys() else 0
-        )
-        _counter = _counter + 1
-
-        _skolemization = (
-            InformationModel.get_baseurl() + str(_classname) + "/" + str(_counter)
-        )
-
-        self._skolemization[_skolemization] = True
-        self._classmap[_classname] = _counter
-
-        return _skolemization
-
-    @staticmethod
-    def get_baseurl() -> str:
-        """Returns baseurl for skolemization."""
-        return (
-            os.environ[baseurl_key]
-            if baseurl_key in os.environ.keys()
-            else baseurl_default_value
-        )
 
     def to_rdf(
         self: InformationModel,
@@ -3295,3 +3227,94 @@ class Note(ModelProperty):
                         Literal(self.property_note[key], lang=key),
                     )
                 )
+
+
+class Skolemizer:
+    """A class for performing skolemization."""
+
+    classmap: dict = {}
+    skolemization: dict = {}
+    classes: str
+    baseurl_key = "modelldcatno_baseurl"
+    baseurl_default_value = "http://wwww.digdir.no/"
+    classlist = []
+
+    for tuppel in inspect.getmembers(sys.modules[__name__], inspect.isclass):
+        name, string = tuppel
+        classlist.append(name)
+
+    classes = reduce(lambda x, y: x + "|" + y, classlist)
+
+    @staticmethod
+    def is_exact_skolemization(skolemization: URI) -> bool:
+        """Returns true if the URI is a skolemization that exists in the model."""
+        return skolemization in Skolemizer.skolemization
+
+    @staticmethod
+    def has_skolemization_morfologi(skolemization: URI) -> bool:
+        """Checks if the URI complies to a skolemized form.
+
+        Args:
+            skolemization (URI): the URI to check.
+
+        Returns:
+            True if URI complies to skolemized form.
+        """
+        match = re.search(r"" + Skolemizer.get_baseurl(), skolemization)
+        if not match:
+            return False
+        match = re.search(r"[\d]*$", skolemization)
+        if not match or match.group() == "":
+            return False
+
+        _counter = int(match.group())
+        match = re.search(
+            r"/" + Skolemizer.classes + "/" + str(_counter), skolemization
+        )
+        if not match:
+            return False
+        return True
+
+    @staticmethod
+    def add_skolemization(classname: str) -> URI:
+        """Creates a skolemization for the given classtype."""
+        _counter = (
+            Skolemizer.classmap[classname]
+            if classname in Skolemizer.classmap.keys()
+            else 0
+        )
+        _counter = _counter + 1
+
+        _skolemization = Skolemizer.get_baseurl() + str(classname) + "/" + str(_counter)
+
+        Skolemizer.skolemization[_skolemization] = True
+        Skolemizer.classmap[classname] = _counter
+
+        return _skolemization
+
+    @staticmethod
+    def get_baseurl() -> str:
+        """Returns baseurl for skolemization."""
+        _baseurl = (
+            os.environ[Skolemizer.baseurl_key]
+            if Skolemizer.baseurl_key in os.environ.keys()
+            else Skolemizer.baseurl_default_value
+        )
+
+        if not Skolemizer._is_valid_uri(_baseurl):
+            _baseurl = Skolemizer.baseurl_default_value
+
+        if not _baseurl.endswith("/"):
+            _baseurl = _baseurl + "/"
+
+        return _baseurl
+
+    @staticmethod
+    def _is_valid_uri(uri: str) -> bool:
+        """Perform basic validation of link."""
+        _invalid_uri_chars = '<>" {}|\\^`'
+
+        for c in _invalid_uri_chars:
+            if c in uri:
+                return False
+        return True
