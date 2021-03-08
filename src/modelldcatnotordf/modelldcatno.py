@@ -7,14 +7,10 @@ Refer to sub-class for typical usage examples.
 """
 from __future__ import annotations
 
-
 from abc import ABC, abstractmethod
-from functools import reduce
-import inspect
 import os
-import re
-import sys
 from typing import List, Optional, Union
+import uuid
 
 from concepttordf import Concept, Contact
 from datacatalogtordf import Agent, Location, Resource, URI
@@ -3232,18 +3228,9 @@ class Note(ModelProperty):
 class Skolemizer:
     """A class for performing skolemization."""
 
-    classmap: dict = {}
     skolemization: dict = {}
-    classes: str
     baseurl_key = "modelldcatno_baseurl"
     baseurl_default_value = "http://wwww.digdir.no/"
-    classlist = []
-
-    for tuppel in inspect.getmembers(sys.modules[__name__], inspect.isclass):
-        name, string = tuppel
-        classlist.append(name)
-
-    classes = reduce(lambda x, y: x + "|" + y, classlist)
 
     @staticmethod
     def is_exact_skolemization(skolemization: URI) -> bool:
@@ -3260,35 +3247,21 @@ class Skolemizer:
         Returns:
             True if URI complies to skolemized form.
         """
-        match = re.search(r"" + Skolemizer.get_baseurl(), skolemization)
-        if not match:
-            return False
-        match = re.search(r"[\d]*$", skolemization)
-        if not match or match.group() == "":
+        if not Skolemizer._is_valid_uri(skolemization):
             return False
 
-        _counter = int(match.group())
-        match = re.search(
-            r"/" + Skolemizer.classes + "/" + str(_counter), skolemization
+        return skolemization.startswith(
+            Skolemizer.get_baseurl() + ".well-known/skolem/"
         )
-        if not match:
-            return False
-        return True
 
     @staticmethod
-    def add_skolemization(classname: str) -> URI:
+    def add_skolemization() -> URI:
         """Creates a skolemization for the given classtype."""
-        _counter = (
-            Skolemizer.classmap[classname]
-            if classname in Skolemizer.classmap.keys()
-            else 0
+        _skolemization = (
+            Skolemizer.get_baseurl() + ".well-known/skolem/" + str(uuid.uuid4())
         )
-        _counter = _counter + 1
-
-        _skolemization = Skolemizer.get_baseurl() + str(classname) + "/" + str(_counter)
 
         Skolemizer.skolemization[_skolemization] = True
-        Skolemizer.classmap[classname] = _counter
 
         return _skolemization
 
