@@ -1,7 +1,7 @@
 """Test cases for the skolemizer module."""
 import os
 
-from modelldcatnotordf.modelldcatno import Skolemizer
+from modelldcatnotordf.skolemizer import Skolemizer
 
 """
 A test class for testing the class InformationModel.
