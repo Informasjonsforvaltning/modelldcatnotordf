@@ -30,6 +30,7 @@ import validators
 
 from modelldcatnotordf.document import FoafDocument
 from modelldcatnotordf.licensedocument import LicenseDocument
+from modelldcatnotordf.skolemizer import Skolemizer
 
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
@@ -37,9 +38,6 @@ PROV = Namespace("http://www.w3.org/ns/prov#")
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
 ADMS = Namespace("http://www.w3.org/ns/adms#")
-
-baseurl_key = "modelldcatno_baseurl"
-baseurl_default_value = "http://wwww.digdir.no/"
 
 
 class InformationModel(Resource):
@@ -1214,18 +1212,13 @@ class ModelProperty(ABC):
 
                 if isinstance(has_type, ModelElement):
 
-                    _has_type = (
-                        URIRef(has_type.identifier)
-                        if getattr(has_type, "identifier", None)
-                        else BNode()
-                    )
+                    if not getattr(has_type, "identifier", None):
+                        has_type.identifier = Skolemizer.add_skolemization()
+
+                    _has_type = URIRef(has_type.identifier)
 
                     for _s, p, o in has_type._to_graph().triples((None, None, None)):
-                        self._g.add(
-                            (_has_type, p, o)
-                            if isinstance(_has_type, BNode)
-                            else (_s, p, o)
-                        )
+                        self._g.add((_s, p, o))
 
                 elif isinstance(has_type, str):
                     _has_type = URIRef(has_type)
@@ -1361,9 +1354,10 @@ class Role(ModelProperty):
         Returns:
             the role graph
         """
-        _self = (
-            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
-        )
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+
+        _self = URIRef(self.identifier)
 
         super(Role, self)._to_graph(MODELLDCATNO.Role, _self)
 
@@ -1376,20 +1370,16 @@ class Role(ModelProperty):
         if getattr(self, "has_object_type", None):
 
             if isinstance(self.has_object_type, ObjectType):
-                _has_object_type = (
-                    URIRef(self._has_object_type.identifier)
-                    if getattr(self._has_object_type, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self._has_object_type, "identifier", None):
+                    self._has_object_type.identifier = Skolemizer.add_skolemization()
+
+                _has_object_type = URIRef(self._has_object_type.identifier)
 
                 for _s, p, o in self._has_object_type._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add(
-                        (_has_object_type, p, o)
-                        if isinstance(_has_object_type, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
 
             elif isinstance(self.has_object_type, str):
                 _has_object_type = URIRef(self.has_object_type)
@@ -1437,9 +1427,9 @@ class ObjectType(ModelElement):
         Returns:
             the object type graph
         """
-        _self = (
-            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
-        )
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+        _self = URIRef(self.identifier)
 
         super(ObjectType, self)._to_graph(MODELLDCATNO.ObjectType, _self)
 

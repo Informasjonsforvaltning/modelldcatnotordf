@@ -4,10 +4,12 @@ from typing import List, Union
 from concepttordf import Concept
 from datacatalogtordf import URI
 import pytest
+from pytest_mock import MockFixture
 from rdflib import Graph
 
 from modelldcatnotordf.modelldcatno import ModelElement, ModelProperty, ObjectType, Role
-from tests.testutils import assert_isomorphic
+from tests import testutils
+from tests.testutils import assert_isomorphic, skolemization
 
 """
 A test class for testing the class Property.
@@ -21,9 +23,14 @@ def test_instantiate_resource_should_fail_with_typeerror() -> None:
         _ = ModelProperty()  # type: ignore
 
 
-def test_to_graph_should_return_blank_node() -> None:
+def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     """It returns a property graph as blank node isomorphic to spec."""
     property = Role()
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -32,7 +39,8 @@ def test_to_graph_should_return_blank_node() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Role ] .
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+            a modelldcatno:Role .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -93,13 +101,20 @@ def test_to_graph_should_return_has_type_both_identifiers() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_type_blank_node_property_identifier() -> None:
+def test_to_graph_should_return_has_type_skolemization_property_id(
+    mocker: MockFixture,
+) -> None:
     """It returns a has_type graph isomorphic to spec."""
     property = Role()
     property.identifier = "http://example.com/properties/1"
 
     modelelement = ObjectType()
     property.has_type.append(modelelement)
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -109,7 +124,13 @@ def test_to_graph_should_return_has_type_blank_node_property_identifier() -> Non
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
         <http://example.com/properties/1> a modelldcatno:Role ;
-            modelldcatno:hasType [ a modelldcatno:ObjectType ] .
+        modelldcatno:hasType
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+
+        .
+
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+             a modelldcatno:ObjectType .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -118,13 +139,20 @@ def test_to_graph_should_return_has_type_blank_node_property_identifier() -> Non
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() -> None:
+def test_to_graph_should_return_has_type_skolemization_modelelement_id(
+    mocker: MockFixture,
+) -> None:
     """It returns a has_type graph isomorphic to spec."""
     property = Role()
 
     modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     property.has_type.append(modelelement)
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -133,9 +161,10 @@ def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() ->
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Role ;
-            modelldcatno:hasType <http://example.com/modelelements/1>
-        ] .
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+            a modelldcatno:Role ;
+                modelldcatno:hasType <http://example.com/modelelements/1>
+        .
 
         <http://example.com/modelelements/1> a modelldcatno:ObjectType .
 
@@ -146,24 +175,37 @@ def test_to_graph_should_return_has_type_blank_node_modelelement_identifier() ->
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_type_blank_nodes() -> None:
+def test_to_graph_should_return_has_type_both_skolemizations(
+    mocker: MockFixture,
+) -> None:
     """It returns a has_type graph isomorphic to spec."""
     property = Role()
 
     modelelement = ObjectType()
     property.has_type.append(modelelement)
 
-    src = """
-        @prefix dct: <http://purl.org/dc/terms/> .
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix dcat: <http://www.w3.org/ns/dcat#> .
-        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    skolemutils = testutils.SkolemUtils()
 
-        [ a modelldcatno:Role ;
-            modelldcatno:hasType [ a modelldcatno:ObjectType ]
-        ] .
-        """
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        side_effect=skolemutils.get_skolemization,
+    )
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    a modelldcatno:Role ; modelldcatno:hasType
+    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce> .
+
+        <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+                 a modelldcatno:ObjectType .
+    """
+
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
