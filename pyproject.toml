@@ -21,6 +21,7 @@ concepttordf = "^1.0.0"
 rdflib-jsonld = "^0.5.0"
 datacatalogtordf = "^1.2.0"
 validators = "^0.18.2"
+pytest-mock = "^3.5.1"
 
 
 [tool.poetry.dev-dependencies]
