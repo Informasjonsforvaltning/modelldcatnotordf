@@ -2,10 +2,12 @@
 
 from concepttordf import Concept
 import pytest
+from pytest_mock import MockFixture
 from rdflib import Graph
 
 from modelldcatnotordf.modelldcatno import ObjectType, Role
-from tests.testutils import assert_isomorphic
+from tests import testutils
+from tests.testutils import assert_isomorphic, skolemization
 
 """
 A test class for testing the class Role.
@@ -21,8 +23,13 @@ def test_instantiate_role() -> None:
         pytest.fail("Unexpected Exception ..")
 
 
-def test_to_graph_should_return_blank_node() -> None:
-    """It returns a role graph as blank node isomorphic to spec."""
+def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
+    """It returns a role graph with skolemization isomorphic to spec."""
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
+
     role = Role()
 
     src = """
@@ -32,7 +39,8 @@ def test_to_graph_should_return_blank_node() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Role ] .
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:Role  .
 
         """
     g1 = Graph().parse(data=role.to_rdf(), format="turtle")
@@ -91,7 +99,9 @@ def test_to_graph_should_return_has_object_type_both_identifiers() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_object_type_blank_node_role_identifier() -> None:
+def test_to_graph_should_return_has_object_type_skolemization_role_id(
+    mocker: MockFixture,
+) -> None:
     """It returns a has_object_type graph isomorphic to spec."""
     role = Role()
     role.identifier = "http://example.com/roles/1"
@@ -99,26 +109,41 @@ def test_to_graph_should_return_has_object_type_blank_node_role_identifier() -> 
     objecttype = ObjectType()
     role.has_object_type = objecttype
 
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
+
     src = """
-        @prefix dct: <http://purl.org/dc/terms/> .
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix dcat: <http://www.w3.org/ns/dcat#> .
-        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/roles/1> a modelldcatno:Role ;
-            modelldcatno:hasObjectType [ a modelldcatno:ObjectType ] .
+    <http://example.com/roles/1> a modelldcatno:Role ;
+    modelldcatno:hasObjectType
+    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94> .
 
-        """
+    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+            a modelldcatno:ObjectType .
+
+    """
     g1 = Graph().parse(data=role.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_object_type_blank_node_objecttype() -> None:
+def test_to_graph_should_return_has_object_type_skolemization_objecttype(
+    mocker: MockFixture,
+) -> None:
     """It returns a has_object_type graph isomorphic to spec."""
     role = Role()
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     objecttype = ObjectType()
     objecttype.identifier = "http://example.com/objecttypes/1"
@@ -131,9 +156,10 @@ def test_to_graph_should_return_has_object_type_blank_node_objecttype() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Role ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:Role ;
             modelldcatno:hasObjectType <http://example.com/objecttypes/1>
-        ] .
+         .
 
         <http://example.com/objecttypes/1> a modelldcatno:ObjectType .
 
@@ -144,24 +170,38 @@ def test_to_graph_should_return_has_object_type_blank_node_objecttype() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_object_type_blank_nodes() -> None:
+def test_to_graph_should_return_has_object_type_both_skolemized(
+    mocker: MockFixture,
+) -> None:
     """It returns a has_object_type graph isomorphic to spec."""
     role = Role()
 
     objecttype = ObjectType()
     role.has_object_type = objecttype
 
-    src = """
-        @prefix dct: <http://purl.org/dc/terms/> .
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix dcat: <http://www.w3.org/ns/dcat#> .
-        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    skolemutils = testutils.SkolemUtils()
 
-        [ a modelldcatno:Role ;
-            modelldcatno:hasObjectType [ a modelldcatno:ObjectType ]
-        ] .
-        """
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        side_effect=skolemutils.get_skolemization,
+    )
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    a modelldcatno:Role ; modelldcatno:hasObjectType
+    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce> .
+
+    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+        a modelldcatno:ObjectType ;
+
+    .
+    """
     g1 = Graph().parse(data=role.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 

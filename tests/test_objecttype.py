@@ -2,10 +2,11 @@
 
 from concepttordf import Concept
 import pytest
+from pytest_mock import MockFixture
 from rdflib import Graph
 
 from modelldcatnotordf.modelldcatno import ObjectType
-from tests.testutils import assert_isomorphic
+from tests.testutils import assert_isomorphic, skolemization
 
 """
 A test class for testing the class ObjectType.
@@ -46,10 +47,15 @@ def test_to_graph_should_return_title_and_identifier() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_title_and_no_identifier() -> None:
+def test_to_graph_should_return_title_and_skolemization(mocker: MockFixture) -> None:
     """It returns a title graph isomorphic to spec."""
     objectype = ObjectType()
     objectype.title = {"nb": "Tittel 1", "en": "Title 1"}
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -58,9 +64,10 @@ def test_to_graph_should_return_title_and_no_identifier() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:ObjectType ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        a modelldcatno:ObjectType ;
             dct:title   "Title 1"@en, "Tittel 1"@nb ;
-        ]
+
         .
         """
     g1 = Graph().parse(data=objectype.to_rdf(), format="turtle")

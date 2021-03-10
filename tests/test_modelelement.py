@@ -4,10 +4,11 @@ from typing import List, Union
 from concepttordf import Concept
 from datacatalogtordf import URI
 import pytest
+from pytest_mock import MockFixture
 from rdflib import Graph
 
 from modelldcatnotordf.modelldcatno import ModelElement, ModelProperty, ObjectType, Role
-from tests.testutils import assert_isomorphic
+from tests.testutils import assert_isomorphic, skolemization
 
 """
 A test class for testing the class ModelElement.
@@ -46,23 +47,30 @@ def test_to_graph_should_return_title_and_identifier() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_title_and_no_identifier() -> None:
+def test_to_graph_should_return_title_and_skolemization(mocker: MockFixture) -> None:
     """It returns a title graph isomorphic to spec."""
     modelelement = ObjectType()
     modelelement.title = {"nb": "Tittel 1", "en": "Title 1"}
 
-    src = """
-        @prefix dct: <http://purl.org/dc/terms/> .
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix dcat: <http://www.w3.org/ns/dcat#> .
-        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
-        [ a modelldcatno:ObjectType ;
-            dct:title   "Title 1"@en, "Tittel 1"@nb ;
-        ]
-        .
-        """
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        a modelldcatno:ObjectType ;
+            dct:title  "Title 1"@en, "Tittel 1"@nb ;
+    .
+
+    """
+
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
@@ -176,13 +184,20 @@ def test_to_graph_should_return_has_property_bnode_modelelement_id() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_property_bnode_modelproperty_id() -> None:
+def test_to_graph_should_return_has_property_skolemization_property_id(
+    mocker: MockFixture,
+) -> None:
     """It returns a has_property graph isomorphic to spec."""
     modelelement = ObjectType()
 
     modelproperty = Role()
     modelproperty.identifier = "http://example.com/properties/1"
     modelelement.has_property.append(modelproperty)
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -191,9 +206,10 @@ def test_to_graph_should_return_has_property_bnode_modelproperty_id() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:ObjectType ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:ObjectType ;
             modelldcatno:hasProperty <http://example.com/properties/1>
-        ] .
+         .
 
         <http://example.com/properties/1> a modelldcatno:Role .
 
@@ -204,12 +220,19 @@ def test_to_graph_should_return_has_property_bnode_modelproperty_id() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_property_blank_nodes() -> None:
+def test_to_graph_should_return_has_property_both_skolemizations(
+    mocker: MockFixture,
+) -> None:
     """It returns a has_property graph isomorphic to spec."""
     modelelement = ObjectType()
 
     modelproperty = Role()
     modelelement.has_property.append(modelproperty)
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -218,9 +241,10 @@ def test_to_graph_should_return_has_property_blank_nodes() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:ObjectType ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:ObjectType ;
             modelldcatno:hasProperty [ a modelldcatno:Role ]
-        ] .
+         .
         """
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
