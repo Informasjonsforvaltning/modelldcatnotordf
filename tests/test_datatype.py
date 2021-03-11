@@ -56,7 +56,6 @@ def test_to_graph_should_return_title_and_skolemization(mocker: MockFixture) -> 
         "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
         return_value=skolemization,
     )
-
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
