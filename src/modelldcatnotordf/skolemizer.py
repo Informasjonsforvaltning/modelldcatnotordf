@@ -8,14 +8,14 @@ from datacatalogtordf import URI
 class Skolemizer:
     """A class for performing skolemization."""
 
-    skolemization: dict = {}
+    skolemizations: set = set()
     baseurl_key = "modelldcatno_baseurl"
     baseurl_default_value = "http://wwww.digdir.no/"
 
     @staticmethod
     def is_exact_skolemization(skolemization: URI) -> bool:
         """Returns true if the URI is a skolemization that exists in the model."""
-        return skolemization in Skolemizer.skolemization
+        return skolemization in Skolemizer.skolemizations
 
     @staticmethod
     def has_skolemization_morfologi(skolemization: URI) -> bool:
@@ -41,7 +41,7 @@ class Skolemizer:
             Skolemizer.get_baseurl() + ".well-known/skolem/" + str(uuid.uuid4())
         )
 
-        Skolemizer.skolemization[_skolemization] = True
+        Skolemizer.skolemizations.add(_skolemization)
 
         return _skolemization
 
