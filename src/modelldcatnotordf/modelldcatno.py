@@ -2134,20 +2134,17 @@ class Attribute(ModelProperty):
         if getattr(self, "has_data_type", None):
 
             if isinstance(self.has_data_type, DataType):
-                _has_data_type = (
-                    URIRef(self._has_data_type.identifier)
-                    if getattr(self._has_data_type, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self.has_data_type, "identifier", None):
+                    self.has_data_type.identifier = Skolemizer.add_skolemization()
+
+                _has_data_type = URIRef(self._has_data_type.identifier)
 
                 for _s, p, o in self._has_data_type._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add(
-                        (_has_data_type, p, o)
-                        if isinstance(_has_data_type, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
+
             elif isinstance(self.has_data_type, str):
                 _has_data_type = URIRef(self.has_data_type)
 
