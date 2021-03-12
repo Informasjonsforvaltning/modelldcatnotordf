@@ -942,20 +942,16 @@ class ModelElement(ABC):
             for has_property in self._has_property:
 
                 if isinstance(has_property, ModelProperty):
-                    _has_property = (
-                        URIRef(has_property.identifier)
-                        if getattr(has_property, "identifier", None)
-                        else BNode()
-                    )
+
+                    if not getattr(has_property, "identifier", None):
+                        has_property.identifier = Skolemizer.add_skolemization()
+
+                    _has_property = URIRef(has_property.identifier)
 
                     for _s, p, o in has_property._to_graph().triples(
                         (None, None, None)
                     ):
-                        self._g.add(
-                            (_has_property, p, o)
-                            if isinstance(_has_property, BNode)
-                            else (_s, p, o)
-                        )
+                        self._g.add((_s, p, o))
 
                 elif isinstance(has_property, str):
                     _has_property = URIRef(has_property)
