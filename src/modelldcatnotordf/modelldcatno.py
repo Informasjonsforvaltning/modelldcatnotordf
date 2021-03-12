@@ -1847,9 +1847,10 @@ class Association(ModelProperty):
         Returns:
             the association graph
         """
-        _self = (
-            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
-        )
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+
+        _self = URIRef(self.identifier)
 
         super(Association, self)._to_graph(MODELLDCATNO.Association, _self)
 
