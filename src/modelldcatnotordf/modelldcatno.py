@@ -2876,9 +2876,10 @@ class CodeElement:
         Returns:
             the code element graph
         """
-        _self = (
-            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
-        )
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+
+        _self = URIRef(self.identifier)
 
         # Set up graph and namespaces:
         self._g = Graph()

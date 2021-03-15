@@ -4,10 +4,12 @@ from typing import List, Union
 from concepttordf import Concept
 from datacatalogtordf import URI
 import pytest
+from pytest_mock import MockFixture
 from rdflib import Graph
 
 from modelldcatnotordf.modelldcatno import CodeElement, CodeList
-from tests.testutils import assert_isomorphic
+from tests import testutils
+from tests.testutils import assert_isomorphic, skolemization
 
 
 def test_instantiate_codeelement() -> None:
@@ -18,9 +20,14 @@ def test_instantiate_codeelement() -> None:
         pytest.fail("Unexpected Exception ..")
 
 
-def test_to_graph_should_return_codeelement() -> None:
-    """It returns an identifier graph isomorphic to spec."""
+def test_to_graph_should_return_codeelement(mocker: MockFixture) -> None:
+    """It returns an codeelement graph isomorphic to spec."""
     codeelement = CodeElement()
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -29,7 +36,8 @@ def test_to_graph_should_return_codeelement() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:CodeElement; ]
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:CodeElement
         .
         """
     g1 = Graph().parse(data=codeelement.to_rdf(), format="turtle")
@@ -223,7 +231,9 @@ def test_to_graph_should_return_in_scheme_blank_node_codeelement_identifier() ->
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_is_codeelement_of_blank_nodes() -> None:
+def test_to_graph_should_return_is_codeelement_of_both_skolemized(
+    mocker: MockFixture,
+) -> None:
     """It returns a is_codeelement_of graph isomorphic to spec."""
     codeelement = CodeElement()
 
@@ -233,6 +243,13 @@ def test_to_graph_should_return_is_codeelement_of_blank_nodes() -> None:
 
     codeelement.in_scheme = inschemes
 
+    skolemutils = testutils.SkolemUtils()
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        side_effect=skolemutils.get_skolemization,
+    )
+
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -241,9 +258,10 @@ def test_to_graph_should_return_is_codeelement_of_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-        [ a modelldcatno:CodeElement ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:CodeElement ;
             skos:inScheme [ a modelldcatno:CodeList ]
-        ] .
+         .
         """
     g1 = Graph().parse(data=codeelement.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
@@ -251,7 +269,9 @@ def test_to_graph_should_return_is_codeelement_of_blank_nodes() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_in_scheme_bnode_codelist_id() -> None:
+def test_to_graph_should_return_in_scheme_skolemization_codelist_id(
+    mocker: MockFixture,
+) -> None:
     """It returns a is_codeelement_of graph isomorphic to spec."""
     codeelement = CodeElement()
 
@@ -262,6 +282,11 @@ def test_to_graph_should_return_in_scheme_bnode_codelist_id() -> None:
 
     codeelement.in_scheme = inschemes
 
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
+
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -270,9 +295,10 @@ def test_to_graph_should_return_in_scheme_bnode_codelist_id() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-        [ a modelldcatno:CodeElement ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:CodeElement ;
             skos:inScheme <http://example.com/codelists/1>
-        ] .
+         .
 
         <http://example.com/codelists/1> a modelldcatno:CodeList .
 
@@ -347,7 +373,9 @@ def test_to_graph_should_return_top_concept_of_blank_node_codeelement_id() -> No
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_top_concept_of_blank_nodes() -> None:
+def test_to_graph_should_return_top_concept_of_both_skolemized(
+    mocker: MockFixture,
+) -> None:
     """It returns a is_codeelement_of graph isomorphic to spec."""
     codeelement = CodeElement()
 
@@ -357,6 +385,13 @@ def test_to_graph_should_return_top_concept_of_blank_nodes() -> None:
 
     codeelement.top_concept_of = inschemes
 
+    skolemutils = testutils.SkolemUtils()
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        side_effect=skolemutils.get_skolemization,
+    )
+
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -365,9 +400,10 @@ def test_to_graph_should_return_top_concept_of_blank_nodes() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-        [ a modelldcatno:CodeElement ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:CodeElement ;
             skos:topConceptOf [ a modelldcatno:CodeList ]
-        ] .
+         .
         """
     g1 = Graph().parse(data=codeelement.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
@@ -375,7 +411,9 @@ def test_to_graph_should_return_top_concept_of_blank_nodes() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_top_concept_of_bnode_codelist_id() -> None:
+def test_to_graph_should_return_top_concept_of_skolemization_codelist_id(
+    mocker: MockFixture,
+) -> None:
     """It returns a is_codeelement_of graph isomorphic to spec."""
     codeelement = CodeElement()
 
@@ -383,8 +421,12 @@ def test_to_graph_should_return_top_concept_of_bnode_codelist_id() -> None:
     codelist.identifier = "http://example.com/codelists/1"
 
     inschemes: List[CodeList] = [codelist]
-
     codeelement.top_concept_of = inschemes
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -394,9 +436,10 @@ def test_to_graph_should_return_top_concept_of_bnode_codelist_id() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-        [ a modelldcatno:CodeElement ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:CodeElement ;
             skos:topConceptOf <http://example.com/codelists/1>
-        ] .
+         .
 
         <http://example.com/codelists/1> a modelldcatno:CodeList .
 
