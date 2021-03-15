@@ -17,7 +17,9 @@ from typing import Optional
 
 from datacatalogtordf import Document
 from datacatalogtordf.uri import URI
-from rdflib import BNode, DCTERMS, FOAF, Graph, Literal, Namespace, RDF, URIRef
+from rdflib import DCTERMS, FOAF, Graph, Literal, Namespace, RDF, URIRef
+
+from modelldcatnotordf.skolemizer import Skolemizer
 
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 
@@ -74,10 +76,10 @@ class FoafDocument(Document):
         self._g.bind("dct", DCTERMS)
         self._g.bind("foaf", FOAF)
 
-        if getattr(self, "identifier", None):
-            _self = URIRef(self.identifier)
-        else:
-            _self = BNode()
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+
+        _self = URIRef(self.identifier)
 
         self._g.add((_self, RDF.type, FOAF.Document))
 
