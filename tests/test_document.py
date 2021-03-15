@@ -1,10 +1,11 @@
 """Test cases for the document module."""
 
 import pytest
+from pytest_mock import MockFixture
 from rdflib import Graph
 
 from modelldcatnotordf.document import FoafDocument
-from tests.testutils import assert_isomorphic
+from tests.testutils import assert_isomorphic, skolemization
 
 
 def test_instantiate_document() -> None:
@@ -40,12 +41,17 @@ def test_to_graph_should_return_title_and_identifier() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_document_as_bnode() -> None:
+def test_to_graph_should_return_document_skolemized(mocker: MockFixture) -> None:
     """It returns a title graph isomorphic to spec."""
     """It returns an identifier graph isomorphic to spec."""
 
     document = FoafDocument()
     document.title = {"nb": "Tittel 1", "en": "Title 1"}
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -54,8 +60,9 @@ def test_to_graph_should_return_document_as_bnode() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
-        [ a foaf:Document;
-                dct:title   "Title 1"@en, "Tittel 1"@nb ; ]
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a foaf:Document;
+                dct:title   "Title 1"@en, "Tittel 1"@nb ;
         .
         """
     g1 = Graph().parse(data=document.to_rdf(), format="turtle")
