@@ -1,10 +1,12 @@
 """Test cases for the composition module."""
 
 import pytest
+from pytest_mock import MockFixture
 from rdflib import Graph
 
 from modelldcatnotordf.modelldcatno import Composition, ObjectType
-from tests.testutils import assert_isomorphic
+from tests import testutils
+from tests.testutils import assert_isomorphic, skolemization
 
 """
 A test class for testing the class Composition.
@@ -20,9 +22,14 @@ def test_instantiate_composition() -> None:
         pytest.fail("Unexpected Exception ..")
 
 
-def test_to_graph_should_return_blank_node() -> None:
+def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     """It returns a composition graph as blank node isomorphic to spec."""
     composition = Composition()
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -31,7 +38,8 @@ def test_to_graph_should_return_blank_node() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Composition ] .
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:Composition  .
 
         """
     g1 = Graph().parse(data=composition.to_rdf(), format="turtle")
@@ -115,13 +123,20 @@ def test_to_graph_should_return_contains_blank_node_composition_identifier() -> 
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_contains_blank_node_modelelement_identifier() -> None:
+def test_to_graph_should_return_contains_blank_node_modelelement_identifier(
+    mocker: MockFixture,
+) -> None:
     """It returns a contains graph isomorphic to spec."""
     composition = Composition()
 
     modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
     composition.contains = modelelement
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -130,9 +145,10 @@ def test_to_graph_should_return_contains_blank_node_modelelement_identifier() ->
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Composition ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:Composition ;
             modelldcatno:contains <http://example.com/modelelements/1>
-        ] .
+         .
 
         <http://example.com/modelelements/1> a modelldcatno:ObjectType .
 
@@ -143,12 +159,19 @@ def test_to_graph_should_return_contains_blank_node_modelelement_identifier() ->
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_contains_blank_nodes() -> None:
+def test_to_graph_should_return_contains_both_skolemized(mocker: MockFixture) -> None:
     """It returns a contains graph isomorphic to spec."""
     composition = Composition()
 
     modelelement = ObjectType()
     composition.contains = modelelement
+
+    skolemutils = testutils.SkolemUtils()
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        side_effect=skolemutils.get_skolemization,
+    )
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -157,9 +180,10 @@ def test_to_graph_should_return_contains_blank_nodes() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Composition ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:Composition ;
             modelldcatno:contains [ a modelldcatno:ObjectType ]
-        ] .
+         .
         """
     g1 = Graph().parse(data=composition.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
