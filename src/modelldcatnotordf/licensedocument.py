@@ -11,7 +11,9 @@ from typing import List, Optional, Union
 
 from concepttordf import Concept
 from datacatalogtordf import URI
-from rdflib import BNode, Graph, Namespace, RDF, URIRef
+from rdflib import Graph, Namespace, RDF, URIRef
+
+from modelldcatnotordf.skolemizer import Skolemizer
 
 DCT = Namespace("http://purl.org/dc/terms/")
 
@@ -64,9 +66,10 @@ class LicenseDocument:
         self._g = Graph()
         self._g.bind("dct", DCT)
 
-        _self = (
-            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
-        )
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+
+        _self = URIRef(self.identifier)
 
         self._g.add((_self, RDF.type, DCT.LicenseDocument))
 
