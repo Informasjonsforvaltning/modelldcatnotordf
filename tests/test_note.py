@@ -1,10 +1,11 @@
 """Test cases for the note module."""
 
 import pytest
+from pytest_mock import MockFixture
 from rdflib import Graph
 
 from modelldcatnotordf.modelldcatno import Note
-from tests.testutils import assert_isomorphic
+from tests.testutils import assert_isomorphic, skolemization
 
 """
 A test class for testing the class Note.
@@ -20,7 +21,7 @@ def test_instantiate_note() -> None:
         pytest.fail("Unexpected Exception ..")
 
 
-def test_to_graph_should_return_blank_node() -> None:
+def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     """It returns a note graph as blank node isomorphic to spec."""
     note = Note()
 
@@ -31,9 +32,15 @@ def test_to_graph_should_return_blank_node() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:Note ] .
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:Note  .
 
         """
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
     g1 = Graph().parse(data=note.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
