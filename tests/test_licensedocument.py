@@ -2,10 +2,11 @@
 
 from concepttordf import Concept
 import pytest
+from pytest_mock import MockFixture
 from rdflib import Graph
 
 from modelldcatnotordf.licensedocument import LicenseDocument
-from tests.testutils import assert_isomorphic
+from tests.testutils import assert_isomorphic, skolemization
 
 """
 A test class for testing the class License Document.
@@ -60,7 +61,9 @@ def test_to_graph_should_return_type_and_identifier() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_license_document_bnode_and_type() -> None:
+def test_to_graph_should_return_license_document_skolemization_and_type(
+    mocker: MockFixture,
+) -> None:
     """It returns a license document graph isomorphic to spec."""
     """It returns an type graph isomorphic to spec."""
 
@@ -74,6 +77,11 @@ def test_to_graph_should_return_license_document_bnode_and_type() -> None:
     type2.identifier = "https://example.com/types/2"
     licensedocument.type.append(type2)
 
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
+
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -83,10 +91,11 @@ def test_to_graph_should_return_license_document_bnode_and_type() -> None:
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-        [   a dct:LicenseDocument ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+           a dct:LicenseDocument ;
             dct:type <https://example.com/types/1> ;
             dct:type <https://example.com/types/2> ;
-        ]
+
         .
         <https://example.com/types/1> a skos:Concept .
         <https://example.com/types/2> a skos:Concept .
