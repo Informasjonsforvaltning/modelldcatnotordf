@@ -1583,9 +1583,10 @@ class SimpleType(ModelElement):
         Returns:
             the object type graph
         """
-        _self = (
-            URIRef(self.identifier) if getattr(self, "identifier", None) else BNode()
-        )
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+
+        _self = URIRef(self.identifier)
 
         super(SimpleType, self)._to_graph(MODELLDCATNO.SimpleType, _self)
 
