@@ -452,19 +452,15 @@ class InformationModel(Resource):
 
                 if isinstance(modelelement, ModelElement):
 
-                    _modelelement = (
-                        URIRef(modelelement.identifier)
-                        if getattr(modelelement, "identifier", None)
-                        else BNode()
-                    )
+                    if not getattr(modelelement, "identifier", None):
+                        modelelement.identifier = Skolemizer.add_skolemization()
+
+                    _modelelement = URIRef(modelelement.identifier)
+
                     for _s, p, o in modelelement._to_graph().triples(
                         (None, None, None)
                     ):
-                        self._g.add(
-                            (_modelelement, p, o)
-                            if isinstance(_modelelement, BNode)
-                            else (_s, p, o)
-                        )
+                        self._g.add((_s, p, o))
 
                 elif isinstance(modelelement, str):
                     _modelelement = URIRef(modelelement)
