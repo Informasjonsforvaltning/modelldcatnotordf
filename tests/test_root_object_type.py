@@ -2,10 +2,11 @@
 
 from concepttordf import Concept
 import pytest
+from pytest_mock import MockFixture
 from rdflib import Graph
 
 from modelldcatnotordf.modelldcatno import RootObjectType
-from tests.testutils import assert_isomorphic
+from tests.testutils import assert_isomorphic, skolemization
 
 """
 A test class for testing the class RootObjectType.
@@ -46,7 +47,7 @@ def test_to_graph_should_return_title_and_identifier() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_title_and_no_identifier() -> None:
+def test_to_graph_should_return_title_and_skolemization(mocker: MockFixture) -> None:
     """It returns a title graph isomorphic to spec."""
     rootobjecttype = RootObjectType()
     rootobjecttype.title = {"nb": "Tittel 1", "en": "Title 1"}
@@ -58,11 +59,16 @@ def test_to_graph_should_return_title_and_no_identifier() -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        [ a modelldcatno:RootObjectType ;
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+         a modelldcatno:RootObjectType ;
             dct:title   "Title 1"@en, "Tittel 1"@nb ;
-        ]
         .
         """
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
     g1 = Graph().parse(data=rootobjecttype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
