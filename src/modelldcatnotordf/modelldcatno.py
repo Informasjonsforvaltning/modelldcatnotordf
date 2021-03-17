@@ -478,20 +478,17 @@ class InformationModel(Resource):
         if getattr(self, "licensedocument", None):
 
             if isinstance(self.licensedocument, LicenseDocument):
-                _licensedocument = (
-                    URIRef(self.licensedocument.identifier)
-                    if getattr(self.licensedocument, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self.licensedocument, "identifier", None):
+                    self.licensedocument.identifier = Skolemizer.add_skolemization()
+
+                _licensedocument = URIRef(self.licensedocument.identifier)
 
                 for _s, p, o in self.licensedocument._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add(
-                        (_licensedocument, p, o)
-                        if isinstance(_licensedocument, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
+
             elif isinstance(self.licensedocument, str):
                 _licensedocument = URIRef(self.licensedocument)
 
