@@ -1678,18 +1678,14 @@ class Composition(ModelProperty):
         if getattr(self, "contains", None):
 
             if isinstance(self.contains, ModelElement):
-                _contains = (
-                    URIRef(self._contains.identifier)
-                    if getattr(self._contains, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self.contains, "identifier", None):
+                    self.contains.identifier = Skolemizer.add_skolemization()
+
+                _contains = URIRef(self.contains.identifier)
 
                 for _s, p, o in self._contains._to_graph().triples((None, None, None)):
-                    self._g.add(
-                        (_contains, p, o)
-                        if isinstance(_contains, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
 
             elif isinstance(self.contains, str):
                 _contains = URIRef(self.contains)
