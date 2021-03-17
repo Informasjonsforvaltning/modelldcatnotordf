@@ -688,18 +688,15 @@ class InformationModel(Resource):
             for has_format in self._has_format:
 
                 if isinstance(has_format, FoafDocument):
-                    _has_format = (
-                        URIRef(has_format.identifier)
-                        if getattr(has_format, "identifier", None)
-                        else BNode()
-                    )
+
+                    if not getattr(has_format, "identifier", None):
+                        has_format.identifier = Skolemizer.add_skolemization()
+
+                    _has_format = URIRef(has_format.identifier)
 
                     for _s, p, o in has_format._to_graph().triples((None, None, None)):
-                        self._g.add(
-                            (_has_format, p, o)
-                            if isinstance(_has_format, BNode)
-                            else (_s, p, o)
-                        )
+                        self._g.add((_s, p, o))
+
                 elif isinstance(has_format, str):
                     _has_format = URIRef(has_format)
 
