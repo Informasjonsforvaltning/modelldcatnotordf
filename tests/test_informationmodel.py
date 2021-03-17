@@ -355,7 +355,9 @@ def test_to_graph_should_return_licensedocument() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_license_document_bnode() -> None:
+def test_to_graph_should_return_license_document_skolemization(
+    mocker: MockFixture,
+) -> None:
     """It returns a license document graph isomorphic to spec."""
     licensedocument = LicenseDocument()
 
@@ -364,19 +366,27 @@ def test_to_graph_should_return_license_document_bnode() -> None:
     informationmodel.licensedocument = licensedocument
 
     src = """
-        @prefix dct: <http://purl.org/dc/terms/> .
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix dcat: <http://www.w3.org/ns/dcat#> .
-        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
-        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
-        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-        <https://example.com/informationmodels/1> a modelldcatno:InformationModel ;
-            dct:license
-                [   a dct:LicenseDocument  ]
-        .
-        """
+    <https://example.com/informationmodels/1> a modelldcatno:InformationModel ;
+        dct:license
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    .
+
+    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+       a dct:LicenseDocument .
+    """
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
@@ -384,7 +394,9 @@ def test_to_graph_should_return_license_document_bnode() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_license_document_bnode_with_types() -> None:
+def test_to_graph_should_return_license_document_bnode_with_types(
+    mocker: MockFixture,
+) -> None:
     """It returns an information model graph isomorphic to spec."""
     """It returns a license document graph isomorphic to spec."""
     """It returns a type graph isomorphic to spec."""
@@ -401,22 +413,31 @@ def test_to_graph_should_return_license_document_bnode_with_types() -> None:
     licensedocument.type.append(type1)
 
     src = """
-        @prefix dct: <http://purl.org/dc/terms/> .
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix dcat: <http://www.w3.org/ns/dcat#> .
-        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
-        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
-        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-        <https://example.com/informationmodels/1> a modelldcatno:InformationModel ;
-            dct:license
-                [   a dct:LicenseDocument ;
-                        a skos:Concept ;
-                            dct:type  <https://example.com/types/1> ;
-                ]
-        .
-        """
+    <https://example.com/informationmodels/1> a modelldcatno:InformationModel ;
+        dct:license
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    .
+
+    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        a dct:LicenseDocument ;
+            dct:type <https://example.com/types/1> .
+
+    <https://example.com/types/1> a skos:Concept .
+
+    """
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
