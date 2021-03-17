@@ -1251,21 +1251,16 @@ class ModelProperty(ABC):
         if getattr(self, "forms_symmetry_with", None):
 
             if isinstance(self.forms_symmetry_with, ModelProperty):
-                _forms_symmetry_with = (
-                    URIRef(self.forms_symmetry_with.identifier)
-                    if getattr(self.forms_symmetry_with, "identifier", None)
-                    else BNode()
-                )
 
-                if isinstance(_forms_symmetry_with, BNode):
-                    for _s, p, o in self.forms_symmetry_with._to_graph().triples(
-                        (None, None, None)
-                    ):
-                        self._g.add(
-                            (_forms_symmetry_with, p, o)
-                            if isinstance(_forms_symmetry_with, BNode)
-                            else (_s, p, o)
-                        )
+                if not getattr(self.forms_symmetry_with, "identifier", None):
+                    self.forms_symmetry_with.identifier = Skolemizer.add_skolemization()
+
+                _forms_symmetry_with = URIRef(self.forms_symmetry_with.identifier)
+
+                for _s, p, o in self.forms_symmetry_with._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add((_s, p, o))
 
             elif isinstance(self.forms_symmetry_with, str):
                 _forms_symmetry_with = URIRef(self.forms_symmetry_with)
