@@ -1760,20 +1760,17 @@ class Collection(ModelProperty):
         if getattr(self, "has_member", None):
 
             if isinstance(self.has_member, ModelElement):
-                _has_member = (
-                    URIRef(self._has_member.identifier)
-                    if getattr(self._has_member, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self.has_member, "identifier", None):
+                    self.has_member.identifier = Skolemizer.add_skolemization()
+
+                _has_member = URIRef(self._has_member.identifier)
 
                 for _s, p, o in self._has_member._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add(
-                        (_has_member, p, o)
-                        if isinstance(_has_member, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
+
             elif isinstance(self.has_member, str):
                 _has_member = URIRef(self.has_member)
 

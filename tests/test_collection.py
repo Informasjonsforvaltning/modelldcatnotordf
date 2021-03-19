@@ -98,7 +98,9 @@ def test_to_graph_should_return_has_member_both_identifiers() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_member_blank_node_collection_identifier() -> None:
+def test_to_graph_should_return_has_member_skolemization_collection_identifier(
+    mocker: MockFixture,
+) -> None:
     """It returns a has_member graph isomorphic to spec."""
     collection = Collection()
     collection.identifier = "http://example.com/collections/1"
@@ -107,16 +109,26 @@ def test_to_graph_should_return_has_member_blank_node_collection_identifier() ->
     collection.has_member = modelelement
 
     src = """
-        @prefix dct: <http://purl.org/dc/terms/> .
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix dcat: <http://www.w3.org/ns/dcat#> .
-        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://example.com/collections/1> a modelldcatno:Collection ;
-            modelldcatno:hasMember [ a modelldcatno:ObjectType ] .
+    <http://example.com/collections/1> a modelldcatno:Collection ;
+        modelldcatno:hasMember
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    .
+
+        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+            a modelldcatno:ObjectType .
 
         """
+
+    mocker.patch(
+        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
+    )
     g1 = Graph().parse(data=collection.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
@@ -166,6 +178,22 @@ def test_to_graph_should_return_has_member_both_skolemized(mocker: MockFixture) 
     modelelement = ObjectType()
     collection.has_member = modelelement
 
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        a modelldcatno:Collection ; modelldcatno:hasMember
+        <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+    .
+
+    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+        a modelldcatno:ObjectType .
+    """
+
     skolemutils = testutils.SkolemUtils()
 
     mocker.patch(
@@ -173,18 +201,6 @@ def test_to_graph_should_return_has_member_both_skolemized(mocker: MockFixture) 
         side_effect=skolemutils.get_skolemization,
     )
 
-    src = """
-        @prefix dct: <http://purl.org/dc/terms/> .
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix dcat: <http://www.w3.org/ns/dcat#> .
-        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
-
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
-         a modelldcatno:Collection ;
-            modelldcatno:hasMember [ a modelldcatno:ObjectType ]
-         .
-        """
     g1 = Graph().parse(data=collection.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
