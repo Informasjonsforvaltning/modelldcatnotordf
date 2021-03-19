@@ -1932,18 +1932,14 @@ class Choice(ModelProperty):
 
                 if isinstance(has_some, ModelElement):
 
-                    _has_some = (
-                        URIRef(has_some.identifier)
-                        if getattr(has_some, "identifier", None)
-                        else BNode()
-                    )
+                    if not getattr(has_some, "identifier", None):
+                        has_some.identifier = Skolemizer.add_skolemization()
+
+                    _has_some = URIRef(has_some.identifier)
 
                     for _s, p, o in has_some._to_graph().triples((None, None, None)):
-                        self._g.add(
-                            (_has_some, p, o)
-                            if isinstance(_has_some, BNode)
-                            else (_s, p, o)
-                        )
+                        self._g.add((_s, p, o))
+
                 elif isinstance(has_some, str):
                     _has_some = URIRef(has_some)
 
