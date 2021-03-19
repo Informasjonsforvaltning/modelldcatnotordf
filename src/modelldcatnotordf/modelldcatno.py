@@ -1844,18 +1844,15 @@ class Association(ModelProperty):
         if getattr(self, "refers_to", None):
 
             if isinstance(self._refers_to, ModelElement):
-                _refers_to = (
-                    URIRef(self._refers_to.identifier)
-                    if getattr(self._refers_to, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self._refers_to, "identifier", None):
+                    self._refers_to.identifier = Skolemizer.add_skolemization()
+
+                _refers_to = URIRef(self._refers_to.identifier)
 
                 for _s, p, o in self._refers_to._to_graph().triples((None, None, None)):
-                    self._g.add(
-                        (_refers_to, p, o)
-                        if isinstance(_refers_to, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
+
             elif isinstance(self._refers_to, str):
                 _refers_to = URIRef(self._refers_to)
 
