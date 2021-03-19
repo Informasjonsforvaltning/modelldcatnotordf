@@ -2081,20 +2081,17 @@ class Attribute(ModelProperty):
         if getattr(self, "has_simple_type", None):
 
             if isinstance(self.has_simple_type, SimpleType):
-                _has_simple_type = (
-                    URIRef(self._has_simple_type.identifier)
-                    if getattr(self._has_simple_type, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self.has_simple_type, "identifier", None):
+                    self.has_simple_type.identifier = Skolemizer.add_skolemization()
+
+                _has_simple_type = URIRef(self.has_simple_type.identifier)
 
                 for _s, p, o in self._has_simple_type._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add(
-                        (_has_simple_type, p, o)
-                        if isinstance(_has_simple_type, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
+
             elif isinstance(self.has_simple_type, str):
                 _has_simple_type = URIRef(self.has_simple_type)
 
