@@ -2058,20 +2058,19 @@ class Attribute(ModelProperty):
         if getattr(self, "contains_object_type", None):
 
             if isinstance(self.contains_object_type, ObjectType):
-                _contains_object_type = (
-                    URIRef(self._contains_object_type.identifier)
-                    if getattr(self._contains_object_type, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self.contains_object_type, "identifier", None):
+                    self.contains_object_type.identifier = (
+                        Skolemizer.add_skolemization()
+                    )
+
+                _contains_object_type = URIRef(self._contains_object_type.identifier)
 
                 for _s, p, o in self._contains_object_type._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add(
-                        (_contains_object_type, p, o)
-                        if isinstance(_contains_object_type, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
+
             elif isinstance(self.contains_object_type, str):
                 _contains_object_type = URIRef(self.contains_object_type)
 
