@@ -2123,20 +2123,17 @@ class Attribute(ModelProperty):
         if getattr(self, "has_value_from", None):
 
             if isinstance(self.has_value_from, CodeList):
-                _has_value_from = (
-                    URIRef(self._has_value_from.identifier)
-                    if getattr(self._has_value_from, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self.has_value_from, "identifier", None):
+                    self.has_value_from.identifier = Skolemizer.add_skolemization()
+
+                _has_value_from = URIRef(self._has_value_from.identifier)
 
                 for _s, p, o in self._has_value_from._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add(
-                        (_has_value_from, p, o)
-                        if isinstance(_has_value_from, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
+
             elif isinstance(self.has_value_from, str):
                 _has_value_from = URIRef(self.has_value_from)
 
