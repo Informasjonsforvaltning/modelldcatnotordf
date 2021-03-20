@@ -2210,20 +2210,15 @@ class Specialization(ModelProperty):
 
             if isinstance(self.has_general_concept, ModelElement):
 
-                _has_general_concept = (
-                    URIRef(self.has_general_concept.identifier)
-                    if getattr(self._has_general_concept, "identifier", None)
-                    else BNode()
-                )
+                if not getattr(self.has_general_concept, "identifier", None):
+                    self.has_general_concept.identifier = Skolemizer.add_skolemization()
+
+                _has_general_concept = URIRef(self.has_general_concept.identifier)
 
                 for _s, p, o in self._has_general_concept._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add(
-                        (_has_general_concept, p, o)
-                        if isinstance(_has_general_concept, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
 
             elif isinstance(self.has_general_concept, str):
                 _has_general_concept = URIRef(self.has_general_concept)
