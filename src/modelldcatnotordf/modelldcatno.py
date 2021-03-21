@@ -2566,27 +2566,22 @@ class CodeList(ModelElement):
 
         return self._g
 
-    def _code_list_reference_to_graph(self, _self: Union[URIRef, BNode]) -> None:
+    def _code_list_reference_to_graph(self, _self: URIRef) -> None:
 
         if getattr(self, "code_list_reference", None):
 
             if isinstance(self.code_list_reference, CodeList):
 
-                _code_list_reference = (
-                    URIRef(self.code_list_reference.identifier)
-                    if getattr(self.code_list_reference, "identifier", None)
-                    else BNode()
-                )
+                if not getattr(self.code_list_reference, "identifier", None):
+                    self.code_list_reference.identifier = Skolemizer.add_skolemization()
 
-                if isinstance(_code_list_reference, BNode):
-                    for _s, p, o in self.code_list_reference._to_graph().triples(
-                        (None, None, None)
-                    ):
-                        self._g.add(
-                            (_code_list_reference, p, o)
-                            if isinstance(_code_list_reference, BNode)
-                            else (_s, p, o)
-                        )
+                _code_list_reference = URIRef(self.code_list_reference.identifier)
+
+                for _s, p, o in self.code_list_reference._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add((_s, p, o))
+
             elif isinstance(self.code_list_reference, str):
                 _code_list_reference = URIRef(self.code_list_reference)
 
