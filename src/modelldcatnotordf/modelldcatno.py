@@ -2293,20 +2293,17 @@ class Realization(ModelProperty):
         if getattr(self, "has_supplier", None):
 
             if isinstance(self.has_supplier, ModelElement):
-                _has_supplier = (
-                    URIRef(self._has_supplier.identifier)
-                    if getattr(self._has_supplier, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self.has_supplier, "identifier", None):
+                    self.has_supplier.identifier = Skolemizer.add_skolemization()
+
+                _has_supplier = URIRef(self._has_supplier.identifier)
 
                 for _s, p, o in self._has_supplier._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add(
-                        (_has_supplier, p, o)
-                        if isinstance(_has_supplier, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
+
             elif isinstance(self.has_supplier, str):
                 _has_supplier = URIRef(self.has_supplier)
 
