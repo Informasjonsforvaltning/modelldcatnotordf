@@ -2379,20 +2379,17 @@ class Abstraction(ModelProperty):
         if getattr(self, "is_abstraction_of", None):
 
             if isinstance(self.is_abstraction_of, ModelElement):
-                _is_abstraction_of = (
-                    URIRef(self._is_abstraction_of.identifier)
-                    if getattr(self._is_abstraction_of, "identifier", None)
-                    else BNode()
-                )
+
+                if not getattr(self.is_abstraction_of, "identifier", None):
+                    self.is_abstraction_of.identifier = Skolemizer.add_skolemization()
+
+                _is_abstraction_of = URIRef(self._is_abstraction_of.identifier)
 
                 for _s, p, o in self._is_abstraction_of._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add(
-                        (_is_abstraction_of, p, o)
-                        if isinstance(_is_abstraction_of, BNode)
-                        else (_s, p, o)
-                    )
+                    self._g.add((_s, p, o))
+
             elif isinstance(self.is_abstraction_of, str):
                 _is_abstraction_of = URIRef(self.is_abstraction_of)
 
