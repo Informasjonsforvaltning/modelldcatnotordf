@@ -2903,18 +2903,14 @@ class CodeElement:
             for in_scheme in self._in_scheme:
 
                 if isinstance(in_scheme, CodeList):
-                    _in_scheme = (
-                        URIRef(in_scheme.identifier)
-                        if getattr(in_scheme, "identifier", None)
-                        else BNode()
-                    )
+                    if not getattr(in_scheme, "identifier", None):
+                        in_scheme.identifier = Skolemizer.add_skolemization()
+
+                    _in_scheme = URIRef(in_scheme.identifier)
 
                     for _s, p, o in in_scheme._to_graph().triples((None, None, None)):
-                        self._g.add(
-                            (_in_scheme, p, o)
-                            if isinstance(_in_scheme, BNode)
-                            else (_s, p, o)
-                        )
+                        self._g.add((_s, p, o))
+
                 elif isinstance(in_scheme, str):
                     _in_scheme = URIRef(in_scheme)
 
