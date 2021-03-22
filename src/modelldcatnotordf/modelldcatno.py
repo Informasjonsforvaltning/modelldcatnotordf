@@ -2923,20 +2923,17 @@ class CodeElement:
             for top_concept_of in self._top_concept_of:
 
                 if isinstance(top_concept_of, CodeList):
-                    _top_concept_of = (
-                        URIRef(top_concept_of.identifier)
-                        if getattr(top_concept_of, "identifier", None)
-                        else BNode()
-                    )
+
+                    if not getattr(top_concept_of, "identifier", None):
+                        top_concept_of.identifier = Skolemizer.add_skolemization()
+
+                    _top_concept_of = URIRef(top_concept_of.identifier)
 
                     for _s, p, o in top_concept_of._to_graph().triples(
                         (None, None, None)
                     ):
-                        self._g.add(
-                            (_top_concept_of, p, o)
-                            if isinstance(_top_concept_of, BNode)
-                            else (_s, p, o)
-                        )
+                        self._g.add((_s, p, o))
+
                 elif isinstance(top_concept_of, str):
                     _top_concept_of = URIRef(top_concept_of)
 
