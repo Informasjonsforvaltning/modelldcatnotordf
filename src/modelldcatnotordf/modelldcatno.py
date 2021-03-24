@@ -846,7 +846,7 @@ class ModelElement(ABC):
 
          Args:
             type: type for identifying class. Default: MODELLDCATNO.ModelElement
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the modelelement graph
@@ -1122,7 +1122,7 @@ class ModelProperty(ABC):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Property
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the property graph
@@ -1320,7 +1320,7 @@ class Role(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Role
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -1393,7 +1393,7 @@ class ObjectType(ModelElement):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.ObjectType
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the object type graph
@@ -1553,7 +1553,7 @@ class SimpleType(ModelElement):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.SimpleType
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the object type graph
@@ -1647,7 +1647,7 @@ class Composition(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Composition
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -1729,7 +1729,7 @@ class Collection(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Collection
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -1813,7 +1813,7 @@ class Association(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Association
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the association graph
@@ -1898,7 +1898,7 @@ class Choice(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Choice
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -2025,7 +2025,7 @@ class Attribute(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Attribute
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -2178,7 +2178,7 @@ class Specialization(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Association
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -2262,7 +2262,7 @@ class Realization(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Association
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the assocation graph
@@ -2348,7 +2348,7 @@ class Abstraction(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Abstraction
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
@@ -2421,7 +2421,7 @@ class DataType(ModelElement):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.DataType
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the object type graph
@@ -2470,7 +2470,7 @@ class RootObjectType(ModelElement):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.RootObjectType
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the root object type graph
@@ -2540,7 +2540,7 @@ class CodeList(ModelElement):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.CodeList
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the root object type graph
@@ -3114,7 +3114,7 @@ class Note(ModelProperty):
 
         Args:
             type: type for identifying class. Default: MODELLDCATNO.Note
-            selfobject: a bnode or URIRef passed from a subclass Default: None
+            selfobject: a URIRef passed from a subclass Default: None
 
         Returns:
             the role graph
