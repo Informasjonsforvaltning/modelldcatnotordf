@@ -3030,17 +3030,20 @@ class CodeElement:
         if getattr(self, "next_element", None):
 
             if isinstance(self.next_element, CodeElement):
-
-                if not getattr(self.next_element, "identifier", None):
-                    self.next_element.identifier = Skolemizer.add_skolemization()
-
-                _next_element = URIRef(self.next_element.identifier)
+                _next_element = (
+                    URIRef(self.next_element.identifier)
+                    if getattr(self.next_element, "identifier", None)
+                    else BNode()
+                )
 
                 for _s, p, o in self.next_element._to_graph().triples(
                     (None, None, None)
                 ):
-                    self._g.add((_s, p, o))
-
+                    self._g.add(
+                        (_next_element, p, o)
+                        if isinstance(_next_element, BNode)
+                        else (_s, p, o)
+                    )
             elif isinstance(self.next_element, str):
                 _next_element = URIRef(self.next_element)
 
