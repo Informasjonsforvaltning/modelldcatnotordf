@@ -47,18 +47,18 @@ class FoafDocument(Document):
         self._type = FOAF.Document
 
     @property
-    def format(self: Document) -> str:
+    def format(self: FoafDocument) -> str:
         """Get for format."""
         return self._format
 
     @format.setter
-    def format(self: Document, format: str) -> None:
+    def format(self: FoafDocument, format: str) -> None:
         """Set for format."""
         self._format = URI(format)
 
     def to_rdf(
-        self: Document, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> bytes:
+        self: FoafDocument, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> str:
         """Maps the document to rdf.
 
         Args:
@@ -70,7 +70,7 @@ class FoafDocument(Document):
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
-    def _to_graph(self: Document) -> Graph:
+    def _to_graph(self: FoafDocument) -> Graph:
 
         self._g = Graph()
         self._g.bind("dct", DCTERMS)
@@ -85,13 +85,7 @@ class FoafDocument(Document):
 
         if getattr(self, "title", None):
             for key in self.title:
-                self._g.add(
-                    (
-                        _self,
-                        DCTERMS.title,
-                        Literal(self.title[key], lang=key),
-                    )
-                )
+                self._g.add((_self, DCTERMS.title, Literal(self.title[key], lang=key),))
         if getattr(self, "language", None):
             self._g.add(
                 (

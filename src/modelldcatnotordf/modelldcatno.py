@@ -412,11 +412,7 @@ class InformationModel(Resource):
 
         if getattr(self, "version_info", None):
             self._g.add(
-                (
-                    URIRef(self.identifier),
-                    OWL.versionInfo,
-                    Literal(self.version_info),
-                )
+                (URIRef(self.identifier), OWL.versionInfo, Literal(self.version_info),)
             )
 
         return self._g
@@ -436,13 +432,7 @@ class InformationModel(Resource):
                     for _s, p, o in subject._to_graph().triples((None, None, None)):
                         self._g.add((_subject, p, o))
 
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCTERMS.subject,
-                        _subject,
-                    )
-                )
+                self._g.add((URIRef(self.identifier), DCTERMS.subject, _subject,))
 
     def _modelelements_to_graph(self: InformationModel) -> None:
 
@@ -508,13 +498,7 @@ class InformationModel(Resource):
                 elif isinstance(replaces, str):
                     _replaces = URIRef(replaces)
 
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCTERMS.replaces,
-                        _replaces,
-                    )
-                )
+                self._g.add((URIRef(self.identifier), DCTERMS.replaces, _replaces,))
 
     def _is_replaced_by_to_graph(self: InformationModel) -> None:
         if getattr(self, "is_replaced_by", None):
@@ -533,11 +517,7 @@ class InformationModel(Resource):
                     _is_replaced_by = URIRef(is_replaced_by)
 
                 self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCTERMS.isReplacedBy,
-                        _is_replaced_by,
-                    )
+                    (URIRef(self.identifier), DCTERMS.isReplacedBy, _is_replaced_by,)
                 )
 
     def _has_part_to_graph(self: InformationModel) -> None:
@@ -554,13 +534,7 @@ class InformationModel(Resource):
                 elif isinstance(has_part, str):
                     _has_part = URIRef(has_part)
 
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCTERMS.hasPart,
-                        _has_part,
-                    )
-                )
+                self._g.add((URIRef(self.identifier), DCTERMS.hasPart, _has_part,))
 
     def _is_part_of_to_graph(self: InformationModel) -> None:
         if getattr(self, "is_part_of", None):
@@ -576,13 +550,7 @@ class InformationModel(Resource):
                 elif isinstance(is_part_of, str):
                     _is_part_of = URIRef(is_part_of)
 
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCTERMS.isPartOf,
-                        _is_part_of,
-                    )
-                )
+                self._g.add((URIRef(self.identifier), DCTERMS.isPartOf, _is_part_of,))
 
     def _homepage_to_graph(self: InformationModel) -> None:
         if getattr(self, "homepage", None):
@@ -599,11 +567,7 @@ class InformationModel(Resource):
                     self._g.add((_contactpoint, p, o))
 
                 self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCAT.contactPoint,
-                        _contactpoint,
-                    )
+                    (URIRef(self.identifier), DCAT.contactPoint, _contactpoint,)
                 )
 
     def _locations_to_graph(self: InformationModel) -> None:
@@ -616,13 +580,7 @@ class InformationModel(Resource):
                 for _s, p, o in location._to_graph().triples((None, None, None)):
                     self._g.add((_location, p, o))
 
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCTERMS.spatial,
-                        _location,
-                    )
-                )
+                self._g.add((URIRef(self.identifier), DCTERMS.spatial, _location,))
 
     def _modified_to_graph(self: InformationModel) -> None:
         if getattr(self, "modified", None):
@@ -646,13 +604,7 @@ class InformationModel(Resource):
             elif isinstance(self.dct_type, str):
                 _dct_type = URIRef(self.dct_type)
 
-            self._g.add(
-                (
-                    URIRef(self.identifier),
-                    DCTERMS.type,
-                    _dct_type,
-                )
-            )
+            self._g.add((URIRef(self.identifier), DCTERMS.type, _dct_type,))
 
     def _version_note_to_graph(self: InformationModel) -> None:
         if getattr(self, "version_note", None):
@@ -700,13 +652,7 @@ class InformationModel(Resource):
                 elif isinstance(has_format, str):
                     _has_format = URIRef(has_format)
 
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCTERMS.hasFormat,
-                        _has_format,
-                    )
-                )
+                self._g.add((URIRef(self.identifier), DCTERMS.hasFormat, _has_format,))
 
     def _temporals_to_graph(self: InformationModel) -> None:
         if getattr(self, "temporal", None):
@@ -718,13 +664,7 @@ class InformationModel(Resource):
                 for _s, p, o in temporal._to_graph().triples((None, None, None)):
                     self._g.add((_temporal, p, o))
 
-                self._g.add(
-                    (
-                        URIRef(self.identifier),
-                        DCTERMS.temporal,
-                        _temporal,
-                    )
-                )
+                self._g.add((URIRef(self.identifier), DCTERMS.temporal, _temporal,))
 
 
 class ModelElement(ABC):
@@ -838,9 +778,7 @@ class ModelElement(ABC):
         """
 
     def _to_graph(
-        self,
-        type: str = MODELLDCATNO.ModelElement,
-        selfobject: URIRef = None,
+        self, type: str = MODELLDCATNO.ModelElement, selfobject: URIRef = None,
     ) -> Graph:
         """Returns the modelelement as graph.
 
@@ -864,11 +802,7 @@ class ModelElement(ABC):
         if getattr(self, "title", None):
             for key in self.title:
                 self._g.add(
-                    (
-                        selfobject,
-                        DCTERMS.title,
-                        Literal(self.title[key], lang=key),
-                    )
+                    (selfobject, DCTERMS.title, Literal(self.title[key], lang=key),)
                 )
 
         if getattr(self, "dct_identifier", None):
@@ -942,13 +876,7 @@ class ModelElement(ABC):
                 elif isinstance(has_property, str):
                     _has_property = URIRef(has_property)
 
-                self._g.add(
-                    (
-                        _self,
-                        MODELLDCATNO.hasProperty,
-                        _has_property,
-                    )
-                )
+                self._g.add((_self, MODELLDCATNO.hasProperty, _has_property,))
 
 
 class ModelProperty(ABC):
@@ -1114,9 +1042,7 @@ class ModelProperty(ABC):
         """
 
     def _to_graph(
-        self,
-        type: str = MODELLDCATNO.Property,
-        selfobject: URIRef = None,
+        self, type: str = MODELLDCATNO.Property, selfobject: URIRef = None,
     ) -> Graph:
         """Returns the property as graph.
 
@@ -1155,11 +1081,7 @@ class ModelProperty(ABC):
         if getattr(self, "title", None):
             for key in self.title:
                 self._g.add(
-                    (
-                        selfobject,
-                        DCTERMS.title,
-                        Literal(self.title[key], lang=key),
-                    )
+                    (selfobject, DCTERMS.title, Literal(self.title[key], lang=key),)
                 )
 
         self._subject_to_graph(selfobject)
@@ -1203,13 +1125,7 @@ class ModelProperty(ABC):
                 elif isinstance(has_type, str):
                     _has_type = URIRef(has_type)
 
-                self._g.add(
-                    (
-                        _self,
-                        MODELLDCATNO.hasType,
-                        _has_type,
-                    )
-                )
+                self._g.add((_self, MODELLDCATNO.hasType, _has_type,))
 
     def _description_to_graph(self: ModelProperty, selfobject: URIRef) -> None:
         if getattr(self, "description", None):
@@ -1312,9 +1228,7 @@ class Role(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Role,
-        type: str = MODELLDCATNO.Role,
-        selfobject: URIRef = None,
+        self: Role, type: str = MODELLDCATNO.Role, selfobject: URIRef = None,
     ) -> Graph:
         """Returns the role as graph.
 
@@ -1593,9 +1507,7 @@ class SimpleType(ModelElement):
             self._g.add((_self, XSD.minInclusive, Literal(self.min_inclusive)))
 
         if getattr(self, "type_definition_reference", None):
-            self._g.add(
-                (_self, XSD.anyURI, URIRef(self.type_definition_reference)),
-            )
+            self._g.add((_self, XSD.anyURI, URIRef(self.type_definition_reference)),)
 
         if getattr(self, "pattern", None):
             self._g.add((_self, XSD.pattern, Literal(self.pattern)))
@@ -1890,9 +1802,7 @@ class Choice(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Choice,
-        type: str = MODELLDCATNO.Choice,
-        selfobject: URIRef = None,
+        self: Choice, type: str = MODELLDCATNO.Choice, selfobject: URIRef = None,
     ) -> Graph:
         """Returns the role as graph.
 
@@ -2017,9 +1927,7 @@ class Attribute(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Attribute,
-        type: str = MODELLDCATNO.Attribute,
-        selfobject: URIRef = None,
+        self: Attribute, type: str = MODELLDCATNO.Attribute, selfobject: URIRef = None,
     ) -> Graph:
         """Returns the role as graph.
 
@@ -2413,9 +2321,7 @@ class DataType(ModelElement):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: DataType,
-        type: str = MODELLDCATNO.DataType,
-        selfobject: URIRef = None,
+        self: DataType, type: str = MODELLDCATNO.DataType, selfobject: URIRef = None,
     ) -> Graph:
         """Returns the data type as graph.
 
@@ -2532,9 +2438,7 @@ class CodeList(ModelElement):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: CodeList,
-        type: str = MODELLDCATNO.CodeList,
-        selfobject: URIRef = None,
+        self: CodeList, type: str = MODELLDCATNO.CodeList, selfobject: URIRef = None,
     ) -> Graph:
         """Returns the root object type as graph.
 
@@ -2879,11 +2783,7 @@ class CodeElement:
 
             for key in self.preflabel:
                 self._g.add(
-                    (
-                        _self,
-                        SKOS.prefLabel,
-                        Literal(self.preflabel[key], lang=key),
-                    )
+                    (_self, SKOS.prefLabel, Literal(self.preflabel[key], lang=key),)
                 )
 
     def _in_scheme_to_graph(self, _self: URIRef) -> None:
@@ -2935,11 +2835,7 @@ class CodeElement:
 
             for key in self.altlabel:
                 self._g.add(
-                    (
-                        _self,
-                        SKOS.altLabel,
-                        Literal(self.altlabel[key], lang=key),
-                    )
+                    (_self, SKOS.altLabel, Literal(self.altlabel[key], lang=key),)
                 )
 
     def _definition_to_graph(self, _self: URIRef) -> None:
@@ -2948,11 +2844,7 @@ class CodeElement:
 
             for key in self.definition:
                 self._g.add(
-                    (
-                        _self,
-                        SKOS.definition,
-                        Literal(self.definition[key], lang=key),
-                    )
+                    (_self, SKOS.definition, Literal(self.definition[key], lang=key),)
                 )
 
     def _example_to_graph(self, _self: URIRef) -> None:
@@ -2968,11 +2860,7 @@ class CodeElement:
 
             for key in self.hiddenlabel:
                 self._g.add(
-                    (
-                        _self,
-                        SKOS.hiddenLabel,
-                        Literal(self.hiddenlabel[key], lang=key),
-                    )
+                    (_self, SKOS.hiddenLabel, Literal(self.hiddenlabel[key], lang=key),)
                 )
 
     def _note_to_graph(self, _self: URIRef) -> None:
@@ -2980,13 +2868,7 @@ class CodeElement:
         if getattr(self, "note", None):
 
             for key in self.note:
-                self._g.add(
-                    (
-                        _self,
-                        SKOS.note,
-                        Literal(self.note[key], lang=key),
-                    )
-                )
+                self._g.add((_self, SKOS.note, Literal(self.note[key], lang=key),))
 
     def _scopenote_to_graph(self, _self: URIRef) -> None:
 
@@ -2994,11 +2876,7 @@ class CodeElement:
 
             for key in self.scopenote:
                 self._g.add(
-                    (
-                        _self,
-                        SKOS.scopeNote,
-                        Literal(self.scopenote[key], lang=key),
-                    )
+                    (_self, SKOS.scopeNote, Literal(self.scopenote[key], lang=key),)
                 )
 
     def _exclusion_note_to_graph(self, _self: URIRef) -> None:
@@ -3112,9 +2990,7 @@ class Note(ModelProperty):
         return self._to_graph().serialize(format=format, encoding=encoding)
 
     def _to_graph(
-        self: Note,
-        type: str = MODELLDCATNO.Note,
-        selfobject: URIRef = None,
+        self: Note, type: str = MODELLDCATNO.Note, selfobject: URIRef = None,
     ) -> Graph:
         """Returns the role as graph.
 
