@@ -406,7 +406,7 @@ class InformationModel(Resource):
                 (
                     URIRef(self.identifier),
                     MODELLDCATNO.informationModelIdentifier,
-                    Literal(self._informationmodelidentifier),
+                    Literal(self.informationmodelidentifier),
                 )
             )
 
@@ -415,7 +415,7 @@ class InformationModel(Resource):
                 (
                     URIRef(self.identifier),
                     OWL.versionInfo,
-                    Literal(self._version_info),
+                    Literal(self.version_info),
                 )
             )
 
@@ -872,7 +872,7 @@ class ModelElement(ABC):
                 )
 
         if getattr(self, "dct_identifier", None):
-            self._g.add((selfobject, DCTERMS.identifier, Literal(self._dct_identifier)))
+            self._g.add((selfobject, DCTERMS.identifier, Literal(self.dct_identifier)))
 
         if getattr(self, "has_property", None):
             self._has_property_to_graph(selfobject)
@@ -1342,10 +1342,10 @@ class Role(ModelProperty):
 
             if isinstance(self.has_object_type, ObjectType):
 
-                if not getattr(self._has_object_type, "identifier", None):
+                if not getattr(self.has_object_type, "identifier", None):
                     self._has_object_type.identifier = Skolemizer.add_skolemization()
 
-                _has_object_type = URIRef(self._has_object_type.identifier)
+                _has_object_type = URIRef(self.has_object_type.identifier)
 
                 for _s, p, o in self._has_object_type._to_graph().triples(
                     (None, None, None)
@@ -1754,7 +1754,7 @@ class Collection(ModelProperty):
                 if not getattr(self.has_member, "identifier", None):
                     self.has_member.identifier = Skolemizer.add_skolemization()
 
-                _has_member = URIRef(self._has_member.identifier)
+                _has_member = URIRef(self.has_member.identifier)
 
                 for _s, p, o in self._has_member._to_graph().triples(
                     (None, None, None)
@@ -1833,18 +1833,18 @@ class Association(ModelProperty):
 
         if getattr(self, "refers_to", None):
 
-            if isinstance(self._refers_to, ModelElement):
+            if isinstance(self.refers_to, ModelElement):
 
-                if not getattr(self._refers_to, "identifier", None):
+                if not getattr(self.refers_to, "identifier", None):
                     self._refers_to.identifier = Skolemizer.add_skolemization()
 
-                _refers_to = URIRef(self._refers_to.identifier)
+                _refers_to = URIRef(self.refers_to.identifier)
 
                 for _s, p, o in self._refers_to._to_graph().triples((None, None, None)):
                     self._g.add((_s, p, o))
 
-            elif isinstance(self._refers_to, str):
-                _refers_to = URIRef(self._refers_to)
+            elif isinstance(self.refers_to, str):
+                _refers_to = URIRef(self.refers_to)
 
             self._g.add((_self, MODELLDCATNO.refersTo, _refers_to))
 
@@ -2054,7 +2054,7 @@ class Attribute(ModelProperty):
                         Skolemizer.add_skolemization()
                     )
 
-                _contains_object_type = URIRef(self._contains_object_type.identifier)
+                _contains_object_type = URIRef(self.contains_object_type.identifier)
 
                 for _s, p, o in self._contains_object_type._to_graph().triples(
                     (None, None, None)
@@ -2096,7 +2096,7 @@ class Attribute(ModelProperty):
                 if not getattr(self.has_data_type, "identifier", None):
                     self.has_data_type.identifier = Skolemizer.add_skolemization()
 
-                _has_data_type = URIRef(self._has_data_type.identifier)
+                _has_data_type = URIRef(self.has_data_type.identifier)
 
                 for _s, p, o in self._has_data_type._to_graph().triples(
                     (None, None, None)
@@ -2117,7 +2117,7 @@ class Attribute(ModelProperty):
                 if not getattr(self.has_value_from, "identifier", None):
                     self.has_value_from.identifier = Skolemizer.add_skolemization()
 
-                _has_value_from = URIRef(self._has_value_from.identifier)
+                _has_value_from = URIRef(self.has_value_from.identifier)
 
                 for _s, p, o in self._has_value_from._to_graph().triples(
                     (None, None, None)
@@ -2287,7 +2287,7 @@ class Realization(ModelProperty):
                 if not getattr(self.has_supplier, "identifier", None):
                     self.has_supplier.identifier = Skolemizer.add_skolemization()
 
-                _has_supplier = URIRef(self._has_supplier.identifier)
+                _has_supplier = URIRef(self.has_supplier.identifier)
 
                 for _s, p, o in self._has_supplier._to_graph().triples(
                     (None, None, None)
@@ -2373,7 +2373,7 @@ class Abstraction(ModelProperty):
                 if not getattr(self.is_abstraction_of, "identifier", None):
                     self.is_abstraction_of.identifier = Skolemizer.add_skolemization()
 
-                _is_abstraction_of = URIRef(self._is_abstraction_of.identifier)
+                _is_abstraction_of = URIRef(self.is_abstraction_of.identifier)
 
                 for _s, p, o in self._is_abstraction_of._to_graph().triples(
                     (None, None, None)
@@ -2835,10 +2835,10 @@ class CodeElement:
         self._g.add((_self, RDF.type, self._type))
 
         if getattr(self, "dct_identifier", None):
-            self._g.add((_self, DCTERMS.identifier, Literal(self._dct_identifier)))
+            self._g.add((_self, DCTERMS.identifier, Literal(self.dct_identifier)))
 
         if getattr(self, "notation", None):
-            self._g.add((_self, SKOS.notation, Literal(self._notation)))
+            self._g.add((_self, SKOS.notation, Literal(self.notation)))
 
         self._preflabel_to_graph(_self)
         self._subject_to_graph(_self)
