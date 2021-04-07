@@ -1507,7 +1507,13 @@ class SimpleType(ModelElement):
             self._g.add((_self, XSD.minInclusive, Literal(self.min_inclusive)))
 
         if getattr(self, "type_definition_reference", None):
-            self._g.add((_self, XSD.anyURI, URIRef(self.type_definition_reference)),)
+            self._g.add(
+                (
+                    _self,
+                    MODELLDCATNO.typeDefinitionReference,
+                    URIRef(self.type_definition_reference),
+                ),
+            )
 
         if getattr(self, "pattern", None):
             self._g.add((_self, XSD.pattern, Literal(self.pattern)))
