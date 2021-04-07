@@ -310,7 +310,7 @@ def test_to_graph_should_return_type_definition_referance() -> None:
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
         <http://example.com/simpletypes/1> a modelldcatno:SimpleType ;
-            xsd:anyURI <http://example.com/typedefinitions/1>.
+            modelldcatno:typeDefinitionReference <http://example.com/typedefinitions/1>.
 
         """
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
