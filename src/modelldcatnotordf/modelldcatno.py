@@ -380,6 +380,7 @@ class InformationModel(Resource):
     def _to_graph(self: InformationModel) -> Graph:
 
         super(InformationModel, self)._to_graph()
+        self._g.bind("modelldcatno", MODELLDCATNO)
 
         self._g.add((URIRef(self.identifier), RDF.type, self._type))
 
