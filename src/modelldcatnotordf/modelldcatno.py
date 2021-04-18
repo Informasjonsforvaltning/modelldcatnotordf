@@ -358,7 +358,7 @@ class InformationModel(Resource):
         self: InformationModel,
         format: str = "turtle",
         encoding: Optional[str] = "utf-8",
-    ) -> str:
+    ) -> bytes:
         """Maps the information model to rdf.
 
         Available formats:
@@ -769,7 +769,9 @@ class ModelElement(ABC):
         self._description = description
 
     @abstractmethod
-    def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
+    def to_rdf(
+        self, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> bytes:
         """Maps the modelelement to rdf.
 
         Args:
@@ -1034,7 +1036,9 @@ class ModelProperty(ABC):
         self._sequence_number = sequence_number
 
     @abstractmethod
-    def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
+    def to_rdf(
+        self, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> bytes:
         """Maps the property to rdf.
 
         Args:
@@ -1216,7 +1220,7 @@ class Role(ModelProperty):
 
     def to_rdf(
         self: Role, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the role to rdf.
 
         Args:
@@ -1287,7 +1291,7 @@ class ObjectType(ModelElement):
 
     def to_rdf(
         self: ObjectType, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the object type to rdf.
 
         Args:
@@ -1447,7 +1451,7 @@ class SimpleType(ModelElement):
 
     def to_rdf(
         self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the object type to rdf.
 
         Args:
@@ -1545,7 +1549,7 @@ class Composition(ModelProperty):
 
     def to_rdf(
         self: Composition, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the role to rdf.
 
         Args:
@@ -1627,7 +1631,7 @@ class Collection(ModelProperty):
 
     def to_rdf(
         self: Collection, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the role to rdf.
 
         Args:
@@ -1711,7 +1715,7 @@ class Association(ModelProperty):
 
     def to_rdf(
         self: Association, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the role to rdf.
 
         Args:
@@ -1796,7 +1800,7 @@ class Choice(ModelProperty):
 
     def to_rdf(
         self: Choice, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the role to rdf.
 
         Args:
@@ -1921,7 +1925,7 @@ class Attribute(ModelProperty):
 
     def to_rdf(
         self: Attribute, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the role to rdf.
 
         Args:
@@ -2072,7 +2076,7 @@ class Specialization(ModelProperty):
 
     def to_rdf(
         self: Specialization, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the role to rdf.
 
         Args:
@@ -2156,7 +2160,7 @@ class Realization(ModelProperty):
 
     def to_rdf(
         self: Realization, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the realization to rdf.
 
         Args:
@@ -2242,7 +2246,7 @@ class Abstraction(ModelProperty):
 
     def to_rdf(
         self: Abstraction, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the role to rdf.
 
         Args:
@@ -2315,7 +2319,7 @@ class DataType(ModelElement):
 
     def to_rdf(
         self: DataType, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the data type to rdf.
 
         Args:
@@ -2362,7 +2366,7 @@ class RootObjectType(ModelElement):
 
     def to_rdf(
         self: RootObjectType, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the data type to rdf.
 
         Args:
@@ -2432,7 +2436,7 @@ class CodeList(ModelElement):
 
     def to_rdf(
         self: CodeList, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the code list to rdf.
 
         Args:
@@ -2714,7 +2718,7 @@ class CodeElement:
 
     def to_rdf(
         self: CodeElement, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the code element to rdf.
 
         Args:
@@ -2984,7 +2988,7 @@ class Note(ModelProperty):
 
     def to_rdf(
         self: Note, format: str = "turtle", encoding: Optional[str] = "utf-8"
-    ) -> str:
+    ) -> bytes:
         """Maps the role to rdf.
 
         Args:
