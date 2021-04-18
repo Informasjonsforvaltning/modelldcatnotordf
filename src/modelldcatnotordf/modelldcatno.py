@@ -371,7 +371,7 @@ class InformationModel(Resource):
             encoding (str): the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -1228,7 +1228,7 @@ class Role(ModelProperty):
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -1299,7 +1299,7 @@ class ObjectType(ModelElement):
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -1452,14 +1452,14 @@ class SimpleType(ModelElement):
     def to_rdf(
         self: SimpleType, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> bytes:
-        """Maps the object type to rdf.
+        """Maps the simple type to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -1550,14 +1550,14 @@ class Composition(ModelProperty):
     def to_rdf(
         self: Composition, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> bytes:
-        """Maps the role to rdf.
+        """Maps the composition to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -1632,14 +1632,14 @@ class Collection(ModelProperty):
     def to_rdf(
         self: Collection, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> bytes:
-        """Maps the role to rdf.
+        """Maps the collection to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -1716,14 +1716,14 @@ class Association(ModelProperty):
     def to_rdf(
         self: Association, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> bytes:
-        """Maps the role to rdf.
+        """Maps the association to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -1801,14 +1801,14 @@ class Choice(ModelProperty):
     def to_rdf(
         self: Choice, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> bytes:
-        """Maps the role to rdf.
+        """Maps the choice to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -1926,14 +1926,14 @@ class Attribute(ModelProperty):
     def to_rdf(
         self: Attribute, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> bytes:
-        """Maps the role to rdf.
+        """Maps the attribute to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -2077,14 +2077,14 @@ class Specialization(ModelProperty):
     def to_rdf(
         self: Specialization, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> bytes:
-        """Maps the role to rdf.
+        """Maps the specialization to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -2168,7 +2168,7 @@ class Realization(ModelProperty):
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -2247,14 +2247,14 @@ class Abstraction(ModelProperty):
     def to_rdf(
         self: Abstraction, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> bytes:
-        """Maps the role to rdf.
+        """Maps the abstraction to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -2327,7 +2327,7 @@ class DataType(ModelElement):
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -2367,14 +2367,14 @@ class RootObjectType(ModelElement):
     def to_rdf(
         self: RootObjectType, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> bytes:
-        """Maps the data type to rdf.
+        """Maps the root object type type to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -2444,7 +2444,7 @@ class CodeList(ModelElement):
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -2726,7 +2726,7 @@ class CodeElement:
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
@@ -2989,14 +2989,14 @@ class Note(ModelProperty):
     def to_rdf(
         self: Note, format: str = "turtle", encoding: Optional[str] = "utf-8"
     ) -> bytes:
-        """Maps the role to rdf.
+        """Maps the note to rdf.
 
         Args:
             format: a valid format. Default: turtle
             encoding: the encoding to serialize into
 
         Returns:
-            a rdf serialization as a string according to format.
+            a rdf serialization as a string according to format encoded as bytes.
         """
         return self._to_graph().serialize(format=format, encoding=encoding)
 
