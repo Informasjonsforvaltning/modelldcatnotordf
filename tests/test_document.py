@@ -94,11 +94,12 @@ def test_to_graph_should_return_language() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_format() -> None:
+def test_to_graph_should_return_format_and_see_also() -> None:
     """It returns an identifier graph isomorphic to spec."""
     document = FoafDocument()
     document.identifier = "http://example.com/documents/1"
     document.format = "https://www.iana.org/assignments/media-types/application/pdf"
+    document.rdfs_see_also = "http://example.com/link"
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -108,6 +109,7 @@ def test_to_graph_should_return_format() -> None:
     @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
     <http://example.com/documents/1> a foaf:Document;
+        rdfs:seeAlso <http://example.com/link> ;
         dct:format
         "https://www.iana.org/assignments/media-types/application/pdf"^^dct:MediaType
         .
