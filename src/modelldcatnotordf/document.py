@@ -17,7 +17,7 @@ from typing import Optional
 
 from datacatalogtordf import Document
 from datacatalogtordf.uri import URI
-from rdflib import DCTERMS, FOAF, Graph, Literal, Namespace, RDF, URIRef
+from rdflib import DCTERMS, FOAF, Graph, Literal, Namespace, RDF, RDFS, URIRef
 
 from modelldcatnotordf.skolemizer import Skolemizer
 
@@ -41,6 +41,7 @@ class FoafDocument(Document):
     _language: str
     _type: str
     _format: str
+    _rdfs_see_also: str
 
     def __init__(self) -> None:
         """Inits an object with default values."""
@@ -55,6 +56,16 @@ class FoafDocument(Document):
     def format(self: FoafDocument, format: str) -> None:
         """Set for format."""
         self._format = URI(format)
+
+    @property
+    def rdfs_see_also(self: FoafDocument) -> str:
+        """Get for rdfs_see_also."""
+        return self._rdfs_see_also
+
+    @rdfs_see_also.setter
+    def rdfs_see_also(self: FoafDocument, rdfs_see_also: str) -> None:
+        """Set for rdfs_see_also."""
+        self._rdfs_see_also = URI(rdfs_see_also)
 
     def to_rdf(
         self: FoafDocument, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -103,5 +114,8 @@ class FoafDocument(Document):
                     Literal(self.format, datatype=DCTERMS.MediaType),
                 )
             )
+
+        if getattr(self, "_rdfs_see_also", None):
+            self._g.add((_self, RDFS.seeAlso, URIRef(self.rdfs_see_also)))
 
         return self._g
