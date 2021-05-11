@@ -86,6 +86,7 @@ class FoafDocument(Document):
         self._g = Graph()
         self._g.bind("dct", DCTERMS)
         self._g.bind("foaf", FOAF)
+        self._g.bind("rdfs", RDFS)
 
         if not getattr(self, "identifier", None):
             self.identifier = Skolemizer.add_skolemization()
