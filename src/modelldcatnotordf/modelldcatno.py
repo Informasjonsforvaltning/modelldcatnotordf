@@ -40,6 +40,56 @@ XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
 ADMS = Namespace("http://www.w3.org/ns/adms#")
 
 
+class Standard:
+    """A class representing a dct:Standard."""
+
+    __slots__ = ("_g", "_identifier")
+
+    _g: Graph
+    _identifier: URI
+
+    @property
+    def identifier(self) -> str:
+        """Get for identifier."""
+        return self._identifier
+
+    @identifier.setter
+    def identifier(self, identifier: str) -> None:
+        self._identifier = URI(identifier)
+
+    def to_rdf(
+        self, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> bytes:
+        """Maps the standard to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format encoded as bytes.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(self) -> Graph:
+        """Returns the standard as graph.
+
+        Returns:
+            the graph graph
+        """
+        self._g = Graph()
+        self._g.bind("dct", DCTERMS)
+
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+
+        _self = URIRef(self.identifier)
+
+        self._g.add((_self, RDF.type, DCTERMS.Standard))
+
+        return self._g
+
+
 class InformationModel(Resource):
     """A class representing a modelldatno:InformationModel."""
 
