@@ -1257,8 +1257,10 @@ class Role(ModelProperty):
     _has_object_type: Union[ObjectType, URI]
     _g: Graph
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
         super().__init__()
 
     @property
