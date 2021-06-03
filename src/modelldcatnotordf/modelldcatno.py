@@ -142,8 +142,11 @@ class InformationModel(Resource):
     _has_format: List[Union[FoafDocument, str]]
     _temporal: List[PeriodOfTime]
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits InformationModel object with default values."""
+        if identifier:
+            self.identifier = identifier
+
         super().__init__()
         self._type = MODELLDCATNO.InformationModel
         self._subject = []
