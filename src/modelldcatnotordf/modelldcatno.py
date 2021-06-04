@@ -1602,8 +1602,10 @@ class Composition(ModelProperty):
         """Set for contains."""
         self._contains = contains
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
         super().__init__()
 
     def to_rdf(
