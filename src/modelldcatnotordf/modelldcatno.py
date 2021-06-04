@@ -1686,8 +1686,10 @@ class Collection(ModelProperty):
         """Set for has_member."""
         self._has_member = has_member
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
         super().__init__()
 
     def to_rdf(
