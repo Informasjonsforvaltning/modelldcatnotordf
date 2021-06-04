@@ -1412,8 +1412,10 @@ class SimpleType(ModelElement):
     _pattern: str
     _belongs_to_module: List[str]
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
         super().__init__()
 
     @property
