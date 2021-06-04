@@ -27,8 +27,10 @@ class LicenseDocument:
     _identifier: URI
     _type: List[Union[Concept, URI]]
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits LicenseDocument object with default values."""
+        if identifier:
+            self.identifier = identifier
         self._type = []
 
     @property
