@@ -1858,8 +1858,10 @@ class Choice(ModelProperty):
         """Set for has_some."""
         self._has_some = has_some
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits Choice object with default values."""
+        if identifier:
+            self.identifier = identifier
         super().__init__()
         self._has_some = []
 
