@@ -43,8 +43,10 @@ class FoafDocument(Document):
     _format: str
     _rdfs_see_also: str
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
         self._type = FOAF.Document
 
     @property
