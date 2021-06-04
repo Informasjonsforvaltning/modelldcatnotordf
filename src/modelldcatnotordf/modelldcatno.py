@@ -1772,8 +1772,10 @@ class Association(ModelProperty):
         """Set for refers_to."""
         self._refers_to = refers_to
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
         super().__init__()
 
     def to_rdf(
