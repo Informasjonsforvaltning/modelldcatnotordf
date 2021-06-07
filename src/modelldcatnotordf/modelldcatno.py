@@ -2619,8 +2619,10 @@ class CodeElement:
     _next_element: Union[CodeElement, URI]
     _previous_element: Union[CodeElement, URI]
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
         self._type = MODELLDCATNO.CodeElement
 
     @property
