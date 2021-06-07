@@ -68,6 +68,26 @@ def test_to_graph_should_return_identifier() -> None:
     assert_isomorphic(g1, g2)
 
 
+def test_to_graph_should_return_identifier_set_at_constructor() -> None:
+    """It returns an identifier graph isomorphic to spec."""
+    note = Note("http://example.com/notes/1")
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        <http://example.com/notes/1> a modelldcatno:Note .
+
+        """
+    g1 = Graph().parse(data=note.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
 def test_to_graph_should_return_property_note() -> None:
     """It returns a property_note graph isomorphic to spec."""
     note = Note()

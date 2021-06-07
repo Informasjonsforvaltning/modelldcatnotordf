@@ -3065,8 +3065,10 @@ class Note(ModelProperty):
         """Set for property_note."""
         self._property_note = property_note
 
-    def __init__(self) -> None:
+    def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
         super().__init__()
 
     def to_rdf(
