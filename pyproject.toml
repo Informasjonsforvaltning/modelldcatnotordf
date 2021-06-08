@@ -22,6 +22,7 @@ rdflib-jsonld = "^0.5.0"
 datacatalogtordf = "^1.2.0"
 validators = "^0.18.2"
 pytest-mock = "^3.5.1"
+skolemizer = "^1.1.0"
 
 
 [tool.poetry.dev-dependencies]

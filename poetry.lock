@@ -743,6 +743,17 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
+name = "skolemizer"
+version = "1.1.0"
+description = "A library with utils for performing Skolemization on blank nodes (RDF)"
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+importlib_metadata = {version = ">=1.5.0,<2.0.0", markers = "python_version < \"3.8\""}
+
+[[package]]
 name = "smmap"
 version = "3.0.5"
 description = "A pure Python implementation of a sliding window memory map manager"
@@ -982,7 +993,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "f34f9973062f474738f53523849eda7fb250290e672e4adf89c29713848d9a74"
+content-hash = "2adcadf1b0cdd3cb5480bd8d5f8f0cf80dae1d758831ed5a3b99b107f4ad1ba1"
 
 [metadata.files]
 alabaster = [
@@ -1414,6 +1425,10 @@ safety = [
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
+]
+skolemizer = [
+    {file = "skolemizer-1.1.0-py3-none-any.whl", hash = "sha256:b498c53f6c74b434ebbfee61f1d3c6632a044fd07c2bd1ebb167dff0873af5bc"},
+    {file = "skolemizer-1.1.0.tar.gz", hash = "sha256:a31c61e0fe109c6930a7fd8890464c73d7924d91a2cb69b726aff75f59a16194"},
 ]
 smmap = [
     {file = "smmap-3.0.5-py2.py3-none-any.whl", hash = "sha256:7bfcf367828031dc893530a29cb35eb8c8f2d7c8f2d0989354d75d24c8573714"},
