@@ -6,10 +6,10 @@ from datacatalogtordf import URI
 import pytest
 from pytest_mock import MockFixture
 from rdflib import Graph
+from skolemizer.testutils import skolemization, SkolemUtils
 
 from modelldcatnotordf.modelldcatno import CodeElement, CodeList
-from tests import testutils
-from tests.testutils import assert_isomorphic, skolemization
+from tests.testutils import assert_isomorphic
 
 
 def test_instantiate_codeelement() -> None:
@@ -25,8 +25,7 @@ def test_to_graph_should_return_codeelement(mocker: MockFixture) -> None:
     codeelement = CodeElement()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -36,7 +35,7 @@ def test_to_graph_should_return_codeelement(mocker: MockFixture) -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a modelldcatno:CodeElement
         .
         """
@@ -245,16 +244,15 @@ def test_to_graph_should_return_in_scheme_skolemization_codeelement_identifier(
 
     <http://example.com/codeelements/1> a modelldcatno:CodeElement ;
         skos:inScheme
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
 
     .
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:CodeList .
     """
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     g1 = Graph().parse(data=codeelement.to_rdf(), format="turtle")
@@ -283,20 +281,20 @@ def test_to_graph_should_return_is_codeelement_of_both_skolemized(
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
     @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:CodeElement ;
         skos:inScheme
-        <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+        <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
     .
-    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+    <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
         a modelldcatno:CodeList
     .
     """
 
-    skolemutils = testutils.SkolemUtils()
+    skolemutils = SkolemUtils()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        "skolemizer.Skolemizer.add_skolemization",
         side_effect=skolemutils.get_skolemization,
     )
 
@@ -320,8 +318,7 @@ def test_to_graph_should_return_in_scheme_skolemization_codelist_id(
     codeelement.in_scheme = inschemes
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -332,7 +329,7 @@ def test_to_graph_should_return_in_scheme_skolemization_codelist_id(
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a modelldcatno:CodeElement ;
             skos:inScheme <http://example.com/codelists/1>
          .
@@ -404,15 +401,14 @@ def test_to_graph_should_return_top_concept_of_skolemization_codeelement_id(
 
     <http://example.com/codeelements/1> a modelldcatno:CodeElement ;
         skos:topConceptOf
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     .
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:CodeList .
     """
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     g1 = Graph().parse(data=codeelement.to_rdf(), format="turtle")
@@ -441,19 +437,19 @@ def test_to_graph_should_return_top_concept_of_both_skolemized(
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
     @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:CodeElement ; skos:topConceptOf
-        <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+        <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
     .
-    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+    <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
         a modelldcatno:CodeList
     .
     """
 
-    skolemutils = testutils.SkolemUtils()
+    skolemutils = SkolemUtils()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        "skolemizer.Skolemizer.add_skolemization",
         side_effect=skolemutils.get_skolemization,
     )
 
@@ -476,8 +472,7 @@ def test_to_graph_should_return_top_concept_of_skolemization_codelist_id(
     codeelement.top_concept_of = inschemes
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -488,7 +483,7 @@ def test_to_graph_should_return_top_concept_of_skolemization_codelist_id(
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a modelldcatno:CodeElement ;
             skos:topConceptOf <http://example.com/codelists/1>
          .

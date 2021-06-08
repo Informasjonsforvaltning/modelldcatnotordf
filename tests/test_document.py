@@ -3,9 +3,10 @@
 import pytest
 from pytest_mock import MockFixture
 from rdflib import Graph
+from skolemizer.testutils import skolemization
 
 from modelldcatnotordf.document import FoafDocument
-from tests.testutils import assert_isomorphic, skolemization
+from tests.testutils import assert_isomorphic
 
 
 def test_instantiate_document() -> None:
@@ -69,8 +70,7 @@ def test_to_graph_should_return_document_skolemized(mocker: MockFixture) -> None
     document.title = {"nb": "Tittel 1", "en": "Title 1"}
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -80,7 +80,7 @@ def test_to_graph_should_return_document_skolemized(mocker: MockFixture) -> None
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a foaf:Document;
                 dct:title   "Title 1"@en, "Tittel 1"@nb ;
         .

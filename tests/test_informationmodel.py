@@ -6,6 +6,7 @@ from datacatalogtordf import Agent, Location, PeriodOfTime, URI
 import pytest
 from pytest_mock import MockFixture
 from rdflib import Graph, Namespace
+from skolemizer.testutils import skolemization
 
 from modelldcatnotordf.document import FoafDocument
 from modelldcatnotordf.licensedocument import LicenseDocument
@@ -14,7 +15,7 @@ from modelldcatnotordf.modelldcatno import (
     ModelElement,
     ObjectType,
 )
-from tests.testutils import assert_isomorphic, skolemization
+from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class InformationModel.
@@ -286,16 +287,15 @@ def test_to_graph_should_return_modelelements_skolemized(mocker: MockFixture) ->
 
     <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         modelldcatno:containsModelElement
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
      a modelldcatno:ObjectType  .
      """
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -325,16 +325,15 @@ def test_to_graph_should_return_modelelements_skolemization_with_properties(
 
     <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         modelldcatno:containsModelElement
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     .
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a modelldcatno:ObjectType ;
             dct:title   "Title 1"@en, "Tittel 1"@nb .
 
     """
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -420,16 +419,15 @@ def test_to_graph_should_return_license_document_skolemization(
 
     <https://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         dct:license
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
        a dct:LicenseDocument .
     """
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -467,10 +465,10 @@ def test_to_graph_should_return_license_document_bnode_with_types(
 
     <https://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         dct:license
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a dct:LicenseDocument ;
             dct:type <https://example.com/types/1> .
 
@@ -479,8 +477,7 @@ def test_to_graph_should_return_license_document_bnode_with_types(
     """
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -1069,15 +1066,14 @@ def test_to_graph_should_return_has_format_skolemization(mocker: MockFixture) ->
 
     <http://example.com/informationmodels/1> a modelldcatno:InformationModel ;
         dct:hasFormat
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
             .
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a foaf:Document .
     """
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")

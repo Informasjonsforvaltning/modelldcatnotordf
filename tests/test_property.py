@@ -6,10 +6,10 @@ from datacatalogtordf import URI
 import pytest
 from pytest_mock import MockFixture
 from rdflib import Graph
+from skolemizer.testutils import skolemization, SkolemUtils
 
 from modelldcatnotordf.modelldcatno import ModelElement, ModelProperty, ObjectType, Role
-from tests import testutils
-from tests.testutils import assert_isomorphic, skolemization
+from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class Property.
@@ -28,8 +28,7 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     property = Role()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -39,7 +38,7 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
             a modelldcatno:Role .
 
         """
@@ -112,8 +111,7 @@ def test_to_graph_should_return_has_type_skolemization_property_id(
     property.has_type.append(modelelement)
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -125,11 +123,11 @@ def test_to_graph_should_return_has_type_skolemization_property_id(
 
         <http://example.com/properties/1> a modelldcatno:Role ;
         modelldcatno:hasType
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
 
         .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
              a modelldcatno:ObjectType .
 
         """
@@ -150,8 +148,7 @@ def test_to_graph_should_return_has_type_skolemization_modelelement_id(
     property.has_type.append(modelelement)
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -161,7 +158,7 @@ def test_to_graph_should_return_has_type_skolemization_modelelement_id(
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
             a modelldcatno:Role ;
                 modelldcatno:hasType <http://example.com/modelelements/1>
         .
@@ -184,10 +181,10 @@ def test_to_graph_should_return_has_type_both_skolemizations(
     modelelement = ObjectType()
     property.has_type.append(modelelement)
 
-    skolemutils = testutils.SkolemUtils()
+    skolemutils = SkolemUtils()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        "skolemizer.Skolemizer.add_skolemization",
         side_effect=skolemutils.get_skolemization,
     )
 
@@ -198,11 +195,11 @@ def test_to_graph_should_return_has_type_both_skolemizations(
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     a modelldcatno:Role ; modelldcatno:hasType
-    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce> .
+    <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce> .
 
-        <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+        <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
                  a modelldcatno:ObjectType .
     """
 
@@ -444,10 +441,10 @@ def test_to_graph_should_return_forms_symmetry_with_skolemization(
 
     <http://example.com/properties/1> a modelldcatno:Role;
         modelldcatno:formsSymmetryWith
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:Role ;
             dct:title
                 "заглавие"@ru,
@@ -458,8 +455,7 @@ def test_to_graph_should_return_forms_symmetry_with_skolemization(
     """
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
     g1 = Graph().parse(data=modelproperty1.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
