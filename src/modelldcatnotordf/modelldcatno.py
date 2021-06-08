@@ -26,11 +26,12 @@ from rdflib import (
     URIRef,
     XSD,
 )
+from skolemizer import Skolemizer
 import validators
 
 from modelldcatnotordf.document import FoafDocument
 from modelldcatnotordf.licensedocument import LicenseDocument
-from modelldcatnotordf.skolemizer import Skolemizer
+
 
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")

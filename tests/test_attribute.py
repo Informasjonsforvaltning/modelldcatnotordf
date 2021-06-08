@@ -2,6 +2,7 @@
 import pytest
 from pytest_mock import MockFixture
 from rdflib import Graph
+from skolemizer.testutils import skolemization, SkolemUtils
 
 from modelldcatnotordf.modelldcatno import (
     Attribute,
@@ -10,8 +11,7 @@ from modelldcatnotordf.modelldcatno import (
     ObjectType,
     SimpleType,
 )
-from tests import testutils
-from tests.testutils import assert_isomorphic, skolemization
+from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class Attribute.
@@ -52,8 +52,7 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     attribute = Attribute()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -63,7 +62,7 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a modelldcatno:Attribute  .
 
         """
@@ -142,15 +141,14 @@ def test_to_graph_should_return_contains_object_type_skolemization_attribute_id(
 
     <http://example.com/attributes/1> a modelldcatno:Attribute ;
         modelldcatno:containsObjectType
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     .
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     a modelldcatno:ObjectType .
     """
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
@@ -170,8 +168,7 @@ def test_to_graph_should_return_contains_object_type_objecttype_id(
     attribute.contains_object_type = objecttype
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -181,7 +178,7 @@ def test_to_graph_should_return_contains_object_type_objecttype_id(
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a modelldcatno:Attribute ;
             modelldcatno:containsObjectType <http://example.com/objecttypes/1>
          .
@@ -204,10 +201,10 @@ def test_to_graph_should_return_contains_object_type_both_skolemizations(
     objecttype = ObjectType()
     attribute.contains_object_type = objecttype
 
-    skolemutils = testutils.SkolemUtils()
+    skolemutils = SkolemUtils()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        "skolemizer.Skolemizer.add_skolemization",
         side_effect=skolemutils.get_skolemization,
     )
 
@@ -218,11 +215,11 @@ def test_to_graph_should_return_contains_object_type_both_skolemizations(
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:Attribute ; modelldcatno:containsObjectType
-        <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+        <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
     .
-    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+    <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
         a modelldcatno:ObjectType
     .
     """
@@ -281,16 +278,15 @@ def test_to_graph_should_return_has_simple_type_skolemization_attribute_id(
 
     <http://example.com/attributes/1> a modelldcatno:Attribute ;
     modelldcatno:hasSimpleType
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:SimpleType .
 
     """
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
@@ -309,10 +305,10 @@ def test_to_graph_should_return_has_simple_type_skolemization_simpletype(
     simpletype.identifier = "http://example.com/simpletypes/1"
     attribute.has_simple_type = simpletype
 
-    skolemutils = testutils.SkolemUtils()
+    skolemutils = SkolemUtils()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        "skolemizer.Skolemizer.add_skolemization",
         side_effect=skolemutils.get_skolemization,
     )
 
@@ -323,7 +319,7 @@ def test_to_graph_should_return_has_simple_type_skolemization_simpletype(
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a modelldcatno:Attribute ;
             modelldcatno:hasSimpleType <http://example.com/simpletypes/1>
          .
@@ -353,19 +349,19 @@ def test_to_graph_should_return_has_simple_type_both_skolemized(
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:Attribute ;
         modelldcatno:hasSimpleType
-        <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+        <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
     .
-    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+    <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
         a modelldcatno:SimpleType .
     """
 
-    skolemutils = testutils.SkolemUtils()
+    skolemutils = SkolemUtils()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        "skolemizer.Skolemizer.add_skolemization",
         side_effect=skolemutils.get_skolemization,
     )
 
@@ -415,8 +411,7 @@ def test_to_graph_should_return_has_data_type_bnode_attribute_id(
     attribute.has_data_type = datatype
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -428,9 +423,9 @@ def test_to_graph_should_return_has_data_type_bnode_attribute_id(
 
     <http://example.com/attributes/1> a modelldcatno:Attribute ;
         modelldcatno:hasDataType
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94> .
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94> .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:DataType  .
 
     """
@@ -451,8 +446,7 @@ def test_to_graph_should_return_has_data_type_skolemization_datatype(
     attribute.has_data_type = datatype
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -462,7 +456,7 @@ def test_to_graph_should_return_has_data_type_skolemization_datatype(
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a modelldcatno:Attribute ;
             modelldcatno:hasDataType <http://example.com/datatypes/1>
          .
@@ -485,10 +479,10 @@ def test_to_graph_should_return_has_data_type_both_skolemized(
     datatype = DataType()
     attribute.has_data_type = datatype
 
-    skolemutils = testutils.SkolemUtils()
+    skolemutils = SkolemUtils()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        "skolemizer.Skolemizer.add_skolemization",
         side_effect=skolemutils.get_skolemization,
     )
 
@@ -499,12 +493,12 @@ def test_to_graph_should_return_has_data_type_both_skolemized(
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:Attribute ; modelldcatno:hasDataType
-        <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+        <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
     .
 
-    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+    <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
         a modelldcatno:DataType
          .
         """
@@ -562,15 +556,14 @@ def test_to_graph_should_return_has_value_from_skolemization_attribute_id(
 
     <http://example.com/attributes/1> a modelldcatno:Attribute ;
         modelldcatno:hasValueFrom
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     .
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:CodeList .
     """
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
@@ -584,8 +577,7 @@ def test_to_graph_should_return_has_value_from_skolemization_codelist(
 ) -> None:
     """It returns a has_value_from graph isomorphic to spec."""
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     attribute = Attribute()
@@ -601,7 +593,7 @@ def test_to_graph_should_return_has_value_from_skolemization_codelist(
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a modelldcatno:Attribute ;
             modelldcatno:hasValueFrom <http://example.com/codelists/1>
          .
@@ -631,20 +623,20 @@ def test_to_graph_should_return_has_value_from_both_skolemized(
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:Attribute ;
         modelldcatno:hasValueFrom
-        <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+        <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
     .
-    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+    <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
     a modelldcatno:CodeList
     .
     """
 
-    skolemutils = testutils.SkolemUtils()
+    skolemutils = SkolemUtils()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        "skolemizer.Skolemizer.add_skolemization",
         side_effect=skolemutils.get_skolemization,
     )
 

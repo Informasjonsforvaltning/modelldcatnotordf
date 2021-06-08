@@ -3,9 +3,10 @@
 import pytest
 from pytest_mock import MockFixture
 from rdflib import Graph
+from skolemizer.testutils import skolemization
 
 from modelldcatnotordf.modelldcatno import Standard
-from tests.testutils import assert_isomorphic, skolemization
+from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class Standard.
@@ -49,8 +50,7 @@ def test_to_graph_should_return_standard_skolemization(mocker: MockFixture,) -> 
     standard = Standard()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -62,7 +62,7 @@ def test_to_graph_should_return_standard_skolemization(mocker: MockFixture,) -> 
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
         @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
            a dct:Standard .
 
       """

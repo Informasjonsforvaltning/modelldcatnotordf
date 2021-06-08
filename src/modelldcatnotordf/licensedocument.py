@@ -12,8 +12,8 @@ from typing import List, Optional, Union
 from concepttordf import Concept
 from datacatalogtordf import URI
 from rdflib import Graph, Namespace, RDF, URIRef
+from skolemizer import Skolemizer
 
-from modelldcatnotordf.skolemizer import Skolemizer
 
 DCT = Namespace("http://purl.org/dc/terms/")
 

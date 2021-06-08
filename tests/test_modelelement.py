@@ -6,10 +6,10 @@ from datacatalogtordf import URI
 import pytest
 from pytest_mock import MockFixture
 from rdflib import Graph
+from skolemizer.testutils import skolemization, SkolemUtils
 
 from modelldcatnotordf.modelldcatno import ModelElement, ModelProperty, ObjectType, Role
-from tests import testutils
-from tests.testutils import assert_isomorphic, skolemization
+from tests.testutils import assert_isomorphic
 
 """
 A test class for testing the class ModelElement.
@@ -54,8 +54,7 @@ def test_to_graph_should_return_title_and_skolemization(mocker: MockFixture) -> 
     modelelement.title = {"nb": "Tittel 1", "en": "Title 1"}
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -65,7 +64,7 @@ def test_to_graph_should_return_title_and_skolemization(mocker: MockFixture) -> 
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:ObjectType ;
             dct:title  "Title 1"@en, "Tittel 1"@nb ;
     .
@@ -171,8 +170,7 @@ def test_to_graph_should_return_has_property_bnode_modelelement_id(
     modelelement.has_property.append(modelproperty)
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -184,10 +182,10 @@ def test_to_graph_should_return_has_property_bnode_modelelement_id(
 
     <http://example.com/modelelements/1> a modelldcatno:ObjectType ;
         modelldcatno:hasProperty
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a modelldcatno:Role  .
     """
 
@@ -208,8 +206,7 @@ def test_to_graph_should_return_has_property_skolemization_property_id(
     modelelement.has_property.append(modelproperty)
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
-        return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
     )
 
     src = """
@@ -219,7 +216,7 @@ def test_to_graph_should_return_has_property_skolemization_property_id(
         @prefix dcat: <http://www.w3.org/ns/dcat#> .
         @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-        <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
          a modelldcatno:ObjectType ;
             modelldcatno:hasProperty <http://example.com/properties/1>
          .
@@ -242,10 +239,10 @@ def test_to_graph_should_return_has_property_both_skolemizations(
     modelproperty = Role()
     modelelement.has_property.append(modelproperty)
 
-    skolemutils = testutils.SkolemUtils()
+    skolemutils = SkolemUtils()
 
     mocker.patch(
-        "modelldcatnotordf.skolemizer.Skolemizer.add_skolemization",
+        "skolemizer.Skolemizer.add_skolemization",
         side_effect=skolemutils.get_skolemization,
     )
 
@@ -256,12 +253,12 @@ def test_to_graph_should_return_has_property_both_skolemizations(
     @prefix dcat: <http://www.w3.org/ns/dcat#> .
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
-    <http://wwww.digdir.no/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
     a modelldcatno:ObjectType ; modelldcatno:hasProperty
-    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+    <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
     .
 
-    <http://wwww.digdir.no/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
+    <http://example.com/.well-known/skolem/21043186-80ce-11eb-9829-cf7c8fc855ce>
         a modelldcatno:Role
     .
     """

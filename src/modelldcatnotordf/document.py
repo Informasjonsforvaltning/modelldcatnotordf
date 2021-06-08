@@ -18,8 +18,8 @@ from typing import Optional
 from datacatalogtordf import Document
 from datacatalogtordf.uri import URI
 from rdflib import DCTERMS, FOAF, Graph, Literal, Namespace, RDF, RDFS, URIRef
+from skolemizer import Skolemizer
 
-from modelldcatnotordf.skolemizer import Skolemizer
 
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 
