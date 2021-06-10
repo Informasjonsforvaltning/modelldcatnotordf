@@ -32,7 +32,6 @@ import validators
 from modelldcatnotordf.document import FoafDocument
 from modelldcatnotordf.licensedocument import LicenseDocument
 
-
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 PROV = Namespace("http://www.w3.org/ns/prov#")
@@ -46,6 +45,7 @@ class Standard:
 
     _g: Graph
     _identifier: URI
+    _title: dict
 
     @property
     def identifier(self) -> str:
@@ -55,6 +55,16 @@ class Standard:
     @identifier.setter
     def identifier(self, identifier: str) -> None:
         self._identifier = URI(identifier)
+
+    @property
+    def title(self) -> dict:
+        """Get for title attribute."""
+        return self._title
+
+    @title.setter
+    def title(self, title: dict) -> None:
+        """Set for title attribute."""
+        self._title = title
 
     def to_rdf(
         self, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -85,6 +95,16 @@ class Standard:
         _self = URIRef(self.identifier)
 
         self._g.add((_self, RDF.type, DCTERMS.Standard))
+
+        if getattr(self, "title", None):
+            for key in self.title:
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        DCTERMS.title,
+                        Literal(self.title[key], lang=key),
+                    )
+                )
 
         return self._g
 
