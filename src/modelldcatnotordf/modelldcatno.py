@@ -44,8 +44,6 @@ ADMS = Namespace("http://www.w3.org/ns/adms#")
 class Standard:
     """A class representing a dct:Standard."""
 
-    __slots__ = ("_g", "_identifier")
-
     _g: Graph
     _identifier: URI
 
@@ -91,7 +89,7 @@ class Standard:
         return self._g
 
 
-class InformationModel(Resource):
+class InformationModel(Resource, Standard):
     """A class representing a modelldatno:InformationModel."""
 
     __slots__ = (
