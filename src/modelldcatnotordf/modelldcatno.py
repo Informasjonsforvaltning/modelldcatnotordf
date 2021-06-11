@@ -48,6 +48,7 @@ class Standard:
     _identifier: URI
     _title: dict
     _has_reference: str
+    _has_version_number: str
 
     @property
     def identifier(self) -> str:
@@ -77,6 +78,16 @@ class Standard:
     def has_reference(self: Standard, has_reference: str) -> None:
         """Set for has_reference."""
         self._has_reference = URI(has_reference)
+
+    @property
+    def has_version_number(self: Standard) -> str:
+        """Get for has_version_number."""
+        return self._has_version_number
+
+    @has_version_number.setter
+    def has_version_number(self: Standard, has_version_number: str) -> None:
+        """Set for has_version_number."""
+        self._has_version_number = has_version_number
 
     def to_rdf(
         self, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -121,6 +132,15 @@ class Standard:
         if getattr(self, "has_reference", None):
             self._g.add(
                 (URIRef(self.identifier), RDFS.seeAlso, URIRef(self.has_reference))
+            )
+
+        if getattr(self, "has_version_number", None):
+            self._g.add(
+                (
+                    URIRef(self.identifier),
+                    OWL.versionInfo,
+                    Literal(self.has_version_number),
+                )
             )
 
         return self._g
