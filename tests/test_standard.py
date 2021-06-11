@@ -96,7 +96,7 @@ def test_to_graph_should_return_title() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_format_and_see_also() -> None:
+def test_to_graph_should_return_has_reference() -> None:
     """It returns a rdfs:seeAlso graph isomorphic to spec."""
     standard = Standard()
     standard.identifier = "http://example.com/standards/1"
@@ -121,7 +121,7 @@ def test_to_graph_should_return_format_and_see_also() -> None:
 
 
 def test_to_graph_should_return_has_version_number() -> None:
-    """It returns a information model identifier graph isomorphic to spec."""
+    """It returns a dct:Standard identifier graph isomorphic to spec."""
     standard = Standard()
     standard.identifier = "http://example.com/standards/1"
     standard.has_version_number = "v0.0.14"
