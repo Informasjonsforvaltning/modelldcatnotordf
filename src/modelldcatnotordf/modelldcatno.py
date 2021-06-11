@@ -22,6 +22,7 @@ from rdflib import (
     Namespace,
     OWL,
     RDF,
+    RDFS,
     SKOS,
     URIRef,
     XSD,
@@ -46,6 +47,7 @@ class Standard:
     _g: Graph
     _identifier: URI
     _title: dict
+    _has_reference: str
 
     @property
     def identifier(self) -> str:
@@ -65,6 +67,16 @@ class Standard:
     def title(self, title: dict) -> None:
         """Set for title attribute."""
         self._title = title
+
+    @property
+    def has_reference(self: Standard) -> str:
+        """Get for has_reference."""
+        return self._has_reference
+
+    @has_reference.setter
+    def has_reference(self: Standard, has_reference: str) -> None:
+        """Set for has_reference."""
+        self._has_reference = URI(has_reference)
 
     def to_rdf(
         self, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -105,6 +117,11 @@ class Standard:
                         Literal(self.title[key], lang=key),
                     )
                 )
+
+        if getattr(self, "has_reference", None):
+            self._g.add(
+                (URIRef(self.identifier), RDFS.seeAlso, URIRef(self.has_reference))
+            )
 
         return self._g
 
