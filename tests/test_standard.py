@@ -118,3 +118,28 @@ def test_to_graph_should_return_format_and_see_also() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_has_version_number() -> None:
+    """It returns a information model identifier graph isomorphic to spec."""
+    standard = Standard()
+    standard.identifier = "http://example.com/standards/1"
+    standard.has_version_number = "v0.0.14"
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+        <http://example.com/standards/1> a dct:Standard ;
+            owl:versionInfo "v0.0.14" ;
+
+        .
+        """
+    g1 = Graph().parse(data=standard.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
