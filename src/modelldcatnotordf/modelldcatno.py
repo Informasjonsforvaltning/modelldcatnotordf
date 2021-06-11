@@ -50,6 +50,11 @@ class Standard:
     _has_reference: str
     _has_version_number: str
 
+    def __init__(self, identifier: Optional[str] = None) -> None:
+        """Inits InformationModel object with default values."""
+        if identifier:
+            self.identifier = identifier
+
     @property
     def identifier(self) -> str:
         """Get for identifier."""
