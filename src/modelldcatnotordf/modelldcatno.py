@@ -21,6 +21,7 @@ from rdflib import (
     Literal,
     Namespace,
     OWL,
+    PROF,
     RDF,
     RDFS,
     SKOS,
@@ -35,7 +36,6 @@ from modelldcatnotordf.licensedocument import LicenseDocument
 
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
-PROV = Namespace("http://www.w3.org/ns/prov#")
 MODELLDCATNO = Namespace("https://data.norge.no/vocabulary/modelldcatno#")
 XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
 ADMS = Namespace("http://www.w3.org/ns/adms#")
@@ -179,6 +179,7 @@ class InformationModel(Resource, Standard):
         "_creator",
         "_has_format",
         "_temporal",
+        "_is_profile_of",
     )
 
     _title: dict
@@ -202,6 +203,7 @@ class InformationModel(Resource, Standard):
     _creator: str
     _has_format: List[Union[FoafDocument, str]]
     _temporal: List[PeriodOfTime]
+    _is_profile_of: Standard
 
     def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits InformationModel object with default values."""
@@ -468,6 +470,16 @@ class InformationModel(Resource, Standard):
         """Set for temporal."""
         self._temporal = temporal
 
+    @property
+    def is_profile_of(self: InformationModel) -> Standard:
+        """Get for is_profile_of."""
+        return self._is_profile_of
+
+    @is_profile_of.setter
+    def is_profile_of(self: InformationModel, is_profile_of: Standard) -> None:
+        """Set for is_profile_of."""
+        self._is_profile_of = is_profile_of
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -515,6 +527,7 @@ class InformationModel(Resource, Standard):
         self._status_to_graph()
         self._has_formats_to_graph()
         self._temporals_to_graph()
+        self._is_profile_of_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -531,6 +544,23 @@ class InformationModel(Resource, Standard):
             )
 
         return self._g
+
+    def _is_profile_of_to_graph(self: InformationModel) -> None:
+        if getattr(self, "_is_profile_of", None):
+
+            _is_profile_of = (
+                URIRef(self.is_profile_of.identifier)
+                if isinstance(self.is_profile_of, Standard)
+                else URIRef(self.is_profile_of)
+            )
+
+            if isinstance(self.is_profile_of, Standard):
+                for _s, p, o in self.is_profile_of._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add((_is_profile_of, p, o))
+
+            self._g.add((URIRef(self.identifier), PROF.isProfileOf, _is_profile_of))
 
     def _subject_to_graph(self: InformationModel) -> None:
         if getattr(self, "subject", None):
