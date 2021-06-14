@@ -180,6 +180,7 @@ class InformationModel(Resource, Standard):
         "_has_format",
         "_temporal",
         "_is_profile_of",
+        "_conforms_to",
     )
 
     _title: dict
@@ -204,6 +205,7 @@ class InformationModel(Resource, Standard):
     _has_format: List[Union[FoafDocument, str]]
     _temporal: List[PeriodOfTime]
     _is_profile_of: Standard
+    _conforms_to: Standard
 
     def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits InformationModel object with default values."""
@@ -480,6 +482,16 @@ class InformationModel(Resource, Standard):
         """Set for is_profile_of."""
         self._is_profile_of = is_profile_of
 
+    @property
+    def conforms_to(self: InformationModel) -> Standard:
+        """Get for conforms_to."""
+        return self._conforms_to
+
+    @conforms_to.setter
+    def conforms_to(self: InformationModel, conforms_to: Standard) -> None:
+        """Set for conforms_to."""
+        self._conforms_to = conforms_to
+
     def to_rdf(
         self: InformationModel,
         format: str = "turtle",
@@ -528,6 +540,7 @@ class InformationModel(Resource, Standard):
         self._has_formats_to_graph()
         self._temporals_to_graph()
         self._is_profile_of_to_graph()
+        self._conforms_to_to_graph()
 
         if getattr(self, "informationmodelidentifier", None):
             self._g.add(
@@ -810,6 +823,23 @@ class InformationModel(Resource, Standard):
                     self._g.add((_temporal, p, o))
 
                 self._g.add((URIRef(self.identifier), DCTERMS.temporal, _temporal,))
+
+    def _conforms_to_to_graph(self: InformationModel) -> None:
+        if getattr(self, "_conforms_to", None):
+
+            _conforms_to = (
+                URIRef(self.conforms_to.identifier)
+                if isinstance(self.conforms_to, Standard)
+                else URIRef(self.conforms_to)
+            )
+
+            if isinstance(self.conforms_to, Standard):
+                for _s, p, o in self.conforms_to._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add((_conforms_to, p, o))
+
+            self._g.add((URIRef(self.identifier), DCTERMS.conformsTo, _conforms_to))
 
 
 class ModelElement(ABC):
