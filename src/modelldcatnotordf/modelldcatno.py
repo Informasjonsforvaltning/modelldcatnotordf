@@ -1965,12 +1965,12 @@ class Choice(ModelProperty):
 
     __slots__ = "_has_some"
 
-    _has_some: List[Union[ModelElement, URI]]
+    _has_some: List[Union[ModelElement, ModelProperty, URI]]
     _identifier: URI
     _g: Graph
 
     @property
-    def has_some(self: Choice) -> List[Union[ModelElement, URI]]:
+    def has_some(self: Choice) -> List[Union[ModelElement, ModelProperty, URI]]:
         """Get for has_some."""
         return self._has_some
 
@@ -2030,6 +2030,16 @@ class Choice(ModelProperty):
             for has_some in self._has_some:
 
                 if isinstance(has_some, ModelElement):
+
+                    if not getattr(has_some, "identifier", None):
+                        has_some.identifier = Skolemizer.add_skolemization()
+
+                    _has_some = URIRef(has_some.identifier)
+
+                    for _s, p, o in has_some._to_graph().triples((None, None, None)):
+                        self._g.add((_s, p, o))
+
+                elif isinstance(has_some, ModelProperty):
 
                     if not getattr(has_some, "identifier", None):
                         has_some.identifier = Skolemizer.add_skolemization()
