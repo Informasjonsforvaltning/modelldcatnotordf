@@ -2428,18 +2428,18 @@ class Abstraction(ModelProperty):
 
     __slots__ = "_is_abstraction_of"
 
-    _is_abstraction_of: Union[ModelElement, URI]
+    _is_abstraction_of: Union[ModelElement, ModelProperty, URI]
     _identifier: URI
     _g: Graph
 
     @property
-    def is_abstraction_of(self: Abstraction) -> Union[ModelElement, URI]:
+    def is_abstraction_of(self: Abstraction) -> Union[ModelElement, ModelProperty, URI]:
         """Get for is_abstraction_of."""
         return self._is_abstraction_of
 
     @is_abstraction_of.setter
     def is_abstraction_of(
-        self: Abstraction, is_abstraction_of: Union[ModelElement, URI]
+        self: Abstraction, is_abstraction_of: Union[ModelElement, ModelProperty, URI]
     ) -> None:
         """Set for is_abstraction_of."""
         self._is_abstraction_of = is_abstraction_of
@@ -2494,6 +2494,18 @@ class Abstraction(ModelProperty):
         if getattr(self, "is_abstraction_of", None):
 
             if isinstance(self.is_abstraction_of, ModelElement):
+
+                if not getattr(self.is_abstraction_of, "identifier", None):
+                    self.is_abstraction_of.identifier = Skolemizer.add_skolemization()
+
+                _is_abstraction_of = URIRef(self.is_abstraction_of.identifier)
+
+                for _s, p, o in self._is_abstraction_of._to_graph().triples(
+                    (None, None, None)
+                ):
+                    self._g.add((_s, p, o))
+
+            elif isinstance(self.is_abstraction_of, ModelProperty):
 
                 if not getattr(self.is_abstraction_of, "identifier", None):
                     self.is_abstraction_of.identifier = Skolemizer.add_skolemization()
