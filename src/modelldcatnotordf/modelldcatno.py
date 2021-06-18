@@ -3245,7 +3245,7 @@ class Note(ModelProperty):
 
         _self = URIRef(self.identifier)
 
-        super(Note, self)._to_graph(MODELLDCATNO.Note, _self)
+        super(Note, self)._to_graph(type, _self)
 
         self._property_note_to_graph(_self)
 
@@ -3262,3 +3262,52 @@ class Note(ModelProperty):
                         Literal(self.property_note[key], lang=key),
                     )
                 )
+
+
+class ConstraintRule(Note):
+    """A class representing a modelldcatno:ConstraintRule."""
+
+    _g: Graph
+
+    def __init__(self, identifier: Optional[str] = None) -> None:
+        """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
+        super().__init__()
+
+    def to_rdf(
+        self: ConstraintRule, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> bytes:
+        """Maps the constraint rule to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format encoded as bytes.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: ConstraintRule,
+        type: str = MODELLDCATNO.ConstraintRule,
+        selfobject: URIRef = None,
+    ) -> Graph:
+        """Returns the constraint rule as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.ConstraintRule
+            selfobject: a URIRef passed from a subclass Default: None
+
+        Returns:
+            the role graph
+        """
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+
+        _self = URIRef(self.identifier)
+
+        super(ConstraintRule, self)._to_graph(MODELLDCATNO.ConstraintRule, _self)
+
+        return self._g
