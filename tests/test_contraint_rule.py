@@ -260,3 +260,30 @@ def test_to_graph_should_return_constrains_link() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_constraint_expression() -> None:
+    """It returns a constraint_expression graph isomorphic to spec."""
+    constraint_rule = ConstraintRule()
+    constraint_rule.identifier = "http://example.com/constraint_rules/1"
+    constraint_rule.constraint_expression = {
+        "nb": "Begrensningsregeluttrykk",
+        "en": "A constraint expression",
+    }
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+        <http://example.com/constraint_rules/1> a modelldcatno:ConstraintRule;
+                modelldcatno:constraintExpression
+                    "A constraint expression"@en, "Begrensningsregeluttrykk"@nb ;
+        .
+        """
+    g1 = Graph().parse(data=constraint_rule.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
