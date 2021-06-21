@@ -3267,11 +3267,12 @@ class Note(ModelProperty):
 class ConstraintRule(Note):
     """A class representing a modelldcatno:ConstraintRule."""
 
-    slots = "_contrains"
+    slots = "_contrains", "constraint_expression"
 
     _g: Graph
     _constrains: List[Union[ModelElement, ModelProperty, URI]]
     _identifier: URI
+    _constraint_expression: dict
 
     @property
     def constrains(
@@ -3286,6 +3287,16 @@ class ConstraintRule(Note):
     ) -> None:
         """Set for constrains."""
         self._constrains = constrains
+
+    @property
+    def constraint_expression(self) -> dict:
+        """Get for constraint_expression attribute."""
+        return self._constraint_expression
+
+    @constraint_expression.setter
+    def constraint_expression(self, constraint_expression: dict) -> None:
+        """Set for constraint_expression attribute."""
+        self._constraint_expression = constraint_expression
 
     def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
@@ -3327,6 +3338,16 @@ class ConstraintRule(Note):
         _self = URIRef(self.identifier)
 
         super(ConstraintRule, self)._to_graph(MODELLDCATNO.ConstraintRule, _self)
+
+        if getattr(self, "constraint_expression", None):
+            for key in self.constraint_expression:
+                self._g.add(
+                    (
+                        URIRef(self.identifier),
+                        MODELLDCATNO.constraintExpression,
+                        Literal(self.constraint_expression[key], lang=key),
+                    )
+                )
 
         self._constrains_to_graph(_self)
 
