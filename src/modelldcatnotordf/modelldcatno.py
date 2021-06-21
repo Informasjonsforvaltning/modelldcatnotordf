@@ -3267,7 +3267,25 @@ class Note(ModelProperty):
 class ConstraintRule(Note):
     """A class representing a modelldcatno:ConstraintRule."""
 
+    slots = "_contrains"
+
     _g: Graph
+    _constrains: List[Union[ModelElement, ModelProperty, URI]]
+    _identifier: URI
+
+    @property
+    def constrains(
+        self: ConstraintRule,
+    ) -> List[Union[ModelElement, ModelProperty, URI]]:
+        """Get for constrains."""
+        return self._constrains
+
+    @constrains.setter
+    def constrains(
+        self: ConstraintRule, constrains: List[Union[ModelElement, ModelProperty]]
+    ) -> None:
+        """Set for constrains."""
+        self._constrains = constrains
 
     def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
@@ -3310,4 +3328,37 @@ class ConstraintRule(Note):
 
         super(ConstraintRule, self)._to_graph(MODELLDCATNO.ConstraintRule, _self)
 
+        self._constrains_to_graph(_self)
+
         return self._g
+
+    def _constrains_to_graph(self, _self: URIRef) -> None:
+
+        if getattr(self, "constrains", None):
+
+            for constrains in self.constrains:
+
+                if isinstance(constrains, ModelElement):
+
+                    if not getattr(constrains, "identifier", None):
+                        constrains.identifier = Skolemizer.add_skolemization()
+
+                    _constrains = URIRef(constrains.identifier)
+
+                    for _s, p, o in constrains._to_graph().triples((None, None, None)):
+                        self._g.add((_s, p, o))
+
+                elif isinstance(constrains, ModelProperty):
+
+                    if not getattr(constrains, "identifier", None):
+                        constrains.identifier = Skolemizer.add_skolemization()
+
+                    _constrains = URIRef(constrains.identifier)
+
+                    for _s, p, o in constrains._to_graph().triples((None, None, None)):
+                        self._g.add((_s, p, o))
+
+                elif isinstance(constrains, str):
+                    _constrains = URIRef(constrains)
+
+                self._g.add((_self, MODELLDCATNO.constrains, _constrains))
