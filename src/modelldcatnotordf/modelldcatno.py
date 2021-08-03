@@ -3337,7 +3337,7 @@ class ConstraintRule(Note):
 
         _self = URIRef(self.identifier)
 
-        super(ConstraintRule, self)._to_graph(MODELLDCATNO.ConstraintRule, _self)
+        super(ConstraintRule, self)._to_graph(type, _self)
 
         if getattr(self, "constraint_expression", None):
             for key in self.constraint_expression:
@@ -3383,3 +3383,52 @@ class ConstraintRule(Note):
                     _constrains = URIRef(constrains)
 
                 self._g.add((_self, MODELLDCATNO.constrains, _constrains))
+
+
+class Or(ConstraintRule):
+    """A class representing a modelldcatno:Or."""
+
+    _g: Graph
+    _constrains: List[Union[ModelElement, ModelProperty, URI]]
+    _identifier: URI
+
+    def __init__(self, identifier: Optional[str] = None) -> None:
+        """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
+        super().__init__()
+
+    def to_rdf(
+        self: Or, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> bytes:
+        """Maps the constraint rule to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format encoded as bytes.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Or, type: str = MODELLDCATNO.Or, selfobject: URIRef = None,
+    ) -> Graph:
+        """Returns the modelldcatno:Or as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Or
+            selfobject: a URIRef passed from a subclass Default: None
+
+        Returns:
+            the Or graph
+        """
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+
+        _self = URIRef(self.identifier)
+
+        super(Or, self)._to_graph(MODELLDCATNO.Or, _self)
+
+        return self._g
