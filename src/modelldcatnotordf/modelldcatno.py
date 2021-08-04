@@ -3432,3 +3432,52 @@ class Or(ConstraintRule):
         super(Or, self)._to_graph(MODELLDCATNO.Or, _self)
 
         return self._g
+
+
+class Xor(ConstraintRule):
+    """A class representing a modelldcatno:Xor."""
+
+    _g: Graph
+    _constrains: List[Union[ModelElement, ModelProperty, URI]]
+    _identifier: URI
+
+    def __init__(self, identifier: Optional[str] = None) -> None:
+        """Inits an object with default values."""
+        if identifier:
+            self.identifier = identifier
+        super().__init__()
+
+    def to_rdf(
+        self: Xor, format: str = "turtle", encoding: Optional[str] = "utf-8"
+    ) -> bytes:
+        """Maps the constraint rule to rdf.
+
+        Args:
+            format: a valid format. Default: turtle
+            encoding: the encoding to serialize into
+
+        Returns:
+            a rdf serialization as a string according to format encoded as bytes.
+        """
+        return self._to_graph().serialize(format=format, encoding=encoding)
+
+    def _to_graph(
+        self: Xor, type: str = MODELLDCATNO.Xor, selfobject: URIRef = None,
+    ) -> Graph:
+        """Returns the modelldcatno:Xor as graph.
+
+        Args:
+            type: type for identifying class. Default: MODELLDCATNO.Xor
+            selfobject: a URIRef passed from a subclass Default: None
+
+        Returns:
+            the Xor graph
+        """
+        if not getattr(self, "identifier", None):
+            self.identifier = Skolemizer.add_skolemization()
+
+        _self = URIRef(self.identifier)
+
+        super(Xor, self)._to_graph(MODELLDCATNO.Xor, _self)
+
+        return self._g
