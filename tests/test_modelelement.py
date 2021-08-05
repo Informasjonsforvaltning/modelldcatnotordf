@@ -8,7 +8,13 @@ from pytest_mock import MockFixture
 from rdflib import Graph
 from skolemizer.testutils import skolemization, SkolemUtils
 
-from modelldcatnotordf.modelldcatno import ModelElement, ModelProperty, ObjectType, Role
+from modelldcatnotordf.modelldcatno import (
+    ModelElement,
+    ModelProperty,
+    Module,
+    ObjectType,
+    Role,
+)
 from tests.testutils import assert_isomorphic
 
 """
@@ -269,11 +275,14 @@ def test_to_graph_should_return_has_property_both_skolemizations(
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_belongs_to_module_as_graph() -> None:
+def test_to_graph_should_return_belongs_to_module_as_graph(mocker: MockFixture) -> None:
     """It returns a belongs_to_module graph isomorphic to spec."""
     modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
-    modelelement.belongs_to_module = ["core"]
+    module = Module()
+    module.title = {None: "core"}
+
+    modelelement.belongs_to_module = [module]
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -283,9 +292,18 @@ def test_to_graph_should_return_belongs_to_module_as_graph() -> None:
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
     <http://example.com/modelelements/1>    a modelldcatno:ObjectType ;
-        modelldcatno:belongsToModule "core";
+        modelldcatno:belongsToModule
+          <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    .
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        a modelldcatno:Module ;
+            dct:title "core"
     .
     """
+    mocker.patch(
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+    )
+
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
@@ -317,12 +335,13 @@ def test_to_graph_should_return_description() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_belongs_to_module_any_uri_graph() -> None:
+def test_to_graph_should_return_belongs_to_module_str() -> None:
     """It returns a belongs_to_module graph isomorphic to spec."""
     modelelement = ObjectType()
     modelelement.identifier = "http://example.com/modelelements/1"
-    belongs_to_module = "http://www.example.org/core"
-    modelelement.belongs_to_module = [belongs_to_module]
+    module = "http://www.example.org/core"
+    belongs_to_module: List[Union[Module, str]] = [module]
+    modelelement.belongs_to_module = belongs_to_module
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -334,8 +353,8 @@ def test_to_graph_should_return_belongs_to_module_any_uri_graph() -> None:
 
 
     <http://example.com/modelelements/1>    a modelldcatno:ObjectType ;
-        modelldcatno:belongsToModule "http://www.example.org/core"^^xsd:anyURI ;
-    .
+        modelldcatno:belongsToModule <http://www.example.org/core> .
+
     """
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
