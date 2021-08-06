@@ -29,7 +29,6 @@ from rdflib import (
     XSD,
 )
 from skolemizer import Skolemizer
-import validators
 
 from modelldcatnotordf.document import FoafDocument
 from modelldcatnotordf.licensedocument import LicenseDocument
@@ -1093,7 +1092,7 @@ class ModelProperty(ABC):
     _title: dict
     _subject: Union[Concept, URI]
     _description: dict
-    _belongs_to_module: List[str]
+    _belongs_to_module: List[Union[Module, URI]]
     _forms_symmetry_with: Union[ModelProperty, URI]
     _relation_property_label: dict
     _sequence_number: int
@@ -1175,12 +1174,14 @@ class ModelProperty(ABC):
         self._description = description
 
     @property
-    def belongs_to_module(self: ModelProperty) -> List[str]:
+    def belongs_to_module(self: ModelProperty) -> List[Union[Module, URI]]:
         """Get for belongs_to_module."""
         return self._belongs_to_module
 
     @belongs_to_module.setter
-    def belongs_to_module(self: ModelProperty, belongs_to_module: List[str]) -> None:
+    def belongs_to_module(
+        self: ModelProperty, belongs_to_module: List[Union[Module, URI]]
+    ) -> None:
         """Set for belongs_to_module."""
         self._belongs_to_module = belongs_to_module
 
@@ -1328,16 +1329,25 @@ class ModelProperty(ABC):
 
     def _belongs_to_module_to_graph(self: ModelProperty, selfobject: URIRef) -> None:
         if getattr(self, "belongs_to_module", None):
-
             for belongs_to_module in self._belongs_to_module:
-                _datatype = XSD.anyURI if validators.url(belongs_to_module) else None
+
+                if isinstance(belongs_to_module, Module):
+
+                    if not getattr(belongs_to_module, "identifier", None):
+                        belongs_to_module.identifier = Skolemizer.add_skolemization()
+
+                    _belongs_to_module = URIRef(belongs_to_module.identifier)
+
+                    for _s, p, o in belongs_to_module._to_graph().triples(
+                        (None, None, None)
+                    ):
+                        self._g.add((_s, p, o))
+
+                elif isinstance(belongs_to_module, str):
+                    _belongs_to_module = URIRef(belongs_to_module)
 
                 self._g.add(
-                    (
-                        selfobject,
-                        MODELLDCATNO.belongsToModule,
-                        Literal(belongs_to_module, datatype=_datatype),
-                    )
+                    (selfobject, MODELLDCATNO.belongsToModule, _belongs_to_module,)
                 )
 
     def _forms_symmetry_with_to_graph(self, _self: URIRef) -> None:

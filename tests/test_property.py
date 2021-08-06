@@ -8,7 +8,13 @@ from pytest_mock import MockFixture
 from rdflib import Graph
 from skolemizer.testutils import skolemization, SkolemUtils
 
-from modelldcatnotordf.modelldcatno import ModelElement, ModelProperty, ObjectType, Role
+from modelldcatnotordf.modelldcatno import (
+    ModelElement,
+    ModelProperty,
+    Module,
+    ObjectType,
+    Role,
+)
 from tests.testutils import assert_isomorphic
 
 """
@@ -335,12 +341,13 @@ def test_to_graph_should_return_description() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_belongs_to_module_any_uri_graph() -> None:
+def test_to_graph_should_return_belongs_to_module_str(mocker: MockFixture,) -> None:
     """It returns a belongs_to_module graph isomorphic to spec."""
     modelproperty = Role()
     modelproperty.identifier = "http://example.com/properties/1"
-    belongs_to_module = "http://www.example.org/core"
-    modelproperty.belongs_to_module = [belongs_to_module]
+    module = "http://www.example.org/core"
+    belongs_to_module: List[Union[Module, str]] = [module]
+    modelproperty.belongs_to_module = belongs_to_module
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -352,20 +359,29 @@ def test_to_graph_should_return_belongs_to_module_any_uri_graph() -> None:
 
 
     <http://example.com/properties/1>    a modelldcatno:Role ;
-        modelldcatno:belongsToModule "http://www.example.org/core"^^xsd:anyURI ;
+        modelldcatno:belongsToModule
+            <http://www.example.org/core>
     .
+
     """
+    mocker.patch(
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+    )
+
     g1 = Graph().parse(data=modelproperty.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_belongs_to_module_as_graph() -> None:
+def test_to_graph_should_return_belongs_to_module_as_graph(mocker: MockFixture) -> None:
     """It returns a belongs_to_module graph isomorphic to spec."""
     modelproperty = Role()
     modelproperty.identifier = "http://example.com/properties/1"
-    modelproperty.belongs_to_module = ["core"]
+    module = Module()
+    module.title = {None: "core"}
+
+    modelproperty.belongs_to_module = [module]
 
     src = """
     @prefix dct: <http://purl.org/dc/terms/> .
@@ -375,9 +391,18 @@ def test_to_graph_should_return_belongs_to_module_as_graph() -> None:
     @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
 
     <http://example.com/properties/1>    a modelldcatno:Role ;
-        modelldcatno:belongsToModule "core";
+         modelldcatno:belongsToModule
+          <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    .
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        a modelldcatno:Module ;
+            dct:title "core"
     .
     """
+
+    mocker.patch(
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+    )
     g1 = Graph().parse(data=modelproperty.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
