@@ -2361,17 +2361,19 @@ class Realization(ModelProperty):
 
     __slots__ = "_has_supplier"
 
-    _has_supplier: Union[ModelElement, URI]
+    _has_supplier: Union[ModelElement, ModelProperty, URI]
     _identifier: URI
     _g: Graph
 
     @property
-    def has_supplier(self: Realization) -> Union[ModelElement, URI]:
+    def has_supplier(self: Realization) -> Union[ModelElement, ModelProperty, URI]:
         """Get for has_supplier."""
         return self._has_supplier
 
     @has_supplier.setter
-    def has_supplier(self: Realization, has_supplier: Union[ModelElement, URI]) -> None:
+    def has_supplier(
+        self: Realization, has_supplier: Union[ModelElement, ModelProperty, URI]
+    ) -> None:
         """Set for has_supplier."""
         self._has_supplier = has_supplier
 
@@ -2424,7 +2426,9 @@ class Realization(ModelProperty):
 
         if getattr(self, "has_supplier", None):
 
-            if isinstance(self.has_supplier, ModelElement):
+            if isinstance(self.has_supplier, ModelElement) or isinstance(
+                self.has_supplier, ModelProperty
+            ):
 
                 if not getattr(self.has_supplier, "identifier", None):
                     self.has_supplier.identifier = Skolemizer.add_skolemization()
