@@ -3212,14 +3212,24 @@ class CodeElement:
             self._g.add((_self, XKOS.previous, _previous_element))
 
 
-class Note(ModelProperty):
+class Note:
     """A class representing a modelldcatno:Note."""
 
-    __slots__ = "_property_note"
+    __slots__ = ("_identifier", "_g", "_property_note")
 
     _property_note: dict
     _identifier: URI
     _g: Graph
+
+    @property
+    def identifier(self: Note) -> str:
+        """Get for identifier."""
+        return self._identifier
+
+    @identifier.setter
+    def identifier(self: Note, identifier: str) -> None:
+        """Set for identifier."""
+        self._identifier = URI(identifier)
 
     @property
     def property_note(self: Note) -> dict:
@@ -3235,7 +3245,6 @@ class Note(ModelProperty):
         """Inits an object with default values."""
         if identifier:
             self.identifier = identifier
-        super().__init__()
 
     def to_rdf(
         self: Note, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -3263,12 +3272,14 @@ class Note(ModelProperty):
         Returns:
             the role graph
         """
+        self._g = Graph()
+
         if not getattr(self, "identifier", None):
             self.identifier = Skolemizer.add_skolemization()
 
         _self = URIRef(self.identifier)
 
-        super(Note, self)._to_graph(type, _self)
+        self._g.add((_self, RDF.type, type))
 
         self._property_note_to_graph(_self)
 
