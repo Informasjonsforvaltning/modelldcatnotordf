@@ -3215,11 +3215,12 @@ class CodeElement:
 class Note:
     """A class representing a modelldcatno:Note."""
 
-    __slots__ = ("_identifier", "_g", "_property_note")
+    __slots__ = ("_identifier", "_g", "_property_note", "_belongs_to_module")
 
     _property_note: dict
     _identifier: URI
     _g: Graph
+    _belongs_to_module: List[Union[Module, URI]]
 
     @property
     def identifier(self: Note) -> str:
@@ -3240,6 +3241,16 @@ class Note:
     def property_note(self: Note, property_note: dict) -> None:
         """Set for property_note."""
         self._property_note = property_note
+
+    @property
+    def belongs_to_module(self) -> List[Union[Module, URI]]:
+        """Get for belongs_to_module."""
+        return self._belongs_to_module
+
+    @belongs_to_module.setter
+    def belongs_to_module(self, belongs_to_module: List[Union[Module, URI]]) -> None:
+        """Set for belongs_to_module."""
+        self._belongs_to_module = belongs_to_module
 
     def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
@@ -3282,6 +3293,7 @@ class Note:
         self._g.add((_self, RDF.type, type))
 
         self._property_note_to_graph(_self)
+        self._belongs_to_module_to_graph(_self)
 
         return self._g
 
@@ -3295,6 +3307,29 @@ class Note:
                         MODELLDCATNO.propertyNote,
                         Literal(self.property_note[key], lang=key),
                     )
+                )
+
+    def _belongs_to_module_to_graph(self: Note, selfobject: URIRef) -> None:
+        if getattr(self, "belongs_to_module", None):
+            for belongs_to_module in self._belongs_to_module:
+
+                if isinstance(belongs_to_module, Module):
+
+                    if not getattr(belongs_to_module, "identifier", None):
+                        belongs_to_module.identifier = Skolemizer.add_skolemization()
+
+                    _belongs_to_module = URIRef(belongs_to_module.identifier)
+
+                    for _s, p, o in belongs_to_module._to_graph().triples(
+                        (None, None, None)
+                    ):
+                        self._g.add((_s, p, o))
+
+                elif isinstance(belongs_to_module, str):
+                    _belongs_to_module = URIRef(belongs_to_module)
+
+                self._g.add(
+                    (selfobject, MODELLDCATNO.belongsToModule, _belongs_to_module,)
                 )
 
 
