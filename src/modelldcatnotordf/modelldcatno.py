@@ -3222,6 +3222,7 @@ class Note:
         "_belongs_to_module",
         "_title",
         "_dct_identifier",
+        "_annotates",
     )
 
     _property_note: dict
@@ -3230,6 +3231,7 @@ class Note:
     _belongs_to_module: List[Union[Module, URI]]
     _title: dict
     _dct_identifier: str
+    _annotates: List[Union[ModelProperty, ModelElement, URI]]
 
     @property
     def identifier(self: Note) -> str:
@@ -3281,6 +3283,18 @@ class Note:
         """Set for dct_identifier."""
         self._dct_identifier = dct_identifier
 
+    @property
+    def annotates(self) -> List[Union[ModelProperty, ModelElement, URI]]:
+        """Get for annotates."""
+        return self._annotates
+
+    @annotates.setter
+    def annotates(
+        self, annotates: List[Union[ModelProperty, ModelElement, URI]]
+    ) -> None:
+        """Set for annotates."""
+        self._annotates = annotates
+
     def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
         if identifier:
@@ -3327,6 +3341,7 @@ class Note:
         self._title_to_graph(_self)
         self._property_note_to_graph(_self)
         self._belongs_to_module_to_graph(_self)
+        self._annotates_to_graph(_self)
 
         return self._g
 
@@ -3369,6 +3384,27 @@ class Note:
                 self._g.add(
                     (selfobject, MODELLDCATNO.belongsToModule, _belongs_to_module,)
                 )
+
+    def _annotates_to_graph(self: Note, selfobject: URIRef) -> None:
+        if getattr(self, "annotates", None):
+            for annotates in self._annotates:
+
+                if isinstance(annotates, ModelElement) or isinstance(
+                    annotates, ModelProperty
+                ):
+
+                    if not getattr(annotates, "identifier", None):
+                        annotates.identifier = Skolemizer.add_skolemization()
+
+                    _annotates = URIRef(annotates.identifier)
+
+                    for _s, p, o in annotates._to_graph().triples((None, None, None)):
+                        self._g.add((_s, p, o))
+
+                elif isinstance(annotates, str):
+                    _annotates = URIRef(annotates)
+
+                self._g.add((selfobject, MODELLDCATNO.annotates, _annotates,))
 
 
 class ConstraintRule(Note):
