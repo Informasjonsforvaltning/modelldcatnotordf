@@ -3215,12 +3215,13 @@ class CodeElement:
 class Note:
     """A class representing a modelldcatno:Note."""
 
-    __slots__ = ("_identifier", "_g", "_property_note", "_belongs_to_module")
+    __slots__ = ("_identifier", "_g", "_property_note", "_belongs_to_module", "_title")
 
     _property_note: dict
     _identifier: URI
     _g: Graph
     _belongs_to_module: List[Union[Module, URI]]
+    _title: dict
 
     @property
     def identifier(self: Note) -> str:
@@ -3251,6 +3252,16 @@ class Note:
     def belongs_to_module(self, belongs_to_module: List[Union[Module, URI]]) -> None:
         """Set for belongs_to_module."""
         self._belongs_to_module = belongs_to_module
+
+    @property
+    def title(self) -> dict:
+        """Get for title attribute."""
+        return self._title
+
+    @title.setter
+    def title(self, title: dict) -> None:
+        """Set for title attribute."""
+        self._title = title
 
     def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
@@ -3292,10 +3303,16 @@ class Note:
 
         self._g.add((_self, RDF.type, type))
 
+        self._title_to_graph(_self)
         self._property_note_to_graph(_self)
         self._belongs_to_module_to_graph(_self)
 
         return self._g
+
+    def _title_to_graph(self: Note, _self: URIRef) -> None:
+        if getattr(self, "title", None):
+            for key in self.title:
+                self._g.add((_self, DCTERMS.title, Literal(self.title[key], lang=key),))
 
     def _property_note_to_graph(self: Note, _self: URIRef) -> None:
         if getattr(self, "property_note", None):
