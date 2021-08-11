@@ -3215,13 +3215,21 @@ class CodeElement:
 class Note:
     """A class representing a modelldcatno:Note."""
 
-    __slots__ = ("_identifier", "_g", "_property_note", "_belongs_to_module", "_title")
+    __slots__ = (
+        "_identifier",
+        "_g",
+        "_property_note",
+        "_belongs_to_module",
+        "_title",
+        "_dct_identifier",
+    )
 
     _property_note: dict
     _identifier: URI
     _g: Graph
     _belongs_to_module: List[Union[Module, URI]]
     _title: dict
+    _dct_identifier: str
 
     @property
     def identifier(self: Note) -> str:
@@ -3263,6 +3271,16 @@ class Note:
         """Set for title attribute."""
         self._title = title
 
+    @property
+    def dct_identifier(self) -> str:
+        """Get for dct_identifier."""
+        return self._dct_identifier
+
+    @dct_identifier.setter
+    def dct_identifier(self, dct_identifier: str) -> None:
+        """Set for dct_identifier."""
+        self._dct_identifier = dct_identifier
+
     def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
         if identifier:
@@ -3302,6 +3320,9 @@ class Note:
         _self = URIRef(self.identifier)
 
         self._g.add((_self, RDF.type, type))
+
+        if getattr(self, "dct_identifier", None):
+            self._g.add((_self, DCTERMS.identifier, Literal(self.dct_identifier)))
 
         self._title_to_graph(_self)
         self._property_note_to_graph(_self)
