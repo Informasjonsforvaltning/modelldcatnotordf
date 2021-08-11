@@ -6,7 +6,13 @@ from pytest_mock import MockFixture
 from rdflib import Graph
 from skolemizer.testutils import skolemization
 
-from modelldcatnotordf.modelldcatno import Module, Note
+from modelldcatnotordf.modelldcatno import (
+    ModelElement,
+    ModelProperty,
+    Module,
+    Note,
+    Role,
+)
 from tests.testutils import assert_isomorphic
 
 """
@@ -221,6 +227,67 @@ def test_to_graph_should_return_dct_identifier_as_graph() -> None:
     <http://example.com/notes/1>    a modelldcatno:Note ;
         dct:identifier "123456789";
     .
+    """
+    g1 = Graph().parse(data=note.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_annotates_as_graph(mocker: MockFixture) -> None:
+    """It returns a annotates graph isomorphic to spec."""
+    note = Note()
+    note.identifier = "http://example.com/notes/1"
+    modelproperty = Role()
+    annotates: List[Union[ModelProperty, ModelElement]] = [modelproperty]
+    note.annotates = annotates
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+    <http://example.com/notes/1>    a modelldcatno:Note ;
+        modelldcatno:annotates
+            <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+    .
+
+    <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
+        a modelldcatno:Role
+    .
+    """
+    mocker.patch(
+        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+    )
+
+    g1 = Graph().parse(data=note.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_annotates_str() -> None:
+    """It returns a belongs_to_module graph isomorphic to spec."""
+    note = Note()
+    note.identifier = "http://example.com/notes/1"
+    annotates = "http://example.com/annotates/1"
+    annotateses: List[Union[ModelProperty, ModelElement, str]] = [annotates]
+    note.annotates = annotateses
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+    @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+
+    <http://example.com/notes/1>    a modelldcatno:Note ;
+        modelldcatno:annotates <http://example.com/annotates/1> .
+
     """
     g1 = Graph().parse(data=note.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
