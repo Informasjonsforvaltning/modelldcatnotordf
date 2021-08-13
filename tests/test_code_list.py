@@ -248,3 +248,28 @@ def test_to_graph_should_return_code_list_reference_as_uri() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_has_reference() -> None:
+    """It returns a rdfs:seeAlso graph isomorphic to spec."""
+    codelist = CodeList()
+    codelist.identifier = "http://example.com/codelists/1"
+    codelist.has_reference = "http://example.com/link"
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcat: <http://www.w3.org/ns/dcat#> .
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+
+    <http://example.com/codelists/1> a modelldcatno:CodeList;
+        rdfs:seeAlso <http://example.com/link>
+    .
+    """
+
+    g1 = Graph().parse(data=codelist.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)

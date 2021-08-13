@@ -2655,6 +2655,7 @@ class CodeList(ModelElement):
         "_dct_identifier",
         "g",
         "_code_list_reference",
+        "_has_reference",
     )
 
     _identifier: URI
@@ -2662,6 +2663,7 @@ class CodeList(ModelElement):
     _g: Graph
     _code_list_reference: Union[CodeList, URI]
     _belongs_to_module: List[Union[Module, URI]]
+    _has_reference: str
 
     def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits an object with default values."""
@@ -2680,6 +2682,16 @@ class CodeList(ModelElement):
     ) -> None:
         """Set for code_list_reference."""
         self._code_list_reference = code_list_reference
+
+    @property
+    def has_reference(self: CodeList) -> str:
+        """Get for has_reference."""
+        return self._has_reference
+
+    @has_reference.setter
+    def has_reference(self: CodeList, has_reference: str) -> None:
+        """Set for has_reference."""
+        self._has_reference = URI(has_reference)
 
     def to_rdf(
         self: CodeList, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -2713,6 +2725,11 @@ class CodeList(ModelElement):
         _self = URIRef(self.identifier)
 
         super(CodeList, self)._to_graph(MODELLDCATNO.CodeList, _self)
+
+        if getattr(self, "has_reference", None):
+            self._g.add(
+                (URIRef(self.identifier), RDFS.seeAlso, URIRef(self.has_reference))
+            )
 
         self._code_list_reference_to_graph(_self)
 
