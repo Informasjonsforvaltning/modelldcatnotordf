@@ -2654,14 +2654,12 @@ class CodeList(ModelElement):
         "_identifier",
         "_dct_identifier",
         "g",
-        "_code_list_reference",
         "_has_reference",
     )
 
     _identifier: URI
     _dct_identifier: str
     _g: Graph
-    _code_list_reference: Union[CodeList, URI]
     _belongs_to_module: List[Union[Module, URI]]
     _has_reference: str
 
@@ -2670,18 +2668,6 @@ class CodeList(ModelElement):
         if identifier:
             self.identifier = identifier
         super().__init__()
-
-    @property
-    def code_list_reference(self: CodeList) -> Union[CodeList, URI]:
-        """Get for code_list_reference."""
-        return self._code_list_reference
-
-    @code_list_reference.setter
-    def code_list_reference(
-        self: CodeList, code_list_reference: Union[CodeList, URI]
-    ) -> None:
-        """Set for code_list_reference."""
-        self._code_list_reference = code_list_reference
 
     @property
     def has_reference(self: CodeList) -> str:
@@ -2731,30 +2717,7 @@ class CodeList(ModelElement):
                 (URIRef(self.identifier), RDFS.seeAlso, URIRef(self.has_reference))
             )
 
-        self._code_list_reference_to_graph(_self)
-
         return self._g
-
-    def _code_list_reference_to_graph(self, _self: URIRef) -> None:
-
-        if getattr(self, "code_list_reference", None):
-
-            if isinstance(self.code_list_reference, CodeList):
-
-                if not getattr(self.code_list_reference, "identifier", None):
-                    self.code_list_reference.identifier = Skolemizer.add_skolemization()
-
-                _code_list_reference = URIRef(self.code_list_reference.identifier)
-
-                for _s, p, o in self.code_list_reference._to_graph().triples(
-                    (None, None, None)
-                ):
-                    self._g.add((_s, p, o))
-
-            elif isinstance(self.code_list_reference, str):
-                _code_list_reference = URIRef(self.code_list_reference)
-
-            self._g.add((_self, MODELLDCATNO.codeListReference, _code_list_reference))
 
 
 class CodeElement:
