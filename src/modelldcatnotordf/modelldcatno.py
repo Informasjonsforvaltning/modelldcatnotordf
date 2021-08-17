@@ -1082,6 +1082,7 @@ class ModelProperty(ABC):
         "_forms_symmetry_with",
         "_relation_property_label",
         "_sequence_number",
+        "_navigable",
     )
 
     _g: Graph
@@ -1096,6 +1097,7 @@ class ModelProperty(ABC):
     _forms_symmetry_with: Union[ModelProperty, URI]
     _relation_property_label: dict
     _sequence_number: int
+    _navigable: bool
 
     @abstractmethod
     def __init__(self) -> None:
@@ -1219,6 +1221,16 @@ class ModelProperty(ABC):
         """Set for sequence_number."""
         self._sequence_number = sequence_number
 
+    @property
+    def navigable(self: ModelProperty) -> bool:
+        """Get for navigable."""
+        return self._navigable
+
+    @navigable.setter
+    def navigable(self: ModelProperty, navigable: bool) -> None:
+        """Set for navigable."""
+        self._navigable = navigable
+
     @abstractmethod
     def to_rdf(
         self, format: str = "turtle", encoding: Optional[str] = "utf-8"
@@ -1272,6 +1284,15 @@ class ModelProperty(ABC):
                 self._g.add(
                     (selfobject, DCTERMS.title, Literal(self.title[key], lang=key),)
                 )
+
+        if getattr(self, "navigable", None):
+            self._g.add(
+                (
+                    selfobject,
+                    MODELLDCATNO.navigable,
+                    Literal(self.navigable, datatype=XSD.boolean),
+                )
+            )
 
         self._subject_to_graph(selfobject)
         self._description_to_graph(selfobject)
