@@ -622,3 +622,33 @@ def test_to_graph_should_return_forms_symmetry_with_as_uri() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_navigable() -> None:
+    """It returns an navigable graph isomorphic to spec."""
+    modelproperty = Role()
+    modelproperty.identifier = "http://example.com/properties/1"
+
+    modelproperty.navigable = True
+
+    src = """
+    @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+        @prefix xkos: <http://rdf-vocabulary.ddialliance.org/xkos#> .
+        @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+
+        <http://example.com/properties/1>
+                a modelldcatno:Role;
+                    modelldcatno:navigable "true"^^xsd:boolean .
+    """
+
+    g1 = Graph().parse(data=modelproperty.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
