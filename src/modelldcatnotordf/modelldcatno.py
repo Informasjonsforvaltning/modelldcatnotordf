@@ -1555,6 +1555,7 @@ class SimpleType(ModelElement):
         "_total_digits",
         "_max_inclusive",
         "_min_inclusive",
+        "_min_exclusive",
         "_type_definition_reference",
         "_pattern",
     )
@@ -1569,6 +1570,7 @@ class SimpleType(ModelElement):
     _total_digits: int
     _max_inclusive: float
     _min_inclusive: float
+    _min_exclusive: float
     _type_definition_reference: URI
     _pattern: str
     _belongs_to_module: List[Union[Module, URI]]
@@ -1650,6 +1652,16 @@ class SimpleType(ModelElement):
         self._min_inclusive = min_inclusive
 
     @property
+    def min_exclusive(self) -> float:
+        """Get for min_exclusive."""
+        return self._min_exclusive
+
+    @min_exclusive.setter
+    def min_exclusive(self, min_exclusive: float) -> None:
+        """Set for min_exclusive."""
+        self._min_exclusive = min_exclusive
+
+    @property
     def type_definition_reference(self) -> str:
         """Get for type_definition_reference."""
         return self._type_definition_reference
@@ -1708,7 +1720,7 @@ class SimpleType(ModelElement):
 
         return self._g
 
-    def _add_properties(self, _self: URIRef) -> None:
+    def _add_properties(self, _self: URIRef) -> None:  # noqa
 
         if getattr(self, "min_length", None):
             self._g.add((_self, XSD.minLength, Literal(self.min_length)))
@@ -1730,6 +1742,9 @@ class SimpleType(ModelElement):
 
         if getattr(self, "min_inclusive", None):
             self._g.add((_self, XSD.minInclusive, Literal(self.min_inclusive)))
+
+        if getattr(self, "min_exclusive", None):
+            self._g.add((_self, XSD.minExclusive, Literal(self.min_exclusive)))
 
         if getattr(self, "type_definition_reference", None):
             self._g.add(
