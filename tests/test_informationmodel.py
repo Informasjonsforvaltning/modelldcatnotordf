@@ -451,7 +451,7 @@ def test_to_graph_should_return_license_document_bnode_with_types(
     informationmodel.licensedocument = licensedocument
 
     type1 = Concept()
-    type1.identifier = "https://example.com/types/1"
+    type1.identifier = "https://data.norge.no/vocabulary/modelldcatno#logicalModel"
 
     licensedocument.type.append(type1)
 
@@ -471,9 +471,9 @@ def test_to_graph_should_return_license_document_bnode_with_types(
 
     <http://example.com/.well-known/skolem/284db4d2-80c2-11eb-82c3-83e80baa2f94>
         a dct:LicenseDocument ;
-            dct:type <https://example.com/types/1> .
+            dct:type <https://data.norge.no/vocabulary/modelldcatno#logicalModel> .
 
-    <https://example.com/types/1> a skos:Concept .
+    <https://data.norge.no/vocabulary/modelldcatno#logicalModel> a skos:Concept .
 
     """
 
@@ -876,7 +876,7 @@ def test_to_graph_should_return_dct_type() -> None:
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
     type = Concept()
-    type.identifier = "https://example.com/types/1"
+    type.identifier = "https://data.norge.no/vocabulary/modelldcatno#logicalModel"
     informationmodel.dct_type = type
 
     src = """
@@ -890,9 +890,9 @@ def test_to_graph_should_return_dct_type() -> None:
 
         <http://example.com/informationmodels/1>
             a modelldcatno:InformationModel ;
-            dct:type <https://example.com/types/1> ;
+            dct:type <https://data.norge.no/vocabulary/modelldcatno#logicalModel> ;
         .
-        <https://example.com/types/1> a skos:Concept .
+        <https://data.norge.no/vocabulary/modelldcatno#logicalModel> a skos:Concept .
 
         """
 
@@ -1438,7 +1438,7 @@ def test_to_graph_should_return_dct_type_as_uri() -> None:
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
-    type = "https://example.com/types/1"
+    type = "https://data.norge.no/vocabulary/modelldcatno#logicalModel"
     informationmodel.dct_type = type
 
     src = """
@@ -1452,7 +1452,7 @@ def test_to_graph_should_return_dct_type_as_uri() -> None:
 
         <http://example.com/informationmodels/1>
             a modelldcatno:InformationModel ;
-            dct:type <https://example.com/types/1> ;
+            dct:type <https://data.norge.no/vocabulary/modelldcatno#logicalModel> ;
         .
 
         """
