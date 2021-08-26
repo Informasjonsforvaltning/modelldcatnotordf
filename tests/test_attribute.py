@@ -400,7 +400,7 @@ def test_to_graph_should_return_has_data_type_both_identifiers() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_data_type_bnode_attribute_id(
+def test_to_graph_should_return_has_data_type_skolemized_attribute_id(
     mocker: MockFixture,
 ) -> None:
     """It returns a has_data_type graph isomorphic to spec."""

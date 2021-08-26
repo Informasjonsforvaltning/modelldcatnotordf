@@ -159,7 +159,7 @@ def test_to_graph_should_return_has_property_both_identifiers() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_has_property_bnode_modelelement_id(
+def test_to_graph_should_return_has_property_skolemized_modelelement_id(
     mocker: MockFixture,
 ) -> None:
     """It returns a has_property graph isomorphic to spec."""
