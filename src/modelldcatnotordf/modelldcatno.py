@@ -194,7 +194,7 @@ class InformationModel(Resource, Standard):
     _is_part_of: List[Union[InformationModel, URI]]
     _homepage: URI
     _contactpoints: List[Contact]
-    _locations: List[Location]
+    _locations: List[Union[Location, URI]]
     _modified: Date
     _dct_type: Union[Concept, URI]
     _version_info: str
@@ -380,12 +380,14 @@ class InformationModel(Resource, Standard):
         self._contactpoints = contactpoints
 
     @property
-    def locations(self: InformationModel) -> List[Location]:
+    def locations(self: InformationModel) -> List[Union[Location, URI]]:
         """Get for locations."""
         return self._locations
 
     @locations.setter
-    def locations(self: InformationModel, locations: List[Location]) -> None:
+    def locations(
+        self: InformationModel, locations: List[Union[Location, URI]]
+    ) -> None:
         """Set for locations."""
         self._locations = locations
 
@@ -732,12 +734,18 @@ class InformationModel(Resource, Standard):
 
             for location in self._locations:
 
-                _location = BNode()
+                if isinstance(location, str):
+                    self._g.add(
+                        (URIRef(self.identifier), DCTERMS.spatial, URIRef(location))
+                    )
 
-                for _s, p, o in location._to_graph().triples((None, None, None)):
-                    self._g.add((_location, p, o))
+                else:
+                    _location = BNode()
 
-                self._g.add((URIRef(self.identifier), DCTERMS.spatial, _location,))
+                    for _s, p, o in location._to_graph().triples((None, None, None)):
+                        self._g.add((_location, p, o))
+
+                    self._g.add((URIRef(self.identifier), DCTERMS.spatial, _location,))
 
     def _modified_to_graph(self: InformationModel) -> None:
         if getattr(self, "modified", None):
