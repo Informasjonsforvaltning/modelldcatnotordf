@@ -437,7 +437,7 @@ def test_to_graph_should_return_license_document_skolemization(
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_license_document_bnode_with_types(
+def test_to_graph_should_return_license_document_skolemized_with_types(
     mocker: MockFixture,
 ) -> None:
     """It returns an information model graph isomorphic to spec."""

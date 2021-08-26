@@ -740,7 +740,7 @@ def test_to_graph_should_return_next() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_next_bnode() -> None:
+def test_to_graph_should_return_next_skolemized() -> None:
     """It returns an identifier graph isomorphic to spec."""
     codeelement1 = CodeElement()
     codeelement1.identifier = "http://example.com/codeelements/1"
@@ -803,7 +803,7 @@ def test_to_graph_should_return_previous() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_previous_bnode() -> None:
+def test_to_graph_should_return_previous_skolemized() -> None:
     """It returns an identifier graph isomorphic to spec."""
     codeelement1 = CodeElement()
     codeelement1.identifier = "http://example.com/codeelements/1"
