@@ -1097,7 +1097,7 @@ class ModelProperty(ABC):
     _identifier: URI
     _has_type: List[Union[ModelElement, URI]]
     _min_occurs: int
-    _max_occurs: int
+    _max_occurs: str
     _title: dict
     _subject: Union[Concept, URI]
     _description: dict
@@ -1164,12 +1164,12 @@ class ModelProperty(ABC):
         self._min_occurs = min_occurs
 
     @property
-    def max_occurs(self) -> int:
+    def max_occurs(self) -> str:
         """Get for max_occurs."""
         return self._max_occurs
 
     @max_occurs.setter
-    def max_occurs(self, max_occurs: int) -> None:
+    def max_occurs(self, max_occurs: str) -> None:
         """Set for max_occurs."""
         self._max_occurs = max_occurs
 
@@ -1285,7 +1285,17 @@ class ModelProperty(ABC):
             self._g.add((selfobject, XSD.minOccurs, Literal(self.min_occurs)))
 
         if getattr(self, "max_occurs", None):
-            self._g.add((selfobject, XSD.maxOccurs, Literal(self.max_occurs)))
+
+            if self.max_occurs.isdigit():
+                self._g.add(
+                    (
+                        selfobject,
+                        XSD.maxOccurs,
+                        Literal(self.max_occurs, datatype=XSD.nonNegativeInteger),
+                    )
+                )
+            else:
+                self._g.add((selfobject, XSD.maxOccurs, Literal(self.max_occurs)))
 
         if getattr(self, "title", None):
             for key in self.title:
