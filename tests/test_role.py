@@ -253,7 +253,7 @@ def test_to_graph_should_return_max_occurs() -> None:
     """It returns a max_occurs graph isomorphic to spec."""
     role = Role()
     role.identifier = "http://example.com/roles/1"
-    role.max_occurs = 1
+    role.max_occurs = "1"
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -264,7 +264,7 @@ def test_to_graph_should_return_max_occurs() -> None:
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
         <http://example.com/roles/1> a modelldcatno:Role ;
-            xsd:maxOccurs 1 .
+            xsd:maxOccurs "1"^^xsd:nonNegativeInteger .
 
         """
     g1 = Graph().parse(data=role.to_rdf(), format="turtle")

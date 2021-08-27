@@ -243,7 +243,7 @@ def test_to_graph_should_return_max_occurs() -> None:
     """It returns a max_occurs graph isomorphic to spec."""
     property = Role()
     property.identifier = "http://example.com/properties/1"
-    property.max_occurs = 1
+    property.max_occurs = "1"
 
     src = """
         @prefix dct: <http://purl.org/dc/terms/> .
@@ -254,7 +254,7 @@ def test_to_graph_should_return_max_occurs() -> None:
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
         <http://example.com/properties/1> a modelldcatno:Role ;
-            xsd:maxOccurs 1 .
+            xsd:maxOccurs "1"^^xsd:nonNegativeInteger .
 
         """
     g1 = Graph().parse(data=property.to_rdf(), format="turtle")
@@ -649,6 +649,30 @@ def test_to_graph_should_return_navigable() -> None:
     """
 
     g1 = Graph().parse(data=modelproperty.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_max_occurs_asterisk() -> None:
+    """It returns a max_occurs graph isomorphic to spec."""
+    property = Role()
+    property.identifier = "http://example.com/properties/1"
+    property.max_occurs = "*"
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+        <http://example.com/properties/1> a modelldcatno:Role ;
+            xsd:maxOccurs "*" .
+
+        """
+    g1 = Graph().parse(data=property.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
