@@ -1272,7 +1272,7 @@ class ModelProperty(ABC):
 
         self._has_type_to_graph(selfobject)
 
-        if getattr(self, "sequence_number", None):
+        if getattr(self, "sequence_number", None) is not None:
             self._g.add(
                 (
                     selfobject,
