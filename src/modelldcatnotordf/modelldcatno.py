@@ -1281,7 +1281,7 @@ class ModelProperty(ABC):
                 )
             )
 
-        if getattr(self, "min_occurs", None):
+        if getattr(self, "min_occurs", None) is not None:
             self._g.add((selfobject, XSD.minOccurs, Literal(self.min_occurs)))
 
         if getattr(self, "max_occurs", None):
