@@ -1755,7 +1755,7 @@ class SimpleType(ModelElement):
         if getattr(self, "min_length", None) is not None:
             self._g.add((_self, XSD.minLength, Literal(self.min_length)))
 
-        if getattr(self, "max_length", None):
+        if getattr(self, "max_length", None) is not None:
             self._g.add((_self, XSD.maxLength, Literal(self.max_length)))
 
         if getattr(self, "fraction_digits", None):
