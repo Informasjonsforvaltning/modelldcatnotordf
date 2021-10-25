@@ -1761,7 +1761,7 @@ class SimpleType(ModelElement):
         if getattr(self, "fraction_digits", None) is not None:
             self._g.add((_self, XSD.fractionDigits, Literal(self.fraction_digits)))
 
-        if getattr(self, "length", None):
+        if getattr(self, "length", None) is not None:
             self._g.add((_self, XSD.length, Literal(self.length)))
 
         if getattr(self, "total_digits", None):
