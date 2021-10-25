@@ -1752,7 +1752,7 @@ class SimpleType(ModelElement):
 
     def _add_properties(self, _self: URIRef) -> None:  # noqa
 
-        if getattr(self, "min_length", None):
+        if getattr(self, "min_length", None) is not None:
             self._g.add((_self, XSD.minLength, Literal(self.min_length)))
 
         if getattr(self, "max_length", None):
