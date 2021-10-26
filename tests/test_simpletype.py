@@ -505,3 +505,27 @@ def test_to_graph_should_return_length_0() -> None:
     g2 = Graph().parse(data=src, format="turtle")
 
     assert_isomorphic(g1, g2)
+
+
+def test_to_graph_should_return_total_digits_0() -> None:
+    """It returns a total_digits graph isomorphic to spec."""
+    simpletype = SimpleType()
+    simpletype.identifier = "http://example.com/simpletypes/1"
+    simpletype.total_digits = 0
+
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix dcat: <http://www.w3.org/ns/dcat#> .
+        @prefix modelldcatno: <https://data.norge.no/vocabulary/modelldcatno#> .
+        @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+        <http://example.com/simpletypes/1> a modelldcatno:SimpleType ;
+            xsd:totalDigits 0 .
+
+        """
+    g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")
+    g2 = Graph().parse(data=src, format="turtle")
+
+    assert_isomorphic(g1, g2)

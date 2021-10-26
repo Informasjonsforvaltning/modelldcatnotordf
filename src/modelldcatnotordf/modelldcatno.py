@@ -1764,7 +1764,7 @@ class SimpleType(ModelElement):
         if getattr(self, "length", None) is not None:
             self._g.add((_self, XSD.length, Literal(self.length)))
 
-        if getattr(self, "total_digits", None):
+        if getattr(self, "total_digits", None) is not None:
             self._g.add((_self, XSD.totalDigits, Literal(self.total_digits)))
 
         if getattr(self, "max_inclusive", None):
