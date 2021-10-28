@@ -10,17 +10,18 @@ from __future__ import annotations
 from typing import Optional
 
 from datacatalogtordf import URI
-from rdflib import Graph, RDF, SKOS, URIRef
+from rdflib import DCTERMS, Graph, Literal, RDF, SKOS, URIRef
 from skolemizer import Skolemizer
 
 
 class ConceptScheme:
     """A class representing a skos:ConceptScheme."""
 
-    __slots__ = ("_g", "_identifier")
+    __slots__ = ("_g", "_identifier", "_title")
 
     _g: Graph
     _identifier: URI
+    _title: dict
 
     def __init__(self, identifier: Optional[str] = None) -> None:
         """Inits ConceptScheme object with default values."""
@@ -35,6 +36,16 @@ class ConceptScheme:
     @identifier.setter
     def identifier(self, identifier: str) -> None:
         self._identifier = URI(identifier)
+
+    @property
+    def title(self) -> dict:
+        """Get for title attribute."""
+        return self._title
+
+    @title.setter
+    def title(self, title: dict) -> None:
+        """Set for title attribute."""
+        self._title = title
 
     def to_rdf(self, format: str = "turtle", encoding: Optional[str] = "utf-8") -> str:
         """Maps the concept scheme to rdf.
@@ -63,5 +74,9 @@ class ConceptScheme:
         _self = URIRef(self.identifier)
 
         self._g.add((_self, RDF.type, SKOS.ConceptScheme))
+
+        if getattr(self, "title", None):
+            for key in self.title:
+                self._g.add((_self, DCTERMS.title, Literal(self.title[key], lang=key),))
 
         return self._g
