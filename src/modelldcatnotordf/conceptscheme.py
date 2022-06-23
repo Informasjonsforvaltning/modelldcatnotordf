@@ -77,6 +77,12 @@ class ConceptScheme:
 
         if getattr(self, "title", None):
             for key in self.title:
-                self._g.add((_self, DCTERMS.title, Literal(self.title[key], lang=key),))
+                self._g.add(
+                    (
+                        _self,
+                        DCTERMS.title,
+                        Literal(self.title[key], lang=key),
+                    )
+                )
 
         return self._g

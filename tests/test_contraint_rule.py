@@ -66,7 +66,8 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
         """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=constraint_rule.to_rdf(), format="turtle")
@@ -186,7 +187,8 @@ def test_to_graph_should_return_constrains_modelelement_skolemized(
 
     """
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=constraint_rule.to_rdf(), format="turtle")
@@ -225,7 +227,8 @@ def test_to_graph_should_return_constrains_property_skolemized(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=constraint_rule.to_rdf(), format="turtle")

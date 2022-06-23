@@ -103,7 +103,8 @@ def test_to_graph_should_return_license_document_skolemization_and_type(
     licensedocument.type.append(type2)
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """

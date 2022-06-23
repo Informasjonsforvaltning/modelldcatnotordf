@@ -55,7 +55,8 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     choice = Choice()
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -128,7 +129,8 @@ def test_to_graph_should_return_has_some_both_identifiers(mocker: MockFixture) -
 
         """
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=choice.to_rdf(), format="turtle")
@@ -163,7 +165,8 @@ def test_to_graph_should_return_has_some_skolemization_choice_identifier(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=choice.to_rdf(), format="turtle")
@@ -183,7 +186,8 @@ def test_to_graph_should_return_has_some_blank_node_modelelement_identifier(
     choice.has_some.append(modelelement)
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """

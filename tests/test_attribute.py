@@ -52,7 +52,8 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     attribute = Attribute()
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -148,7 +149,8 @@ def test_to_graph_should_return_contains_object_type_skolemization_attribute_id(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
@@ -168,7 +170,8 @@ def test_to_graph_should_return_contains_object_type_objecttype_id(
     attribute.contains_object_type = objecttype
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -286,7 +289,8 @@ def test_to_graph_should_return_has_simple_type_skolemization_attribute_id(
 
     """
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
@@ -411,7 +415,8 @@ def test_to_graph_should_return_has_data_type_skolemized_attribute_id(
     attribute.has_data_type = datatype
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -446,7 +451,8 @@ def test_to_graph_should_return_has_data_type_skolemization_datatype(
     attribute.has_data_type = datatype
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -563,7 +569,8 @@ def test_to_graph_should_return_has_value_from_skolemization_attribute_id(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=attribute.to_rdf(), format="turtle")
@@ -577,7 +584,8 @@ def test_to_graph_should_return_has_value_from_skolemization_codelist(
 ) -> None:
     """It returns a has_value_from graph isomorphic to spec."""
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     attribute = Attribute()

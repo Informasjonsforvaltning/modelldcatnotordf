@@ -88,6 +88,12 @@ class LicenseDocument:
                 elif isinstance(type, str):
                     _type = URIRef(type)
 
-                self._g.add((_self, DCT.type, _type,))
+                self._g.add(
+                    (
+                        _self,
+                        DCT.type,
+                        _type,
+                    )
+                )
 
         return self._g

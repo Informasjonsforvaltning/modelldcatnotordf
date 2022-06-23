@@ -46,7 +46,8 @@ def test_to_graph_should_return_identifier_set_at_constructor() -> None:
 def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     """It returns a role graph with skolemization isomorphic to spec."""
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     role = Role()
@@ -129,7 +130,8 @@ def test_to_graph_should_return_has_object_type_skolemization_role_id(
     role.has_object_type = objecttype
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -159,7 +161,8 @@ def test_to_graph_should_return_has_object_type_skolemization_objecttype(
     """It returns a has_object_type graph isomorphic to spec."""
     role = Role()
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     objecttype = ObjectType()

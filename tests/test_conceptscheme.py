@@ -77,7 +77,8 @@ def test_to_graph_should_return_concept_scheme_skolemization(
     conceptscheme = ConceptScheme()
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """

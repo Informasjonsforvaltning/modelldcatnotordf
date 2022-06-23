@@ -87,7 +87,8 @@ def test_to_graph_should_return_title_and_no_identifier(mocker: MockFixture) -> 
         """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=simpletype.to_rdf(), format="turtle")

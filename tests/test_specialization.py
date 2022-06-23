@@ -39,7 +39,8 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
         """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=specialization.to_rdf(), format="turtle")
@@ -145,7 +146,8 @@ def test_to_graph_should_return_has_general_concept_skolemization_specialization
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=specialization.to_rdf(), format="turtle")
@@ -181,7 +183,8 @@ def test_to_graph_should_return_has_general_concept_skolemization_modelelement_i
         """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=specialization.to_rdf(), format="turtle")

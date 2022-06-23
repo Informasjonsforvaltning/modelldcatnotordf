@@ -89,7 +89,8 @@ def test_to_graph_should_return_title_and_skolemization(mocker: MockFixture) -> 
         """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
     g1 = Graph().parse(data=rootobjecttype.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")

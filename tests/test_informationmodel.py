@@ -296,7 +296,8 @@ def test_to_graph_should_return_modelelements_skolemized(mocker: MockFixture) ->
      """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -334,7 +335,8 @@ def test_to_graph_should_return_modelelements_skolemization_with_properties(
 
     """
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -428,7 +430,8 @@ def test_to_graph_should_return_license_document_skolemization(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -478,7 +481,8 @@ def test_to_graph_should_return_license_document_skolemized_with_types(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -1103,7 +1107,8 @@ def test_to_graph_should_return_has_format_skolemization(mocker: MockFixture) ->
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=informationmodel.to_rdf(), format="turtle")
@@ -1304,7 +1309,7 @@ def test_to_graph_should_return_replaces_as_uri() -> None:
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
-    replaces: List[Union[InformationModel, URI]] = []
+    replaces: List[Union[InformationModel, str]] = []
 
     replaces1 = InformationModel()
     replaces1.identifier = "https://example.com/informationmodels/2"
@@ -1347,7 +1352,7 @@ def test_to_graph_should_return_is_replaced_by_as_uri() -> None:
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
-    is_replaced_by: List[Union[InformationModel, URI]] = []
+    is_replaced_by: List[Union[InformationModel, str]] = []
 
     is_replaced_by1 = InformationModel()
     is_replaced_by1.identifier = "https://example.com/informationmodels/2"
@@ -1389,7 +1394,7 @@ def test_to_graph_should_return_has_part_as_uri() -> None:
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
-    has_part: List[Union[InformationModel, URI]] = []
+    has_part: List[Union[InformationModel, str]] = []
 
     has_part1 = "https://example.com/informationmodels/2"
     has_part.append(has_part1)
@@ -1428,7 +1433,7 @@ def test_to_graph_should_return_is_part_of_as_uri() -> None:
     informationmodel = InformationModel()
     informationmodel.identifier = "http://example.com/informationmodels/1"
 
-    is_part_of: List[Union[InformationModel, URI]] = []
+    is_part_of: List[Union[InformationModel, str]] = []
 
     is_part_of1 = "https://example.com/informationmodels/2"
     is_part_of.append(is_part_of1)

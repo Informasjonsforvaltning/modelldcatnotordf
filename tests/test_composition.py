@@ -47,7 +47,8 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     composition = Composition()
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -144,7 +145,8 @@ def test_to_graph_should_return_contains_skolemization_composition_identifier(
 
     """
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=composition.to_rdf(), format="turtle")
@@ -164,7 +166,8 @@ def test_to_graph_should_return_contains_blank_node_modelelement_identifier(
     composition.contains = modelelement
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
