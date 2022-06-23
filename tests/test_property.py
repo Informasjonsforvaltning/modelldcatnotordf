@@ -34,7 +34,8 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     property = Role()
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -117,7 +118,8 @@ def test_to_graph_should_return_has_type_skolemization_property_id(
     property.has_type.append(modelelement)
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -154,7 +156,8 @@ def test_to_graph_should_return_has_type_skolemization_modelelement_id(
     property.has_type.append(modelelement)
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -341,7 +344,9 @@ def test_to_graph_should_return_description() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_belongs_to_module_str(mocker: MockFixture,) -> None:
+def test_to_graph_should_return_belongs_to_module_str(
+    mocker: MockFixture,
+) -> None:
     """It returns a belongs_to_module graph isomorphic to spec."""
     modelproperty = Role()
     modelproperty.identifier = "http://example.com/properties/1"
@@ -365,7 +370,8 @@ def test_to_graph_should_return_belongs_to_module_str(mocker: MockFixture,) -> N
 
     """
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=modelproperty.to_rdf(), format="turtle")
@@ -401,7 +407,8 @@ def test_to_graph_should_return_belongs_to_module_as_graph(mocker: MockFixture) 
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
     g1 = Graph().parse(data=modelproperty.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
@@ -480,7 +487,8 @@ def test_to_graph_should_return_forms_symmetry_with_skolemization(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
     g1 = Graph().parse(data=modelproperty1.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")

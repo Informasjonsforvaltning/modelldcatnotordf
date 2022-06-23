@@ -65,12 +65,15 @@ def test_to_graph_should_return_identifier_set_at_constructor() -> None:
     assert_isomorphic(g1, g2)
 
 
-def test_to_graph_should_return_standard_skolemization(mocker: MockFixture,) -> None:
+def test_to_graph_should_return_standard_skolemization(
+    mocker: MockFixture,
+) -> None:
     """It returns a standard graph isomorphic to spec."""
     standard = Standard()
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """

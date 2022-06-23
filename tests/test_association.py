@@ -47,7 +47,8 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     association = Association()
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -143,7 +144,8 @@ def test_to_graph_should_return_refers_to_skolemization_association_identifier(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
     g1 = Graph().parse(data=association.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
@@ -162,7 +164,8 @@ def test_to_graph_should_return_refers_to_blank_node_modelelement_identifier(
     association.refers_to = modelelement
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """

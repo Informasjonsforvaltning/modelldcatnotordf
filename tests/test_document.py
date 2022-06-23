@@ -70,7 +70,8 @@ def test_to_graph_should_return_document_skolemized(mocker: MockFixture) -> None
     document.title = {"nb": "Tittel 1", "en": "Title 1"}
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """

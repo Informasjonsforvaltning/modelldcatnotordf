@@ -47,7 +47,8 @@ def test_to_graph_should_return_blank_skolemization(mocker: MockFixture) -> None
     abstraction = Abstraction()
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -143,7 +144,8 @@ def test_to_graph_should_return_is_abstr_skolemization_abstr_identifier(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=abstraction.to_rdf(), format="turtle")
@@ -163,7 +165,8 @@ def test_to_graph_should_return_is_abstr_of_skolemization_modelelement_id(
     abstraction.is_abstraction_of = modelelement
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -277,7 +280,8 @@ def test_to_graph_should_return_is_abstraction_of_property(mocker: MockFixture) 
 
     """
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=abstraction.to_rdf(), format="turtle")

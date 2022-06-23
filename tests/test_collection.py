@@ -47,7 +47,8 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
     collection = Collection()
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -145,7 +146,8 @@ def test_to_graph_should_return_has_member_skolemization_collection_identifier(
         """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
     g1 = Graph().parse(data=collection.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
@@ -164,7 +166,8 @@ def test_to_graph_should_return_has_member_skolemization_modelelement_identifier
     collection.has_member = modelelement
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """

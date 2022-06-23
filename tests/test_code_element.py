@@ -25,7 +25,8 @@ def test_to_graph_should_return_codeelement(mocker: MockFixture) -> None:
     codeelement = CodeElement()
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -252,7 +253,8 @@ def test_to_graph_should_return_in_scheme_skolemization_codeelement_identifier(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=codeelement.to_rdf(), format="turtle")
@@ -318,7 +320,8 @@ def test_to_graph_should_return_in_scheme_skolemization_codelist_id(
     codeelement.in_scheme = inschemes
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -408,7 +411,8 @@ def test_to_graph_should_return_top_concept_of_skolemization_codeelement_id(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=codeelement.to_rdf(), format="turtle")
@@ -472,7 +476,8 @@ def test_to_graph_should_return_top_concept_of_skolemization_codelist_id(
     codeelement.top_concept_of = inschemes
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """

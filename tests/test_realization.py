@@ -38,7 +38,8 @@ def test_to_graph_should_return_skolemization(mocker: MockFixture) -> None:
 
         """
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
     g1 = Graph().parse(data=realization.to_rdf(), format="turtle")
     g2 = Graph().parse(data=src, format="turtle")
@@ -172,7 +173,8 @@ def test_to_graph_should_return_has_supplier_skolemization_realization_id(
     """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=realization.to_rdf(), format="turtle")
@@ -208,7 +210,8 @@ def test_to_graph_should_return_has_supplier_skolemization_modelelement_id(
         """
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=realization.to_rdf(), format="turtle")

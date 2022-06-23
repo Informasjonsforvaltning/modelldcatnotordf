@@ -60,7 +60,8 @@ def test_to_graph_should_return_title_and_skolemization(mocker: MockFixture) -> 
     modelelement.title = {"nb": "Tittel 1", "en": "Title 1"}
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -176,7 +177,8 @@ def test_to_graph_should_return_has_property_skolemized_modelelement_id(
     modelelement.has_property.append(modelproperty)
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -212,7 +214,8 @@ def test_to_graph_should_return_has_property_skolemization_property_id(
     modelelement.has_property.append(modelproperty)
 
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     src = """
@@ -301,7 +304,8 @@ def test_to_graph_should_return_belongs_to_module_as_graph(mocker: MockFixture) 
     .
     """
     mocker.patch(
-        "skolemizer.Skolemizer.add_skolemization", return_value=skolemization,
+        "skolemizer.Skolemizer.add_skolemization",
+        return_value=skolemization,
     )
 
     g1 = Graph().parse(data=modelelement.to_rdf(), format="turtle")

@@ -99,7 +99,13 @@ class FoafDocument(Document):
 
         if getattr(self, "title", None):
             for key in self.title:
-                self._g.add((_self, DCTERMS.title, Literal(self.title[key], lang=key),))
+                self._g.add(
+                    (
+                        _self,
+                        DCTERMS.title,
+                        Literal(self.title[key], lang=key),
+                    )
+                )
         if getattr(self, "language", None):
             self._g.add(
                 (
