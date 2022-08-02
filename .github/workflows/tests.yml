@@ -2,11 +2,20 @@ name: Tests
 on: push
 jobs:
 
-  tests:
-    name: Python ${{ matrix.python-version }}
+  test_3-8:
+    name: Python 3.8
     uses: Informasjonsforvaltning/workflows/.github/workflows/test-nox.yaml@main
     with:
-      python_versions: "'3.8','3.9'"
+      python_version: '3.8'
+      python_architecture: x64
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  test_3-9:
+    name: Python 3.9
+    uses: Informasjonsforvaltning/workflows/.github/workflows/test-nox.yaml@main
+    with:
+      python_version: '3.9'
       python_architecture: x64
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
