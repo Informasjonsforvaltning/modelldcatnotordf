@@ -4,7 +4,7 @@ on:
     types: [published]
 jobs:
   release:
-      uses: Informasjonsforvaltning/workflows/.github/workflows/release-nox.yaml@main
+      uses: Informasjonsforvaltning/workflows/.github/workflows/release-poetry.yaml@main
       with:
         python_version: '3.9'
         python_architecture: x64
