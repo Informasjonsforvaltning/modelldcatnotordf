@@ -1,5 +1,10 @@
 # modelldcatnotordf
 
+> ⚠️ This repository is archived
+> 
+> This codebase is no longer in use and is not under active development.
+> If you are interested in reviving or contributing to this project, please contact us at fellesdatakatalog@digdir.no.
+
 ![Tests](https://github.com/Informasjonsforvaltning/modelldcatnotordf/workflows/Tests/badge.svg)
 [![codecov](https://codecov.io/gh/Informasjonsforvaltning/modelldcatnotordf/branch/master/graph/badge.svg)](https://codecov.io/gh/Informasjonsforvaltning/modelldcatnotordf)
 [![PyPI](https://img.shields.io/pypi/v/modelldcatnotordf.svg)](https://pypi.org/project/modelldcatnotordf/)
